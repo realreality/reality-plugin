@@ -8,12 +8,6 @@
     "128": "images/icon-128.png"
   },
   "default_locale": "en",
-  "background": {
-    "scripts": [
-      "scripts/chromereload.js",
-      "scripts/background.js"
-    ]
-  },
   "permissions": [
     "tabs",
     "http://*/*",
@@ -22,14 +16,19 @@
     "webRequest",
     "*://*.google.com/"
   ],
+  "web_accessible_resources": [
+   "panel.html"   
+  ],
   "content_scripts": [
     {
       "matches": [
-        "http://www.sreality.cz/detail/prodej*",
-        "https://www.sreality.cz/detail/prodej*"
+        "http://www.bezrealitky.cz/nemovitosti-byty-domy/*",
+        "https://www.bezrealitky.cz/nemovitosti-byty-domy/*"
       ],
       "js": [
+        "bower_components/jquery/dist/jquery.min.js",
         "scripts/contentscript.js"
+
       ],
       "run_at": "document_end",
       "all_frames": false
