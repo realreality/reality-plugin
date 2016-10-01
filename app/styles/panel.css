@@ -34,3 +34,7 @@
       text-align: right; }
     .reality-panel .content .tags {
       padding-top: 10px; }
+      .reality-panel .content .tags .tag {
+        padding-right: 10px;
+        background-color: #f44336;
+        opacity: 1.0; }

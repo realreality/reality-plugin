@@ -63,19 +63,19 @@ var _loadPanel = function(address) {
 
             var tags = ' ';
             if (pubs[0].results.length > 10) {
-              tags += 'HOSPODA ';
+              tags += '<span class="tag">HOSPODA</span>';
             }
             if (nightclubs[0].results.length > 5) {
-              tags += 'PARTY ';
+              tags += '<span class="tag">PARTY</span>';
             }
             if (stops[0].results.length > 5) {
-              tags += 'MHD ';
+              tags += '<span class="tag">MHD</span>';
             }
             if (parks[0].results.length > 0) {
-              tags += 'NATURE ';
+              tags += '<span class="tag">NATURE</span>';
             }
             if (schools[0].results.length > 2) {
-              tags += 'KIDS ';
+              tags += '<span class="tag">KIDS</span>';
             }
 
             html = html.replace('@@TAGS@@', tags);

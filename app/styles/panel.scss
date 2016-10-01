@@ -46,6 +46,12 @@
 
     .tags {
       padding-top: 10px;
+
+      .tag {
+        padding-right: 10px;
+        background-color: #f44336;
+        opacity: 1.0;
+      }
     }
   }
 }
