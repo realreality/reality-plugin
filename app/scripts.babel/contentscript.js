@@ -84,8 +84,8 @@ var _loadPanel = function(address) {
 
             html = html.replace('@@ZONES@@', zones[0].count);
 
-            var noiseDayLevel = noiseDay[0]['db-high'] > 55 ? "High":"Moderate";
-            var noiseNightLevel = noiseNight[0]['db-high'] > 55 ? "High":"Moderate";
+            var noiseDayLevel = noiseDay[0]['db-high'] > 55 ? 'High':'Moderate';
+            var noiseNightLevel = noiseNight[0]['db-high'] > 55 ? 'High':'Moderate';
 
             html = html.replace('@@NOISE_DAY@@', noiseDayLevel + '<br> ' + noiseDay[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
             html = html.replace('@@NOISE_NIGHT@@', noiseNightLevel + '<br> ' + noiseNight[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
@@ -114,10 +114,9 @@ var _loadPanel = function(address) {
             $('.reality-panel .toggle-app-button').on('click', function() {
                 console.debug('toggle app button clicked');
                 $('.reality-panel').toggleClass('reality-panel-closed');
-            })
+            });
           });
         });
-
   });
 };
 
