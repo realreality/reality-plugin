@@ -47,6 +47,10 @@ var _loadNoise = function(location, night) {
   return $.get('http://10.2.22.117:8080/rest/noise?lat=' + location.lat + '&lon=' + location.lng + '&dist=500' + '&at-night=' + night);
 };
 
+var _loadAir = function(location) {
+  return $.get('http://10.2.22.117:8080/rest/atmosphere?lat=' + location.lat + '&lon=' + location.lng);
+
+};
 
 var _loadPanel = function(address) {
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
@@ -68,8 +72,10 @@ var _loadPanel = function(address) {
           var noiseDayP = _loadNoise(location, false);
           var noiseNightP = _loadNoise(location, true);
 
-          $.when(liftagoP, liftagoFromMuzeumToP, transitP, drivingP, pubsP, nightClubsP, stopsP, parkP, schoolP, zonesP, noiseDayP, noiseNightP)
-          .done(function(liftago, liftagoFromMuzeumTo, transit, driving, pubs, nightClubs, stops, parks, schools, zones, noiseDay, noiseNight) {
+          var airP = _loadAir(location);
+
+          $.when(liftagoP, liftagoFromMuzeumToP, transitP, drivingP, pubsP, nightClubsP, stopsP, parkP, schoolP, zonesP, noiseDayP, noiseNightP, airP)
+          .done(function(liftago, liftagoFromMuzeumTo, transit, driving, pubs, nightClubs, stops, parks, schools, zones, noiseDay, noiseNight, air) {
             html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
 
@@ -89,6 +95,20 @@ var _loadPanel = function(address) {
 
             html = html.replace('@@NOISE_DAY@@', noiseDayLevel + '<br> ' + noiseDay[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
             html = html.replace('@@NOISE_NIGHT@@', noiseNightLevel + '<br> ' + noiseNight[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
+
+            var airQualityNum = air[0].value;
+            var airQuality = 'Very good';
+            if (airQualityNum === 5) {
+              airQuality = 'Bad';
+            } else if (airQualityNum === 4) {
+              airQuality = 'Worse';
+            } else if (airQualityNum === 3) {
+              airQuality = 'Acceptable';
+            } else if (airQualityNum === 2) {
+              airQuality = 'Good';
+            }
+
+            html = html.replace('@@AIR@@', airQuality);
 
             var tags = ' ';
             if (pubs[0].results.length > 3) {
