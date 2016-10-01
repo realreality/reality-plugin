@@ -5,6 +5,8 @@ import del from 'del';
 import runSequence from 'run-sequence';
 import {stream as wiredep} from 'wiredep';
 
+var sass = require('gulp-sass');
+
 const $ = gulpLoadPlugins();
 
 gulp.task('extras', () => {
@@ -89,6 +91,13 @@ gulp.task('babel', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
+gulp.task('sass', function () {
+  return gulp.src('app/styles/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('app/styles'));
+});
+
+
 gulp.task('watch', ['lint', 'babel'], () => {
   $.livereload.listen();
 
@@ -101,6 +110,7 @@ gulp.task('watch', ['lint', 'babel'], () => {
   ]).on('change', $.livereload.reload);
 
   gulp.watch('app/scripts.babel/**/*.js', ['lint', 'babel']);
+  gulp.watch('app/styles/*.scss', ['sass']);
   gulp.watch('bower.json', ['wiredep']);
 });
 
@@ -126,7 +136,7 @@ gulp.task('package', function () {
 gulp.task('build', (cb) => {
   runSequence(
     'lint', 'babel', 'chromeManifest',
-    ['html', 'images', 'extras'],
+    ['html', 'images', 'extras', 'sass'],
     'size', cb);
 });
 

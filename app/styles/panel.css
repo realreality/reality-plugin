@@ -1,0 +1,33 @@
+.reality-panel {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  min-width: 250px;
+  min-height: 200px;
+  color: white;
+  z-index: 1000000;
+  -webkit-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in;
+  -ms-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in;
+  font-size: 0; }
+  .reality-panel .reality-panel-bg {
+    background-color: #f44336;
+    padding: 20px 0;
+    font-size: 18px;
+    opacity: 0.8; }
+  .reality-panel h3 {
+    padding: 10px; }
+  .reality-panel .content {
+    display: table; }
+    .reality-panel .content .row {
+      display: table-row;
+      width: 100%; }
+    .reality-panel .content .col {
+      display: table-cell;
+      min-width: 100px;
+      padding-left: 10px;
+      padding-right: 10px; }
+    .reality-panel .content .text-right {
+      text-align: right; }

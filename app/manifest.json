@@ -17,7 +17,8 @@
     "*://*.google.com/"
   ],
   "web_accessible_resources": [
-   "panel.html"   
+   "panel.html",
+   "styles/panel.css"
   ],
   "content_scripts": [
     {
@@ -28,7 +29,6 @@
       "js": [
         "bower_components/jquery/dist/jquery.min.js",
         "scripts/contentscript.js"
-
       ],
       "run_at": "document_end",
       "all_frames": false
