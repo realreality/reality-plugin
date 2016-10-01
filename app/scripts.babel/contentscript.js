@@ -39,6 +39,7 @@ var _loadPanel = function(address) {
           var transitP = _loadTransitAvailibility(address);
 
           $.when(pubsP, liftagoP, transitP).done(function(pubs, liftago, transit) {
+            html = html.replace('@@HEADER@@', address);
             html = html.replace('@@HOSPOD@@', pubs[0].results.length);
             html = html.replace('@@LIFTAGO_NODE5@@', Math.round(liftago[0][0].price) + ' Kč');
 
