@@ -90,6 +90,11 @@ var _loadPanel = function(address) {
             html = html.replace('@@TAGS@@', tags);
 
             $('body').append(html);
+
+            $('.reality-panel .toggle-app-button').on('click', function() {
+                console.debug('toggle app button clicked');
+                $('.reality-panel').toggleClass('reality-panel-closed');
+            })
           });
         });
 

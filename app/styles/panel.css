@@ -36,6 +36,8 @@
   .reality-panel h3 {
     padding: 10px;
     font-size: 15px; }
+  .reality-panel .toggle-app-button {
+    cursor: pointer; }
   .reality-panel .content {
     display: table; }
     .reality-panel .content .row {
