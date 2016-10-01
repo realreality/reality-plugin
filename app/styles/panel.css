@@ -2,7 +2,7 @@
   position: fixed;
   top: 50px;
   right: 0;
-  min-width: 250px;
+  width: 350px;
   min-height: 200px;
   color: white;
   z-index: 1000000;
@@ -12,12 +12,26 @@
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
   font-size: 0; }
+  .reality-panel a {
+    text-decoration: none;
+    color: white; }
   .reality-panel .reality-panel-bg {
     border-radius: 5px 0 0 5px;
     background-color: #f44336;
     padding: 20px 0;
     font-size: 18px;
-    opacity: 0.9; }
+    opacity: 0.9;
+    position: relative; }
+  .reality-panel .header {
+    position: relative;
+    border-radius: 5px 5px 0 0;
+    width: 150px;
+    transform: rotate(-90deg);
+    top: 50px;
+    left: -90px;
+    background-color: #f44336; }
+    .reality-panel .header h3 {
+      font-size: 13px; }
   .reality-panel h3 {
     padding: 10px; }
   .reality-panel .content {
@@ -40,3 +54,6 @@
         margin-right: 10px;
         background-color: #aa1409;
         font-size: 10px; }
+
+.reality-panel-closed {
+  right: -350px; }

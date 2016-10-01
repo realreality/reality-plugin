@@ -55,12 +55,6 @@ var _loadPanel = function(address) {
             html = html.replace('@@DOJEZD_MUZEUM_MHD@@', distancesArray[0].duration.text);
             html = html.replace('@@DOJEZD_NODE5_MHD@@', distancesArray[1].duration.text);
 
-            console.log('pubs', pubs);
-            console.log('bar', nightclubs);
-            console.log('stops', stops);
-            console.log('parks', parks);
-            console.log('schools', schools);
-
             var tags = ' ';
             if (pubs[0].results.length > 10) {
               tags += '<span class="tag">HOSPODA</span>';
