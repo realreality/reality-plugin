@@ -83,8 +83,11 @@ var _loadPanel = function(address) {
 
             html = html.replace('@@ZONES@@', zones[0].count);
 
-            html = html.replace('@@NOISE_DAY@@', noiseDay[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
-            html = html.replace('@@NOISE_NIGHT@@', noiseNight[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
+            var noiseDayLevel = noiseDay[0]['db-high'] > 55 ? "High":"Moderate";
+            var noiseNightLevel = noiseNight[0]['db-high'] > 55 ? "High":"Moderate";
+
+            html = html.replace('@@NOISE_DAY@@', noiseDayLevel + '<br> ' + noiseDay[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
+            html = html.replace('@@NOISE_NIGHT@@', noiseNightLevel + '<br> ' + noiseNight[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
 
             var tags = ' ';
             if (pubs[0].results.length > 3) {
