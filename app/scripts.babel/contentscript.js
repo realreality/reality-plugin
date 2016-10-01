@@ -43,6 +43,11 @@ var _loadParkingZones = function(location) {
   return $.get('http://10.2.22.117:8080/rest/zones-count?lat=' + location.lat + '&lon=' + location.lng + '&dist=500');
 };
 
+var _loadNoise = function(location, night) {
+  return $.get('http://10.2.22.117:8080/rest/noise?lat=' + location.lat + '&lon=' + location.lng + '&dist=500' + '&at-night=' + night);
+};
+
+
 var _loadPanel = function(address) {
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
 
@@ -57,10 +62,13 @@ var _loadPanel = function(address) {
           var stopsP = _loadPlaces('transit_station', location, 400);
           var parkP = _loadPlaces('park', location, 600);
           var schoolP = _loadPlaces('school', location, 1000);
-          var zonesP = _loadParkingZones(location, 500);
 
-          $.when(liftagoP, liftagoFromMuzeumToP, transitP, pubsP, nightClubsP, stopsP, parkP, schoolP, zonesP)
-          .done(function(liftago, liftagoFromMuzeumTo, transit, pubs, nightClubs, stops, parks, schools, zones) {            
+          var zonesP = _loadParkingZones(location, 500);
+          var noiseDayP = _loadNoise(location, false);
+          var noiseNightP = _loadNoise(location, true);
+
+          $.when(liftagoP, liftagoFromMuzeumToP, transitP, pubsP, nightClubsP, stopsP, parkP, schoolP, zonesP, noiseDayP, noiseNightP)
+          .done(function(liftago, liftagoFromMuzeumTo, transit, pubs, nightClubs, stops, parks, schools, zones, noiseDay, noiseNight) {
             html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
 
@@ -75,6 +83,9 @@ var _loadPanel = function(address) {
 
             html = html.replace('@@ZONES@@', zones[0].count);
 
+            html = html.replace('@@NOISE_DAY@@', noiseDay[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
+            html = html.replace('@@NOISE_NIGHT@@', noiseNight[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
+
             var tags = ' ';
             if (pubs[0].results.length > 3) {
               tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
@@ -83,7 +94,7 @@ var _loadPanel = function(address) {
               tags += '<span class="tag" title="Party time! At least 2 clubs close to property!">PARTY</span>';
             }
             if (stops[0].results.length > 3) {
-              tags += '<span class="tag" title="At least 3 stops in close distance.">PUBLIC TRANSIT</span>';
+              tags += '<span class="tag" title="At least 3 stops in close distance.">PUBLIC&nbsp;TRANSIT</span>';
             }
             if (parks[0].results.length > 0) {
               tags += '<span class="tag" title="Greeeeen!! At least 1 park in neighbourhood.">NATURE</span>';

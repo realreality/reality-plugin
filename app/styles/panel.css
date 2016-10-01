@@ -11,7 +11,7 @@
   -ms-transition: all 0.3s ease-in;
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
-  font-size: 0px; }
+  font-size: 0; }
   .reality-panel a {
     text-decoration: none;
     color: white; }
@@ -55,14 +55,16 @@
       font-size: 12px; }
     .reality-panel .content .text-right {
       text-align: right; }
-    .reality-panel .content .tags {
-      padding-top: 20px; }
-      .reality-panel .content .tags .tag {
-        border-radius: 5px;
-        padding: 5px;
-        margin-right: 10px;
-        background-color: #aa1409;
-        font-size: 10px; }
+  .reality-panel .footer .tags {
+    padding-left: 20px;
+    padding-top: 20px;
+    display: block; }
+    .reality-panel .footer .tags .tag {
+      border-radius: 5px;
+      padding: 5px;
+      margin-right: 10px;
+      background-color: #aa1409;
+      font-size: 10px; }
 
 .reality-panel-closed {
   right: -350px; }
