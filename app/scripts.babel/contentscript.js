@@ -9,6 +9,8 @@ var NODE5 = {
 var _init = function() {
   var cssPath = chrome.extension.getURL('/styles/panel.css');
   $('head').append('<link rel="stylesheet" href="' + cssPath + '" type="text/css" />');
+  var fontPath = chrome.extension.getURL('bower_components/font-awesome/css/font-awesome.min.css');
+  $('head').append('<link rel="stylesheet" href="' + fontPath + '" type="text/css" />');
 };
 
 var _loadPlaces = function(type, location) {
