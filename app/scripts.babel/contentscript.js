@@ -40,7 +40,7 @@ var _loadPanel = function(address) {
 
           $.when(pubsP, liftagoP, transitP).done(function(pubs, liftago, transit) {
             html = html.replace('@@HOSPOD@@', pubs[0].results.length);
-            html = html.replace('@@LIFTAGO_NODE5@@', liftago[0][0].price + 'Kč');
+            html = html.replace('@@LIFTAGO_NODE5@@', Math.round(liftago[0][0].price) + ' Kč');
 
             var distancesArray = transit[0].rows[0].elements;
             html = html.replace('@@DOJEZD_MUZEUM_MHD@@', distancesArray[0].duration.text);
@@ -50,6 +50,7 @@ var _loadPanel = function(address) {
             $('body').append(html);
           });
         });
+
   });
 };
 
