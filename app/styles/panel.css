@@ -13,6 +13,7 @@
   transition: all 0.3s ease-in;
   font-size: 0; }
   .reality-panel .reality-panel-bg {
+    border-radius: 5px 0 0 5px;
     background-color: #f44336;
     padding: 20px 0;
     font-size: 18px;

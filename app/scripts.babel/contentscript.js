@@ -30,8 +30,9 @@ var _loadPanel = function(address) {
       var liftagoP = _loadLiftago(location);
 
       $.when(pubsP, liftagoP).done(function(pubs, liftago) {
+        html = html.replace('@@HEADER@@', address);
         html = html.replace('@@HOSPOD@@', pubs[0].results.length);
-        html = html.replace('@@LIFTAGO_NODE5@@', liftago[0][0].price + 'Kč');
+        html = html.replace('@@LIFTAGO_NODE5@@', Math.round(liftago[0][0].price) + ' Kč');
         console.log(liftago);
         $('body').append(html);
       });
