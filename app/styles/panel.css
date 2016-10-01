@@ -11,7 +11,7 @@
   -ms-transition: all 0.3s ease-in;
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
-  font-size: 0; }
+  font-size: 0px; }
   .reality-panel a {
     text-decoration: none;
     color: white; }
@@ -30,10 +30,12 @@
     top: 37px;
     left: -92px;
     background-color: #c2160a; }
-    .reality-panel .header h3 {
-      font-size: 13px; }
+    .reality-panel .header h2 {
+      font-size: 13px;
+      padding: 10px; }
   .reality-panel h3 {
-    padding: 10px; }
+    padding: 10px;
+    font-size: 15px; }
   .reality-panel .content {
     display: table; }
     .reality-panel .content .row {
@@ -42,12 +44,13 @@
     .reality-panel .content .col {
       display: table-cell;
       min-width: 100px;
-      padding-left: 10px;
-      padding-right: 10px; }
+      padding-left: 15px;
+      padding-right: 10px;
+      font-size: 12px; }
     .reality-panel .content .text-right {
       text-align: right; }
     .reality-panel .content .tags {
-      padding-top: 10px; }
+      padding-top: 20px; }
       .reality-panel .content .tags .tag {
         border-radius: 5px;
         padding: 5px;
