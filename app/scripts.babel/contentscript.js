@@ -11,9 +11,9 @@ var _init = function() {
   $('head').append('<link rel="stylesheet" href="' + cssPath + '" type="text/css" />');
 };
 
-var _loadPubs = function(location) {
+var _loadPlaces = function(type, location) {
   return $.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + location.lat + ',' + location.lng +
-    '&radius=500&types=restaurant&key=' + API_KEY);
+    '&radius=500&type='+ type +'&key=' + API_KEY);
 };
 
 var _loadLiftago = function(location) {
@@ -34,11 +34,17 @@ var _loadPanel = function(address) {
 
       $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY, function(response) {
           var location = response.results[0].geometry.location;
-          var pubsP = _loadPubs(location);
           var liftagoP = _loadLiftago(location);
           var transitP = _loadTransitAvailibility(address);
 
-          $.when(pubsP, liftagoP, transitP).done(function(pubs, liftago, transit) {
+          var pubsP = _loadPlaces('restaurant', location);
+          var nightclubsP = _loadPlaces('night_club', location);
+          var stopsP = _loadPlaces('transit_station', location);
+          var parkP = _loadPlaces('park', location);
+          var schoolP = _loadPlaces('school', location);
+
+          $.when(liftagoP, transitP, pubsP, nightclubsP, stopsP, parkP, schoolP)
+          .done(function(liftago, transit, pubs, nightclubs, stops, parks, schools) {
             html = html.replace('@@HEADER@@', address);
             html = html.replace('@@HOSPOD@@', pubs[0].results.length);
             html = html.replace('@@LIFTAGO_NODE5@@', Math.round(liftago[0][0].price) + ' Kč');
@@ -47,7 +53,31 @@ var _loadPanel = function(address) {
             html = html.replace('@@DOJEZD_MUZEUM_MHD@@', distancesArray[0].duration.text);
             html = html.replace('@@DOJEZD_NODE5_MHD@@', distancesArray[1].duration.text);
 
-            console.log(liftago);
+            console.log('pubs', pubs);
+            console.log('bar', nightclubs);
+            console.log('stops', stops);
+            console.log('parks', parks);
+            console.log('schools', schools);
+
+            var tags = ' ';
+            if (pubs[0].results.length > 10) {
+              tags += 'HOSPODA ';
+            }
+            if (nightclubs[0].results.length > 5) {
+              tags += 'PARTY ';
+            }
+            if (stops[0].results.length > 5) {
+              tags += 'MHD ';
+            }
+            if (parks[0].results.length > 0) {
+              tags += 'NATURE ';
+            }
+            if (schools[0].results.length > 2) {
+              tags += 'KIDS ';
+            }
+
+            html = html.replace('@@TAGS@@', tags);
+
             $('body').append(html);
           });
         });
