@@ -27,11 +27,11 @@ var _loadLiftago = function(locationFrom, locationTo) {
   '&dest=' + locationTo.lat + ',' + locationTo.lng);
 };
 
-var _loadTransitAvailibility = function(address) {
+var _loadAvailibility = function(travelMode, address) {
   const DESTINATIONS = 'Muzeum,Praha|Radlická 180/50, Praha'; // Node5 = Radlická 180/50, Praha
   const MAPS_API_BASE_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json';
 
-  var distanceMatrixApiUrl = MAPS_API_BASE_URL + '?origins=' + encodeURI(address) + '&destinations=' + encodeURI(DESTINATIONS) + '&mode=transit&language=cs&key=' + API_KEY;
+  var distanceMatrixApiUrl = MAPS_API_BASE_URL + '?origins=' + encodeURI(address) + '&destinations=' + encodeURI(DESTINATIONS) + '&mode=' + travelMode + '&language=cs&key=' + API_KEY;
   return $.get(distanceMatrixApiUrl);
 };
 
@@ -55,7 +55,8 @@ var _loadPanel = function(address) {
           var location = response.results[0].geometry.location;
           var liftagoP = _loadLiftago(location, NODE5_LOCATION);
           var liftagoFromMuzeumToP = _loadLiftago(MUZEUM_METRO_STATION_LOCATION, location);
-          var transitP = _loadTransitAvailibility(address);
+          var transitP = _loadAvailibility('transit', address);
+          var drivingP = _loadAvailibility('driving', address);
 
           var pubsP = _loadPlaces('restaurant', location, 500);
           var nightClubsP = _loadPlaces('night_club', location, 500);
@@ -67,19 +68,19 @@ var _loadPanel = function(address) {
           var noiseDayP = _loadNoise(location, false);
           var noiseNightP = _loadNoise(location, true);
 
-          $.when(liftagoP, liftagoFromMuzeumToP, transitP, pubsP, nightClubsP, stopsP, parkP, schoolP, zonesP, noiseDayP, noiseNightP)
-          .done(function(liftago, liftagoFromMuzeumTo, transit, pubs, nightClubs, stops, parks, schools, zones, noiseDay, noiseNight) {
+          $.when(liftagoP, liftagoFromMuzeumToP, transitP, drivingP, pubsP, nightClubsP, stopsP, parkP, schoolP, zonesP, noiseDayP, noiseNightP)
+          .done(function(liftago, liftagoFromMuzeumTo, transit, driving, pubs, nightClubs, stops, parks, schools, zones, noiseDay, noiseNight) {
             html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
 
-            var distancesArray = transit[0].rows[0].elements;
+            var transitDistancesArray = transit[0].rows[0].elements;
             console.log(transit[0]);
-            html = html.replace('@@DOJEZD_MUZEUM_MHD@@', distancesArray[0].duration.text);
-            html = html.replace('@@DOJEZD_NODE5_MHD@@', distancesArray[1].duration.text);
+            html = html.replace('@@DOJEZD_MUZEUM_MHD@@', transitDistancesArray[0].duration.text);
+            html = html.replace('@@DOJEZD_NODE5_MHD@@', transitDistancesArray[1].duration.text);
 
-            html = html.replace('@@DOJEZD_MUZEUM_CAR@@', distancesArray[0].duration.text);
-            html = html.replace('@@DOJEZD_NODE5_CAR@@', distancesArray[1].duration.text);
-
+            var drivingDistancesArray = driving[0].rows[0].elements;
+            html = html.replace(/@@MILEAGE_CAR_MUZEUM@@/g, drivingDistancesArray[0].duration.text);
+            html = html.replace(/@@MILEAGE_CAR_NODE5@@/g, drivingDistancesArray[1].duration.text);
 
             html = html.replace('@@ZONES@@', zones[0].count);
 
