@@ -48,7 +48,7 @@ var _loadPanel = function(address) {
           var liftagoFromMuzeumToP = _loadLiftago(MUZEUM_METRO_STATION_LOCATION, location);
           var transitP = _loadTransitAvailibility(address);
 
-          var pubsP = _loadPlaces('restaurant', location, 500);
+          var pubsP = _loadPlaces('restaurant', location, 1000);
           var nightClubsP = _loadPlaces('night_club', location, 500);
           var stopsP = _loadPlaces('transit_station', location, 400);
           var parkP = _loadPlaces('park', location, 600);
@@ -71,20 +71,20 @@ var _loadPanel = function(address) {
             console.log('schools', schools);
 
             var tags = ' ';
-            if (pubs[0].results.length > 10) {
-              tags += '<span class="tag">PUBS</span>';
+            if (pubs[0].results.length > 3) {
+              tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
             }
-            if (nightClubs[0].results.length > 5) {
-              tags += '<span class="tag">PARTY</span>';
+            if (nightClubs[0].results.length > 2) {
+              tags += '<span class="tag" title="Party time! At least 2 clubs close to property!">PARTY</span>';
             }
             if (stops[0].results.length > 3) {
-              tags += '<span class="tag" alt="At least 3 stops in close distance">Public Transit</span>';
+              tags += '<span class="tag" title="At least 3 stops in close distance">Public Transit</span>';
             }
             if (parks[0].results.length > 0) {
-              tags += '<span class="tag" alt="At least 1 park in neighbourhood">NATURE</span>';
+              tags += '<span class="tag" title="Greeeeen!! At least 1 park in neighbourhood">NATURE</span>';
             }
             if (schools[0].results.length > 2) {
-              tags += '<span class="tag" alt="Number of schools > 2 in neighbourhood">KIDS</span>';
+              tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood">KIDS</span>';
             }
 
             html = html.replace('@@TAGS@@', tags);

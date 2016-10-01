@@ -2,7 +2,7 @@
   position: fixed;
   top: 50px;
   right: 0;
-  min-width: 250px;
+  width: 350px;
   min-height: 200px;
   color: white;
   z-index: 1000000;
@@ -11,7 +11,12 @@
   -ms-transition: all 0.3s ease-in;
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
-  font-size: 0;
+  font-size: 0px;
+
+  a {
+    text-decoration: none;
+    color: white;
+  }
 
   .reality-panel-bg {
     border-radius: 5px 0 0 5px;
@@ -19,10 +24,26 @@
     padding: 20px 0;
     font-size: 18px;
     opacity: 0.9;
+    position: relative;
+  }
+
+  .header {
+    position: relative;
+    border-radius: 5px 5px 0 0;
+    width: 150px;
+    transform: rotate(-90deg);
+    top: 50px;
+    left: -90px;
+    background-color: #f44336;
+    h2 {
+      font-size: 13px;
+      padding: 10px;
+    }
   }
 
   h3 {
     padding: 10px;
+    font-size: 15px;
   }
 
   .content {
@@ -36,8 +57,9 @@
     .col {
       display: table-cell;
       min-width: 100px;
-      padding-left: 10px;
+      padding-left: 15px;
       padding-right: 10px;
+      font-size: 12px;
     }
 
     .text-right {
@@ -45,15 +67,19 @@
     }
 
     .tags {
-      padding-top: 10px;
+      padding-top: 20px;
 
       .tag {
         border-radius: 5px;
         padding: 5px;
         margin-right: 10px;
-        background-color: #aa1409;        
+        background-color: #aa1409;
         font-size: 10px;
       }
     }
   }
+}
+
+.reality-panel-closed {
+  right: -350px;
 }
