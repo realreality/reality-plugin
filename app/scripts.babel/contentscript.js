@@ -39,6 +39,10 @@ function _formatPrice(price) {
   return Math.round(price) + ' Kč';
 }
 
+var _loadParkingZones = function(location) {
+  return $.get('http://10.2.22.117:8080/rest/zones-count?lat=' + location.lat + '&lon=' + location.lng + '&dist=500');
+};
+
 var _loadPanel = function(address) {
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
 
@@ -48,14 +52,15 @@ var _loadPanel = function(address) {
           var liftagoFromMuzeumToP = _loadLiftago(MUZEUM_METRO_STATION_LOCATION, location);
           var transitP = _loadTransitAvailibility(address);
 
-          var pubsP = _loadPlaces('restaurant', location, 1000);
-          var nightClubsP = _loadPlaces('night_club', location, 500);
-          var stopsP = _loadPlaces('transit_station', location, 400);
-          var parkP = _loadPlaces('park', location, 600);
-          var schoolP = _loadPlaces('school', location, 1000);
+          var pubsP = _loadPlaces('restaurant', location);
+          var nightclubsP = _loadPlaces('night_club', location);
+          var stopsP = _loadPlaces('transit_station', location);
+          var parkP = _loadPlaces('park', location);
+          var schoolP = _loadPlaces('school', location);
+          var zonesP = _loadParkingZones(location);
 
-          $.when(liftagoP, liftagoFromMuzeumToP, transitP, pubsP, nightClubsP, stopsP, parkP, schoolP)
-          .done(function(liftago, liftagoFromMuzeumTo, transit, pubs, nightClubs, stops, parks, schools) {
+          $.when(liftagoP, transitP, pubsP, nightclubsP, stopsP, parkP, schoolP, zonesP)
+          .done(function(liftago, transit, pubs, nightclubs, stops, parks, schools, zones) {
             html = html.replace('@@HEADER@@', address.replace(/,.*/, ''));
             html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price))
@@ -64,11 +69,7 @@ var _loadPanel = function(address) {
             html = html.replace('@@DOJEZD_MUZEUM_MHD@@', distancesArray[0].duration.text);
             html = html.replace('@@DOJEZD_NODE5_MHD@@', distancesArray[1].duration.text);
 
-            console.log('pubs', pubs);
-            console.log('bar', nightClubs);
-            console.log('stops', stops);
-            console.log('parks', parks);
-            console.log('schools', schools);
+            html = html.replace('@@ZONES@@', zones[0].count);
 
             var tags = ' ';
             if (pubs[0].results.length > 3) {
