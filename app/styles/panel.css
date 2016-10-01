@@ -11,12 +11,12 @@
   -ms-transition: all 0.3s ease-in;
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
-  font-size: 0px; }
+  font-size: 0; }
   .reality-panel a {
     text-decoration: none;
     color: white; }
   .reality-panel .reality-panel-bg {
-    border-radius: 5px 0 0 5px;
+    border-radius: 0 0 0 5px;
     background-color: #f44336;
     padding: 20px 0;
     font-size: 18px;
@@ -27,15 +27,13 @@
     border-radius: 5px 5px 0 0;
     width: 150px;
     transform: rotate(-90deg);
-    top: 50px;
-    left: -90px;
-    background-color: #f44336; }
-    .reality-panel .header h2 {
-      font-size: 13px;
-      padding: 10px; }
+    top: 37px;
+    left: -92px;
+    background-color: #c2160a; }
+    .reality-panel .header h3 {
+      font-size: 13px; }
   .reality-panel h3 {
-    padding: 10px;
-    font-size: 15px; }
+    padding: 10px; }
   .reality-panel .content {
     display: table; }
     .reality-panel .content .row {
@@ -44,13 +42,12 @@
     .reality-panel .content .col {
       display: table-cell;
       min-width: 100px;
-      padding-left: 15px;
-      padding-right: 10px;
-      font-size: 12px; }
+      padding-left: 10px;
+      padding-right: 10px; }
     .reality-panel .content .text-right {
       text-align: right; }
     .reality-panel .content .tags {
-      padding-top: 20px; }
+      padding-top: 10px; }
       .reality-panel .content .tags .tag {
         border-radius: 5px;
         padding: 5px;
