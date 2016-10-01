@@ -1,9 +1,13 @@
 'use strict';
 
-var API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
-var NODE5 = {
+const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
+const NODE5_LOCATION = {
   lat: 50.0663614,
   lng: 14.4005557
+};
+const MUZEUM_METRO_STATION_LOCATION = {
+  lat: 50.0814746,
+  lng: 14.4302696
 };
 
 var _init = function() {
@@ -13,14 +17,14 @@ var _init = function() {
   $('head').append('<link rel="stylesheet" href="' + fontPath + '" type="text/css" />');
 };
 
-var _loadPlaces = function(type, location) {
+var _loadPlaces = function(type, location, radiusMeters) {
   return $.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + location.lat + ',' + location.lng +
-    '&radius=500&type='+ type +'&key=' + API_KEY);
+    '&radius=' + radiusMeters + '&type='+ type +'&key=' + API_KEY);
 };
 
-var _loadLiftago = function(location) {
-  return $.get('http://54.93.66.14:8000/api?t=1468582200&pickup='+ location.lat + ',' + location.lng +
-  '&dest=' + NODE5.lat + ',' + NODE5.lng);
+var _loadLiftago = function(locationFrom, locationTo) {
+  return $.get('http://54.93.66.14:8000/api?t=1468582200&pickup='+ locationFrom.lat + ',' + locationFrom.lng +
+  '&dest=' + locationTo.lat + ',' + locationTo.lng);
 };
 
 var _loadTransitAvailibility = function(address) {
@@ -31,51 +35,56 @@ var _loadTransitAvailibility = function(address) {
   return $.get(distanceMatrixApiUrl);
 };
 
+function _formatPrice(price) {
+  return Math.round(price) + ' Kč';
+}
+
 var _loadPanel = function(address) {
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
 
       $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY, function(response) {
           var location = response.results[0].geometry.location;
-          var liftagoP = _loadLiftago(location);
+          var liftagoP = _loadLiftago(location, NODE5_LOCATION);
+          var liftagoFromMuzeumToP = _loadLiftago(MUZEUM_METRO_STATION_LOCATION, location);
           var transitP = _loadTransitAvailibility(address);
 
-          var pubsP = _loadPlaces('restaurant', location);
-          var nightclubsP = _loadPlaces('night_club', location);
-          var stopsP = _loadPlaces('transit_station', location);
-          var parkP = _loadPlaces('park', location);
-          var schoolP = _loadPlaces('school', location);
+          var pubsP = _loadPlaces('restaurant', location, 500);
+          var nightClubsP = _loadPlaces('night_club', location, 500);
+          var stopsP = _loadPlaces('transit_station', location, 400);
+          var parkP = _loadPlaces('park', location, 600);
+          var schoolP = _loadPlaces('school', location, 1000);
 
-          $.when(liftagoP, transitP, pubsP, nightclubsP, stopsP, parkP, schoolP)
-          .done(function(liftago, transit, pubs, nightclubs, stops, parks, schools) {
+          $.when(liftagoP, liftagoFromMuzeumToP, transitP, pubsP, nightClubsP, stopsP, parkP, schoolP)
+          .done(function(liftago, liftagoFromMuzeumTo, transit, pubs, nightClubs, stops, parks, schools) {
             html = html.replace('@@HEADER@@', address.replace(/,.*/, ''));
-            html = html.replace('@@HOSPOD@@', pubs[0].results.length);
-            html = html.replace('@@LIFTAGO_NODE5@@', Math.round(liftago[0][0].price) + ' Kč');
+            html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
+            html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price))
 
             var distancesArray = transit[0].rows[0].elements;
             html = html.replace('@@DOJEZD_MUZEUM_MHD@@', distancesArray[0].duration.text);
             html = html.replace('@@DOJEZD_NODE5_MHD@@', distancesArray[1].duration.text);
 
             console.log('pubs', pubs);
-            console.log('bar', nightclubs);
+            console.log('bar', nightClubs);
             console.log('stops', stops);
             console.log('parks', parks);
             console.log('schools', schools);
 
             var tags = ' ';
             if (pubs[0].results.length > 10) {
-              tags += '<span class="tag">HOSPODA</span>';
+              tags += '<span class="tag">PUBS</span>';
             }
-            if (nightclubs[0].results.length > 5) {
+            if (nightClubs[0].results.length > 5) {
               tags += '<span class="tag">PARTY</span>';
             }
-            if (stops[0].results.length > 5) {
-              tags += '<span class="tag">MHD</span>';
+            if (stops[0].results.length > 3) {
+              tags += '<span class="tag" alt="At least 3 stops in close distance">Public Transit</span>';
             }
             if (parks[0].results.length > 0) {
-              tags += '<span class="tag">NATURE</span>';
+              tags += '<span class="tag" alt="At least 1 park in neighbourhood">NATURE</span>';
             }
             if (schools[0].results.length > 2) {
-              tags += '<span class="tag">KIDS</span>';
+              tags += '<span class="tag" alt="Number of schools > 2 in neighbourhood">KIDS</span>';
             }
 
             html = html.replace('@@TAGS@@', tags);
