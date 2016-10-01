@@ -47,7 +47,7 @@ var _loadPanel = function(address) {
 
           $.when(liftagoP, transitP, pubsP, nightclubsP, stopsP, parkP, schoolP)
           .done(function(liftago, transit, pubs, nightclubs, stops, parks, schools) {
-            html = html.replace('@@HEADER@@', address);
+            html = html.replace('@@HEADER@@', address.replace(/,.*/, ''));
             html = html.replace('@@HOSPOD@@', pubs[0].results.length);
             html = html.replace('@@LIFTAGO_NODE5@@', Math.round(liftago[0][0].price) + ' Kč');
 
