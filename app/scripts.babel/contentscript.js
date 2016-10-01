@@ -80,7 +80,7 @@ var _loadPanel = function(address) {
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
 
             var transitDistancesArray = transit[0].rows[0].elements;
-            console.log(transit[0]);
+            //console.log(transit[0]);
             html = html.replace('@@DOJEZD_MUZEUM_MHD@@', transitDistancesArray[0].duration.text);
             html = html.replace('@@DOJEZD_NODE5_MHD@@', transitDistancesArray[1].duration.text);
 
