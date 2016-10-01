@@ -29,7 +29,8 @@
     transform: rotate(-90deg);
     top: 37px;
     left: -92px;
-    background-color: #c2160a; }
+    background-color: #c2160a;
+    text-align: center; }
     .reality-panel .header h2 {
       font-size: 13px;
       padding: 10px; }
@@ -39,7 +40,10 @@
   .reality-panel .toggle-app-button {
     cursor: pointer; }
   .reality-panel .content {
-    display: table; }
+    display: table;
+    position: relative;
+    top: -50px;
+    margin-bottom: -50px; }
     .reality-panel .content .row {
       display: table-row;
       width: 100%; }

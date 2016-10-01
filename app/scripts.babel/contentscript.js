@@ -60,8 +60,7 @@ var _loadPanel = function(address) {
           var zonesP = _loadParkingZones(location, 500);
 
           $.when(liftagoP, liftagoFromMuzeumToP, transitP, pubsP, nightClubsP, stopsP, parkP, schoolP, zonesP)
-          .done(function(liftago, liftagoFromMuzeumTo, transit, pubs, nightClubs, stops, parks, schools, zones) {
-            html = html.replace('@@HEADER@@', address.replace(/,.*/, ''));
+          .done(function(liftago, liftagoFromMuzeumTo, transit, pubs, nightClubs, stops, parks, schools, zones) {            
             html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
 

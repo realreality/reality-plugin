@@ -6,7 +6,7 @@
   min-height: 200px;
   color: white;
   z-index: 1000000;
-  
+
   -webkit-transition: all 0.3s ease-in;
   -moz-transition: all 0.3s ease-in;
   -ms-transition: all 0.3s ease-in;
@@ -40,6 +40,7 @@
       font-size: 13px;
       padding: 10px;
     }
+    text-align: center;
   }
 
   h3 {
@@ -53,6 +54,9 @@
 
   .content {
     display: table;
+    position: relative;
+    top: -50px;
+    margin-bottom: -50px;
 
     .row {
       display: table-row;
