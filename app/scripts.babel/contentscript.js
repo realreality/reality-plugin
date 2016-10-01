@@ -52,12 +52,12 @@ var _loadPanel = function(address) {
           var liftagoFromMuzeumToP = _loadLiftago(MUZEUM_METRO_STATION_LOCATION, location);
           var transitP = _loadTransitAvailibility(address);
 
-          var pubsP = _loadPlaces('restaurant', location);
-          var nightClubsP = _loadPlaces('night_club', location);
-          var stopsP = _loadPlaces('transit_station', location);
-          var parkP = _loadPlaces('park', location);
-          var schoolP = _loadPlaces('school', location);
-          var zonesP = _loadParkingZones(location);
+          var pubsP = _loadPlaces('restaurant', location, 500);
+          var nightClubsP = _loadPlaces('night_club', location, 500);
+          var stopsP = _loadPlaces('transit_station', location, 400);
+          var parkP = _loadPlaces('park', location, 600);
+          var schoolP = _loadPlaces('school', location, 1000);
+          var zonesP = _loadParkingZones(location, 500);
 
           $.when(liftagoP, liftagoFromMuzeumToP, transitP, pubsP, nightClubsP, stopsP, parkP, schoolP, zonesP)
           .done(function(liftago, liftagoFromMuzeumTo, transit, pubs, nightClubs, stops, parks, schools, zones) {
@@ -66,8 +66,13 @@ var _loadPanel = function(address) {
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
 
             var distancesArray = transit[0].rows[0].elements;
+            console.log(transit[0]);
             html = html.replace('@@DOJEZD_MUZEUM_MHD@@', distancesArray[0].duration.text);
             html = html.replace('@@DOJEZD_NODE5_MHD@@', distancesArray[1].duration.text);
+
+            html = html.replace('@@DOJEZD_MUZEUM_CAR@@', distancesArray[0].duration.text);
+            html = html.replace('@@DOJEZD_NODE5_CAR@@', distancesArray[1].duration.text);
+
 
             html = html.replace('@@ZONES@@', zones[0].count);
 
@@ -79,13 +84,13 @@ var _loadPanel = function(address) {
               tags += '<span class="tag" title="Party time! At least 2 clubs close to property!">PARTY</span>';
             }
             if (stops[0].results.length > 3) {
-              tags += '<span class="tag" title="At least 3 stops in close distance">Public Transit</span>';
+              tags += '<span class="tag" title="At least 3 stops in close distance.">PUBLIC TRANSIT</span>';
             }
             if (parks[0].results.length > 0) {
-              tags += '<span class="tag" title="Greeeeen!! At least 1 park in neighbourhood">NATURE</span>';
+              tags += '<span class="tag" title="Greeeeen!! At least 1 park in neighbourhood.">NATURE</span>';
             }
             if (schools[0].results.length > 2) {
-              tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood">KIDS</span>';
+              tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood.">KIDS</span>';
             }
 
             html = html.replace('@@TAGS@@', tags);
