@@ -1,14 +1,8 @@
 # Real Reality
 
-In the end Real Reality could be a page where you can see
-mashup of real estate offers and interesting data like
-public transport availability, noise, air pollution, parking zones, kids friendliness...you name it.
+When you want to buy or rent an apparment (house) you do (or should do) research about things that matter for you. Air pollution, parking, public transport availibility (commutation time!), air pollution, noisiness...you name it. But it is unfortunately very time consuming. Until now! Now you've got our beautiful Chrome extension which do all the research for you. Well at least some part of research :)
 
-You do (or should do) this kind of research by yourself before you
-buy or rent a house/flat. But it is very very time consuming. Until now! Now you've got our Chrome extension which do research for you.
-
-Right now we created a Chrome Extension (it's not in the Chrome Web Store yet) to quickly create a proof of concept of this idea.
-
+Original idea was that Real Reality will be webpage where you can see mashup of real estate offers and interesting data (see above). But it's more work and we want to just show proof of concept before next steps, so we choose to create Chrome extension first (sorry it's not in the Chrome Web Store yet!).
 
 ## What to do next? ##
 
