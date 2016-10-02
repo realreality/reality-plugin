@@ -76,7 +76,7 @@ var _getAirQuality = function(airQualityNum) {
   }
 
   return airQuality;
-}
+};
 
 var _getNoiseLevelAsText = function(noiseLevels) {
   // http://www.converter.cz/tabulky/hluk.htm
