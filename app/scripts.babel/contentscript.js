@@ -1,6 +1,8 @@
 'use strict';
 
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
+const IPR_REST_API = 'http://10.2.22.117:8080/rest';
+
 const NODE5_LOCATION = {
   lat: 50.0663614,
   lng: 14.4005557
@@ -23,11 +25,13 @@ var _loadPlaces = function(type, location, radiusMeters) {
 };
 
 var _loadLiftago = function(locationFrom, locationTo) {
+  // TODO: najit spravny cas pro data
   return $.get('http://54.93.66.14:8000/api?t=1468582200&pickup='+ locationFrom.lat + ',' + locationFrom.lng +
   '&dest=' + locationTo.lat + ',' + locationTo.lng);
 };
 
 var _loadAvailibility = function(travelMode, address) {
+  // TODO: nastavit spravny cas, respektive udelat jeste nocni casy
   const DESTINATIONS = 'Muzeum,Praha|Radlická 180/50, Praha'; // Node5 = Radlická 180/50, Praha
   const MAPS_API_BASE_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json';
 
@@ -40,15 +44,15 @@ function _formatPrice(price) {
 }
 
 var _loadParkingZones = function(location) {
-  return $.get('http://10.2.22.117:8080/rest/zones-count?lat=' + location.lat + '&lon=' + location.lng + '&dist=500');
+  return $.get(IPR_REST_API + '/zones-count?lat=' + location.lat + '&lon=' + location.lng + '&dist=500');
 };
 
 var _loadNoise = function(location, night) {
-  return $.get('http://10.2.22.117:8080/rest/noise?lat=' + location.lat + '&lon=' + location.lng + '&dist=500' + '&at-night=' + night);
+  return $.get(IPR_REST_API + '/noise?lat=' + location.lat + '&lon=' + location.lng + '&dist=500' + '&at-night=' + night);
 };
 
 var _loadAir = function(location) {
-  return $.get('http://10.2.22.117:8080/rest/atmosphere?lat=' + location.lat + '&lon=' + location.lng);
+  return $.get(IPR_REST_API + '/atmosphere?lat=' + location.lat + '&lon=' + location.lng);
 };
 
 var _getAirQuality = function(airQualityNum) {
@@ -122,7 +126,7 @@ var _loadPanel = function(address) {
             var drivingDistancesArray = driving[0].rows[0].elements;
             html = html.replace(/@@MILEAGE_CAR_MUZEUM@@/g, drivingDistancesArray[0].duration.text);
             html = html.replace(/@@MILEAGE_CAR_NODE5@@/g, drivingDistancesArray[1].duration.text);
-          
+
             // noise levels
             var noiseDayLevel = _getNoiseLevelAsText(noiseDay[0]);
             var noiseNightLevel = _getNoiseLevelAsText(noiseNight[0]);
