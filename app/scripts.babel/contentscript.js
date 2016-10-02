@@ -49,8 +49,37 @@ var _loadNoise = function(location, night) {
 
 var _loadAir = function(location) {
   return $.get('http://10.2.22.117:8080/rest/atmosphere?lat=' + location.lat + '&lon=' + location.lng);
-
 };
+
+var _getAirQuality = function(airQualityNum) {
+  var airQuality = 'Very bad';
+  if (airQualityNum === 5) {
+    airQuality = 'Bad';
+  } else if (airQualityNum === 4) {
+    airQuality = 'Acceptable';
+  } else if (airQualityNum === 3) {
+    airQuality = 'Mediocre';
+  } else if (airQualityNum === 2) {
+    airQuality = 'Good';
+  } else if (airQualityNum === 1) {
+    airQuality = 'Very Good';
+  }
+
+  return airQuality;
+}
+
+var _getNoiseLevelAsText = function(noiseLevels) {
+  // http://www.converter.cz/tabulky/hluk.htm
+  var highValue = noiseLevels['db-high'];
+
+  switch (true) {
+    case (highValue >= 70): return 'Very High !!!';
+    case (highValue >= 60): return 'High !';
+    case (highValue >= 50): return 'Moderate';
+    case (highValue >= 30): return 'Low';
+    case (highValue < 30): return 'Very Low';
+  }
+}
 
 var _loadPanel = function(address) {
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
@@ -74,42 +103,38 @@ var _loadPanel = function(address) {
 
           var airP = _loadAir(location);
 
-          $.when(liftagoP, liftagoFromMuzeumToP, transitP, drivingP, pubsP, nightClubsP, stopsP, parkP, schoolP, zonesP, noiseDayP, noiseNightP, airP)
-          .done(function(liftago, liftagoFromMuzeumTo, transit, driving, pubs, nightClubs, stops, parks, schools, zones, noiseDay, noiseNight, air) {
+          $.when(
+             liftagoP, liftagoFromMuzeumToP, transitP, drivingP, pubsP, nightClubsP, stopsP, parkP,
+             schoolP, zonesP, noiseDayP, noiseNightP, airP)
+          .done(function(
+                    liftago, liftagoFromMuzeumTo, transit, driving, pubs, nightClubs, stops, parks,
+                    schools, zones, noiseDay, noiseNight, air) {
+
+            // liftago
             html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
 
+            // distances
             var transitDistancesArray = transit[0].rows[0].elements;
-            //console.log(transit[0]);
             html = html.replace('@@DOJEZD_MUZEUM_MHD@@', transitDistancesArray[0].duration.text);
             html = html.replace('@@DOJEZD_NODE5_MHD@@', transitDistancesArray[1].duration.text);
 
             var drivingDistancesArray = driving[0].rows[0].elements;
             html = html.replace(/@@MILEAGE_CAR_MUZEUM@@/g, drivingDistancesArray[0].duration.text);
             html = html.replace(/@@MILEAGE_CAR_NODE5@@/g, drivingDistancesArray[1].duration.text);
-
-            html = html.replace('@@ZONES@@', zones[0].count);
-
-            var noiseDayLevel = noiseDay[0]['db-high'] > 55 ? 'High':'Moderate';
-            var noiseNightLevel = noiseNight[0]['db-high'] > 55 ? 'High':'Moderate';
+          
+            // noise levels
+            var noiseDayLevel = _getNoiseLevelAsText(noiseDay[0]);
+            var noiseNightLevel = _getNoiseLevelAsText(noiseNight[0]);
 
             html = html.replace('@@NOISE_DAY@@', noiseDayLevel + '<br> ' + noiseDay[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
             html = html.replace('@@NOISE_NIGHT@@', noiseNightLevel + '<br> ' + noiseNight[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
 
+            // air quality
             var airQualityNum = air[0].value;
-            var airQuality = 'Very good';
-            if (airQualityNum === 5) {
-              airQuality = 'Bad';
-            } else if (airQualityNum === 4) {
-              airQuality = 'Worse';
-            } else if (airQualityNum === 3) {
-              airQuality = 'Acceptable';
-            } else if (airQualityNum === 2) {
-              airQuality = 'Good';
-            }
+            html = html.replace('@@AIR@@', _getAirQuality(airQualityNum));
 
-            html = html.replace('@@AIR@@', airQuality);
-
+            // tags
             var tags = ' ';
             if (pubs[0].results.length > 3) {
               tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
@@ -129,6 +154,7 @@ var _loadPanel = function(address) {
 
             html = html.replace('@@TAGS@@', tags);
 
+            // INJECT PANEL
             $('body').append(html);
 
             $('.reality-panel .toggle-app-button').on('click', function() {
