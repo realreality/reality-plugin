@@ -6,11 +6,11 @@
     <div class="content">
 
       <div class="row">
-        <h3>Public transit</h3>
+        <h3>Public Transit</h3>
       </div>
       <div class="row">
         <div class="col">
-          To Muzeum
+          Muzeum
         </div>
         <div class="col text-right">
           @@DOJEZD_MUZEUM_MHD@@
@@ -18,7 +18,7 @@
       </div>
       <div class="row">
         <div class="col">
-          To Node5
+          Node5
         </div>
         <div class="col text-right">
           @@DOJEZD_NODE5_MHD@@
@@ -28,15 +28,7 @@
 
 
       <div class="row">
-        <h3>Drive Info</h3>
-      </div>
-      <div class="row">
-        <div class="col">
-           Node5
-        </div>
-        <div class="col text-right">
-          @@MILEAGE_CAR_NODE5@@
-        </div>
+        <h3>Travel By Car</h3>
       </div>
       <div class="row">
         <div class="col">
@@ -46,29 +38,35 @@
           @@MILEAGE_CAR_MUZEUM@@
         </div>
       </div>
-
-
-      <div class="row">
-        <h3>Liftago prices</h3>
-      </div>
       <div class="row">
         <div class="col">
-           To Node5
+           Node5
         </div>
         <div class="col text-right">
-          @@LIFTAGO_NODE5@@<br>@@MILEAGE_CAR_NODE5@@
+          @@MILEAGE_CAR_NODE5@@
         </div>
+      </div>
+
+
+      <div class="row">
+        <!-- <img src="https://www.liftago.com/sites/default/files/logo-160x99.png" width="24" height="60"/>L -->
+        <h3>Liftago</h3>
       </div>
       <div class="row">
         <div class="col">
-           From Muzeum
+           Muzeum -> @@ADDRESS@@
         </div>
         <div class="col text-right">
           @@LIFTAGO_FROM_MUZEUM@@<br>@@MILEAGE_CAR_MUZEUM@@
         </div>
       </div>
       <div class="row">
-        <h3>Location</h3>
+        <div class="col">
+          @@ADDRESS@@ -> Node5
+        </div>
+        <div class="col text-right">
+          @@LIFTAGO_NODE5@@<br>@@MILEAGE_CAR_NODE5@@
+        </div>
       </div>
 
 
@@ -76,10 +74,10 @@
         <h3>Noise</h3>
       </div>
       <div class="row">
-        <div class="col">
+        <div class="col" title="Noise during the day.">
           <i class="fa fa-sun-o" aria-hidden="true"></i> @@NOISE_DAY@@
         </div>
-        <div class="col text-right">
+        <div class="col text-right" title="Noise during the night.">
           <i class="fa fa-moon-o" aria-hidden="true"></i> @@NOISE_NIGHT@@
         </div>
       </div>
@@ -106,6 +104,6 @@
       </div>
     </div>
 
-    
+
   </div>
 </div>

@@ -1,7 +1,7 @@
 'use strict';
 
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
-const IPR_REST_API = 'http://10.2.22.117:8080/rest';
+const IPR_REST_API = 'http://40.77.23.168/realreality/rest';
 
 const NODE5_LOCATION = {
   lat: 50.0663614,
@@ -12,9 +12,10 @@ const MUZEUM_METRO_STATION_LOCATION = {
   lng: 14.4302696
 };
 
-var _init = function() {
+var _addStylesAndFonts = function() {
   var cssPath = chrome.extension.getURL('/styles/panel.css');
   $('head').append('<link rel="stylesheet" href="' + cssPath + '" type="text/css" />');
+
   var fontPath = chrome.extension.getURL('bower_components/font-awesome/css/font-awesome.min.css');
   $('head').append('<link rel="stylesheet" href="' + fontPath + '" type="text/css" />');
 };
@@ -62,7 +63,7 @@ var _getAirQuality = function(airQualityNum) {
   if (airQualityNum === 5) {
     airQuality = 'Bad :(';
   } else if (airQualityNum === 4) {
-    airQuality = 'Not Good';
+    airQuality = 'Not Good !';
   } else if (airQualityNum === 3) {
     airQuality = 'Acceptable';
   } else if (airQualityNum === 2) {
@@ -80,7 +81,7 @@ var _getNoiseLevelAsText = function(noiseLevels) {
 
   switch (true) {
     case (highValue >= 70): return 'Very High !!!';
-    case (highValue >= 60): return 'High !';
+    case (highValue >= 60): return 'High !!';
     case (highValue >= 50): return 'Moderate';
     case (highValue >= 30): return 'Low';
     case (highValue < 30): return 'Very Low';
@@ -116,7 +117,10 @@ var _loadPanel = function(address) {
                     liftago, liftagoFromMuzeumTo, transit, driving, pubs, nightClubs, stops, parks,
                     schools, zones, noiseDay, noiseNight, air) {
 
+            html = html.replace(/@@ADDRESS@@/g, address.indexOf(',') > 0 ? address.split(',')[0] : address);
+
             // liftago
+            // TODO: pridat casy dojezdu jako liftago cas cesty + cas cekani
             html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
 
@@ -173,6 +177,8 @@ var _loadPanel = function(address) {
 };
 
 window.addEventListener('load', function() {
-  _init();
-  _loadPanel($('h2').first().text());
+  _addStylesAndFonts();
+
+  var addressOfProperty = $('h2').first().text();
+  _loadPanel(addressOfProperty);
 });
