@@ -151,13 +151,13 @@ var _loadPanel = function(address) {
               tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
             }
             if (nightClubs[0].results.length > 2) {
-              tags += '<span class="tag" title="Party time! At least 2 clubs close to property!">PARTY</span>';
+              tags += '<span class="tag" title="Party time! At least 2 clubs close to the property!">PARTY</span>';
             }
             if (stops[0].results.length > 3) {
               tags += '<span class="tag" title="At least 3 stops in close distance.">PUBLIC&nbsp;TRANSIT</span>';
             }
             if (parks[0].results.length > 0) {
-              tags += '<span class="tag" title="Greeeeen!! At least 1 park in neighbourhood.">NATURE</span>';
+              tags += '<span class="tag" title="Greeeeen!! At least 1 park in the neighbourhood.">NATURE</span>';
             }
             if (schools[0].results.length > 2) {
               tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood.">KIDS</span>';
