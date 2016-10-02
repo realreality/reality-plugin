@@ -1,7 +1,8 @@
 'use strict';
 
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
-const IPR_REST_API = 'http://40.77.23.168/realreality/rest';
+const IPR_REST_API = 'http://realreality-app.azurewebsites.net/realreality/rest';
+// const IPR_REST_API = 'http://10.2.22.117:8081/realreality/rest'; /* node5 network Ivosh's dev server */
 
 const NODE5_LOCATION = {
   lat: 50.0663614,
@@ -59,17 +60,17 @@ var _loadAir = function(location) {
 var _getAirQuality = function(airQualityNum) {
  /*  Definice: Klasifikace klimatologické charakteristiky 1 = velmi dobrá 2 = dobrá 3 = přijatelná 4 = zhoršená 5 = špatná  */
 
-  var airQuality = 'Very bad'; // for case api will add something worse than 5 ;)
+  var airQuality = 'Very bad !!!'; // for case api will add something worse than 5 ;)
   if (airQualityNum === 5) {
     airQuality = 'Bad :(';
   } else if (airQualityNum === 4) {
-    airQuality = 'Not Good !';
+    airQuality = 'Not good';
   } else if (airQualityNum === 3) {
     airQuality = 'Acceptable';
   } else if (airQualityNum === 2) {
     airQuality = 'Good';
   } else if (airQualityNum === 1) {
-    airQuality = 'Very Good';
+    airQuality = 'Very good';
   }
 
   return airQuality;
@@ -80,11 +81,11 @@ var _getNoiseLevelAsText = function(noiseLevels) {
   var highValue = noiseLevels['db-high'];
 
   switch (true) {
-    case (highValue >= 70): return 'Very High !!!';
-    case (highValue >= 60): return 'High !!';
+    case (highValue >= 70): return 'Very high !!!';
+    case (highValue >= 60): return 'High';
     case (highValue >= 50): return 'Moderate';
     case (highValue >= 30): return 'Low';
-    case (highValue < 30): return 'Very Low';
+    case (highValue < 30): return 'Very low';
   }
 }
 
@@ -104,7 +105,7 @@ var _loadPanel = function(address) {
           var parkP = _loadPlaces('park', location, 600);
           var schoolP = _loadPlaces('school', location, 1000);
 
-          var zonesP = _loadParkingZones(location, 500);
+          var zonesP = _loadParkingZones(location, 1000);
           var noiseDayP = _loadNoise(location, false);
           var noiseNightP = _loadNoise(location, true);
 
@@ -115,7 +116,7 @@ var _loadPanel = function(address) {
              schoolP, zonesP, noiseDayP, noiseNightP, airP)
           .done(function(
                     liftago, liftagoFromMuzeumTo, transit, driving, pubs, nightClubs, stops, parks,
-                    schools, zones, noiseDay, noiseNight, air) {
+                    schools, zonesResult, noiseDay, noiseNight, air) {
 
             html = html.replace(/@@ADDRESS@@/g, address.indexOf(',') > 0 ? address.split(',')[0] : address);
 
@@ -161,6 +162,30 @@ var _loadPanel = function(address) {
             if (schools[0].results.length > 2) {
               tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood.">KIDS</span>';
             }
+
+            // parking zone tags
+            var zones = zonesResult[0];
+            if (zones.length > 0) {
+
+              /*
+               Description of type values - see on the very end of the page
+               http://www.geoportalpraha.cz/cs/fulltext_geoportal?id=BBDE6394-B0E1-4E8B-A656-DD69CA2EB0F8#.V_Da1HV97eR
+               */
+
+              var closeBlueZones = zones.filter(pz => { return pz.dist <= 100 /*m*/ && pz.type === 'M' /* Modra - blue zone = parking only for residents */ });
+              if (closeBlueZones.length > 0) {
+                  tags += '<span class="tag" title="There are blue parking zones around the property. It means that only residents can park here.">RESIDENT PARKING</span>';
+
+                  if (zones.filter(pz => { return pz.dist < 600 && pz.type === 'Z' }).length > 0) {
+                    tags += '<span class="tag" title="Free parking available (ie. green zones) in close distance.">FREE PARKING</span>';
+                  }
+
+                  if (zones.filter(pz => { return pz.dist < 600 && /^M$|^SO$|^SM$/.test(pz.type) }).length > 0) {
+                    tags += '<span class="tag" title="Paid parking available (ie. orange zones or some combined ones) in close distance.">PAID PARKING</span>';
+                  }
+              };
+
+            };
 
             html = html.replace('@@TAGS@@', tags);
 
