@@ -87,7 +87,19 @@ var _getNoiseLevelAsText = function(noiseLevels) {
     case (highValue >= 30): return 'Low';
     case (highValue < 30): return 'Very low';
   }
-}
+};
+
+var _formatLiftagoTime = function(timeInSeconds) {
+    var timeInMinutes = Math.round(timeInSeconds / 60);
+
+    if (timeInMinutes >= 60) {
+      var hours = Math.round(timeInMinutes / 60);
+      var minutes = timeInMinutes % 60;
+      return hours + ' h ' + minutes + ' min';
+    } else {
+      return timeInMinutes + ' min';
+    }
+};
 
 var _loadPanel = function(address) {
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
@@ -121,9 +133,10 @@ var _loadPanel = function(address) {
             html = html.replace(/@@ADDRESS@@/g, address.indexOf(',') > 0 ? address.split(',')[0] : address);
 
             // liftago
-            // TODO: pridat casy dojezdu jako liftago cas cesty + cas cekani
             html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
+            html = html.replace('@@LIFTAGO_NODE5_TIME@@', _formatLiftagoTime(liftago[0][0].duration + Math.abs(liftago[0][0].eta)));
             html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
+            html = html.replace('@@LIFTAGO_FROM_MUZEUM_TIME@@', _formatLiftagoTime(liftagoFromMuzeumTo[0][0].duration + Math.abs(liftago[0][0].eta)));
 
             // distances
             var transitDistancesArray = transit[0].rows[0].elements;
@@ -176,11 +189,7 @@ var _loadPanel = function(address) {
               if (closeBlueZones.length > 0) {
                   tags += '<span class="tag" title="There are blue parking zones around the property. It means that only residents can park here.">RESIDENT PARKING</span>';
 
-                  if (zones.filter(pz => { return pz.dist < 600 && pz.type === 'Z' }).length > 0) {
-                    tags += '<span class="tag" title="Free parking available (ie. green zones) in close distance.">FREE PARKING</span>';
-                  }
-
-                  if (zones.filter(pz => { return pz.dist < 600 && /^M$|^SO$|^SM$/.test(pz.type) }).length > 0) {
+                  if (zones.filter(pz => { return pz.dist < 600 && pz.type !== 'M' }).length > 0) {
                     tags += '<span class="tag" title="Paid parking available (ie. orange zones or some combined ones) in close distance.">PAID PARKING</span>';
                   }
               };
