@@ -56,13 +56,15 @@ var _loadAir = function(location) {
 };
 
 var _getAirQuality = function(airQualityNum) {
-  var airQuality = 'Very bad';
+ /*  Definice: Klasifikace klimatologické charakteristiky 1 = velmi dobrá 2 = dobrá 3 = přijatelná 4 = zhoršená 5 = špatná  */
+
+  var airQuality = 'Very bad'; // for case api will add something worse than 5 ;)
   if (airQualityNum === 5) {
-    airQuality = 'Bad';
+    airQuality = 'Bad :(';
   } else if (airQualityNum === 4) {
-    airQuality = 'Acceptable';
+    airQuality = 'Not Good';
   } else if (airQualityNum === 3) {
-    airQuality = 'Mediocre';
+    airQuality = 'Acceptable';
   } else if (airQualityNum === 2) {
     airQuality = 'Good';
   } else if (airQualityNum === 1) {
