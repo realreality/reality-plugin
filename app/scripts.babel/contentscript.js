@@ -1,5 +1,7 @@
 'use strict';
 
+console.log('Real Reality contentscript loaded');
+
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
 const IPR_REST_API = 'http://realreality-app.azurewebsites.net/realreality/rest';
 // const IPR_REST_API = 'http://10.2.22.117:8081/realreality/rest'; /* node5 network Ivosh's dev server */
@@ -185,16 +187,16 @@ var _loadPanel = function(address) {
                http://www.geoportalpraha.cz/cs/fulltext_geoportal?id=BBDE6394-B0E1-4E8B-A656-DD69CA2EB0F8#.V_Da1HV97eR
                */
 
-              var closeBlueZones = zones.filter(pz => { return pz.dist <= 100 /*m*/ && pz.type === 'M' /* Modra - blue zone = parking only for residents */ });
+              var closeBlueZones = zones.filter(pz => { return pz.dist <= 100 /*m*/ && pz.type === 'M'; /* Modra - blue zone = parking only for residents */ });
               if (closeBlueZones.length > 0) {
                   tags += '<span class="tag" title="There are blue parking zones around the property. It means that only residents can park here.">RESIDENT PARKING</span>';
 
-                  if (zones.filter(pz => { return pz.dist < 600 && pz.type !== 'M' }).length > 0) {
+                  if (zones.filter(pz => { return pz.dist < 600 && pz.type !== 'M'; }).length > 0) {
                     tags += '<span class="tag" title="Paid parking available (ie. orange zones or some combined ones) in close distance.">PAID PARKING</span>';
                   }
-              };
+              }
 
-            };
+            }
 
             html = html.replace('@@TAGS@@', tags);
 
@@ -211,12 +213,11 @@ var _loadPanel = function(address) {
 };
 
 window.addEventListener('load', function() {
-  $.ajaxSetup({
-    timeout: 500
-  });
+  console.log('Real Reality: page load event called');
 
   _addStylesAndFonts();
 
   var addressOfProperty = $('h2').first().text();
+  console.debug('Real Reality: address parsed: ', addressOfProperty);
   _loadPanel(addressOfProperty);
 });
