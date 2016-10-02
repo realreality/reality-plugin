@@ -211,6 +211,10 @@ var _loadPanel = function(address) {
 };
 
 window.addEventListener('load', function() {
+  $.ajaxSetup({
+    timeout: 500
+  });
+
   _addStylesAndFonts();
 
   var addressOfProperty = $('h2').first().text();
