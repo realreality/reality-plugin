@@ -1,8 +1,8 @@
 {
-  "name": "__MSG_appName__",
-  "version": "0.0.1",
+  "name": "Real Reality",
+  "version": "0.0.5",
   "manifest_version": 2,
-  "description": "__MSG_appDescription__",
+  "description": "Adds little side panel to bezrealitky.cz which shows you quality of location (commutation times, air pollution, noisiness..etc.)",
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"
@@ -45,7 +45,7 @@
       "19": "images/icon-19.png",
       "38": "images/icon-38.png"
     },
-    "default_title": "reality",
+    "default_title": "Real Reality",
     "default_popup": "popup.html"
   }
 }

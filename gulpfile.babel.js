@@ -3,7 +3,7 @@ import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import del from 'del';
 import runSequence from 'run-sequence';
-import {stream as wiredep} from 'wiredep';
+import {stream as wiredep} from 'wiredep'; /* Wire Bower Dependencies */
 
 var sass = require('gulp-sass');
 
@@ -13,13 +13,16 @@ gulp.task('extras', () => {
   return gulp.src([
     'app/*.*',
     'app/_locales/**',
+    'app/bower_components/font-awesome/**', /* bad solution, TODO: findout how to make it work correctly with wiredep */
+    'app/styles/*.css',
     '!app/scripts.babel',
     '!app/*.json',
-    '!app/*.html',
+    '!app/*.html'
   ], {
     base: 'app',
     dot: true
-  }).pipe(gulp.dest('dist'));
+  })
+  .pipe(gulp.dest('dist'));
 });
 
 function lint(files, options) {
@@ -67,19 +70,30 @@ gulp.task('chromeManifest', () => {
   return gulp.src('app/manifest.json')
     .pipe($.chromeManifest({
       buildnumber: true,
-      background: {
+      /*background: {
         target: 'scripts/background.js',
         exclude: [
           'scripts/chromereload.js'
         ]
-      }
+      }*/
   }))
+  .pipe($.debug({title: 'files from chromeManifest:'}))
   .pipe($.if('*.css', $.cleanCss({compatibility: '*'})))
   .pipe($.if('*.js', $.sourcemaps.init()))
   .pipe($.if('*.js', $.uglify()))
   .pipe($.if('*.js', $.sourcemaps.write('.')))
   .pipe(gulp.dest('dist'));
 });
+//
+// gulp.task('res', function() {
+//   const manifest = require('manifest.json');
+//   return gulp.src(manifest.web_accessible_resource).
+//         .pipe(gulpif('*.css', cssmin()))
+//         .pipe(gulpif('*.js', sourcemaps.init()))
+//         .pipe(gulpif('*.js', uglify()))
+//         .pipe(gulpif('*.js', sourcemaps.write()))
+//         .pipe(gulp.dest('dist'));
+// });
 
 gulp.task('babel', () => {
   return gulp.src('app/scripts.babel/**/*.js')
@@ -123,13 +137,15 @@ gulp.task('wiredep', () => {
     .pipe(wiredep({
       ignorePath: /^(\.\.\/)*\.\./
     }))
+    .pipe($.debug({title: 'wiredep:'}))
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('package', function () {
+
+gulp.task('package', ['build'], function () {
   var manifest = require('./dist/manifest.json');
   return gulp.src('dist/**')
-      .pipe($.zip('reality-' + manifest.version + '.zip'))
+      .pipe($.zip('real-reality-' + manifest.version + '.zip'))
       .pipe(gulp.dest('package'));
 });
 

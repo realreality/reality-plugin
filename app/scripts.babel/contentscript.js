@@ -3,8 +3,7 @@
 console.log('Real Reality contentscript loaded');
 
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
-const IPR_REST_API = 'http://realreality-app.azurewebsites.net/realreality/rest';
-// const IPR_REST_API = 'http://10.2.22.117:8081/realreality/rest'; /* node5 network Ivosh's dev server */
+const IPR_REST_API = 'https://realreality-app.azurewebsites.net/realreality/rest';
 
 const NODE5_LOCATION = {
   lat: 50.0663614,
@@ -108,8 +107,8 @@ var _loadPanel = function(address) {
 
       $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY, function(response) {
           var location = response.results[0].geometry.location;
-          var liftagoP = _loadLiftago(location, NODE5_LOCATION);
-          var liftagoFromMuzeumToP = _loadLiftago(MUZEUM_METRO_STATION_LOCATION, location);
+          // var liftagoP = _loadLiftago(location, NODE5_LOCATION);
+          // var liftagoFromMuzeumToP = _loadLiftago(MUZEUM_METRO_STATION_LOCATION, location);
           var transitP = _loadAvailibility('transit', address);
           var drivingP = _loadAvailibility('driving', address);
 
@@ -126,19 +125,19 @@ var _loadPanel = function(address) {
           var airP = _loadAir(location);
 
           $.when(
-             liftagoP, liftagoFromMuzeumToP, transitP, drivingP, pubsP, nightClubsP, stopsP, parkP,
+             /*liftagoP, liftagoFromMuzeumToP,*/ transitP, drivingP, pubsP, nightClubsP, stopsP, parkP,
              schoolP, zonesP, noiseDayP, noiseNightP, airP)
           .done(function(
-                    liftago, liftagoFromMuzeumTo, transit, driving, pubs, nightClubs, stops, parks,
+                    /*liftago, liftagoFromMuzeumTo,*/ transit, driving, pubs, nightClubs, stops, parks,
                     schools, zonesResult, noiseDay, noiseNight, air) {
 
             html = html.replace(/@@ADDRESS@@/g, address.indexOf(',') > 0 ? address.split(',')[0] : address);
 
             // liftago
-            html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
-            html = html.replace('@@LIFTAGO_NODE5_TIME@@', _formatLiftagoTime(liftago[0][0].duration + Math.abs(liftago[0][0].eta)));
-            html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
-            html = html.replace('@@LIFTAGO_FROM_MUZEUM_TIME@@', _formatLiftagoTime(liftagoFromMuzeumTo[0][0].duration + Math.abs(liftago[0][0].eta)));
+            // html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
+            // html = html.replace('@@LIFTAGO_NODE5_TIME@@', _formatLiftagoTime(liftago[0][0].duration + Math.abs(liftago[0][0].eta)));
+            // html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
+            // html = html.replace('@@LIFTAGO_FROM_MUZEUM_TIME@@', _formatLiftagoTime(liftagoFromMuzeumTo[0][0].duration + Math.abs(liftago[0][0].eta)));
 
             // distances
             var transitDistancesArray = transit[0].rows[0].elements;
