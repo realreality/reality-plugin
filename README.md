@@ -23,5 +23,6 @@ Original idea was that Real Reality will be webpage where you can see mashup of 
 1. git commit -m "my new great addition!"
 1. git push
 
+Quick and dirty backend source code is [here](https://github.com/bedla/praguehacks-realreality).
 Main script is in **/app/scripts.babel/contentscript.js** (this is transpiled from ES6 -> ES5 by babel to placed in /app/scripts directory).
 This is quick'n'dirty solution so don't cry please :)
