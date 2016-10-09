@@ -2,7 +2,7 @@
 <div class="reality-panel">
   <div class="reality-panel-bg">
     <div class="header">
-      <h2 class="toggle-app-button"><i class="fa fa-home" aria-hidden="true"></i> Real Reality</h2>
+      <h2 class="toggle-app-button" v-on:click="toggleWidget"><i class="fa fa-home" aria-hidden="true"></i> Real Reality</h2>
     </div>
     <div class="content">
 
@@ -14,7 +14,7 @@
           Muzeum
         </div>
         <div class="col text-right">
-          @@DOJEZD_MUZEUM_MHD@@
+          {{ distance.transit.muzeum }}
         </div>
       </div>
       <div class="row">
@@ -22,10 +22,9 @@
           Node5
         </div>
         <div class="col text-right">
-          @@DOJEZD_NODE5_MHD@@
+          {{ distance.transit.node5 }}
         </div>
       </div>
-
 
 
       <div class="row">
@@ -36,7 +35,7 @@
            Muzeum
         </div>
         <div class="col text-right">
-          @@MILEAGE_CAR_MUZEUM@@
+          {{ distance.driving.muzeum }}
         </div>
       </div>
       <div class="row">
@@ -44,43 +43,39 @@
            Node5
         </div>
         <div class="col text-right">
-          @@MILEAGE_CAR_NODE5@@
+          {{ distance.driving.node5 }}
         </div>
       </div>
 
-
-      <!--
       <div class="row">
-
         <h3>Liftago</h3>
       </div>
       <div class="row">
         <div class="col">
-           Muzeum &rarr; @@ADDRESS@@
+           Muzeum &rarr; {{ address | street-name }}
         </div>
         <div class="col text-right">
-          @@LIFTAGO_FROM_MUZEUM@@<br>@@LIFTAGO_FROM_MUZEUM_TIME@@
+          {{ liftago.fromMuzeum.price }} <br> {{ liftago.fromMuzeum.duration }}
         </div>
       </div>
       <div class="row">
         <div class="col">
-          @@ADDRESS@@ &rarr; Node5
+          {{ address | street-name }} &rarr; Node5
         </div>
         <div class="col text-right">
-          @@LIFTAGO_NODE5@@<br>@@LIFTAGO_NODE5_TIME@@
+          {{ liftago.toNode5.price }} <br> {{ liftago.toNode5.duration }}
         </div>
       </div>
-      -->
 
       <div class="row">
         <h3>Noise</h3>
       </div>
       <div class="row">
         <div class="col" title="Noise during the day.">
-          <i class="fa fa-sun-o" aria-hidden="true"></i> @@NOISE_DAY@@
+          <i class="fa fa-sun-o" aria-hidden="true"></i> {{ noiseLevel.day }}
         </div>
         <div class="col text-right" title="Noise during the night.">
-          <i class="fa fa-moon-o" aria-hidden="true"></i> @@NOISE_NIGHT@@
+          <i class="fa fa-moon-o" aria-hidden="true"></i> {{ noiseLevel.night }}
         </div>
       </div>
 
@@ -93,16 +88,15 @@
           Air quality
         </div>
         <div class="col text-right">
-          @@AIR@@
+          {{ airQuality }}
         </div>
       </div>
     </div>
 
 
-
     <div class="footer">
-      <div class="tags">
-        @@TAGS@@
+      <div v-html="tags" class="tags">
+
       </div>
     </div>
 

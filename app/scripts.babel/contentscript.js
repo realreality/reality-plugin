@@ -1,6 +1,6 @@
 'use strict';
 
-console.log('Real Reality contentscript loaded');
+RR.logInfo('contentscript loaded');
 
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
 const IPR_REST_API = 'https://realreality-app.azurewebsites.net/realreality/rest';
@@ -14,7 +14,7 @@ const MUZEUM_METRO_STATION_LOCATION = {
   lng: 14.4302696
 };
 
-var _addStylesAndFonts = function() {
+var addStylesAndFonts = function() {
   var cssPath = chrome.extension.getURL('/styles/panel.css');
   $('head').append('<link rel="stylesheet" href="' + cssPath + '" type="text/css" />');
 
@@ -22,18 +22,18 @@ var _addStylesAndFonts = function() {
   $('head').append('<link rel="stylesheet" href="' + fontPath + '" type="text/css" />');
 };
 
-var _loadPlaces = function(type, location, radiusMeters) {
+var loadPlaces = function(type, location, radiusMeters) {
   return $.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + location.lat + ',' + location.lng +
     '&radius=' + radiusMeters + '&type='+ type +'&key=' + API_KEY);
 };
 
-var _loadLiftago = function(locationFrom, locationTo) {
+var loadLiftago = function(locationFrom, locationTo) {
   // TODO: najit spravny cas pro data
   return $.get('http://54.93.66.14:8000/api?t=1468582200&pickup='+ locationFrom.lat + ',' + locationFrom.lng +
   '&dest=' + locationTo.lat + ',' + locationTo.lng);
 };
 
-var _loadAvailibility = function(travelMode, address) {
+var loadAvailability = function(travelMode, address) {
   // TODO: nastavit spravny cas, respektive udelat jeste nocni casy
   const DESTINATIONS = 'Muzeum,Praha|Radlická 180/50, Praha'; // Node5 = Radlická 180/50, Praha
   const MAPS_API_BASE_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json';
@@ -42,28 +42,28 @@ var _loadAvailibility = function(travelMode, address) {
   return $.get(distanceMatrixApiUrl);
 };
 
-function _formatPrice(price) {
+function formatPrice(price) {
   return Math.round(price) + ' Kč';
 }
 
-var _loadParkingZones = function(location) {
+var loadParkingZones = function(location) {
   return $.get(IPR_REST_API + '/zones-count?lat=' + location.lat + '&lon=' + location.lng + '&dist=500');
 };
 
-var _loadNoise = function(location, night) {
+var loadNoise = function(location, night) {
   return $.get(IPR_REST_API + '/noise?lat=' + location.lat + '&lon=' + location.lng + '&dist=500' + '&at-night=' + night);
 };
 
-var _loadAir = function(location) {
+var loadAirPollution = function(location) {
   return $.get(IPR_REST_API + '/atmosphere?lat=' + location.lat + '&lon=' + location.lng);
 };
 
-var _getAirQuality = function(airQualityNum) {
+var getAirQuality = function(airQualityNum) {
  /*  Definice: Klasifikace klimatologické charakteristiky 1 = velmi dobrá 2 = dobrá 3 = přijatelná 4 = zhoršená 5 = špatná  */
 
   var airQuality = 'Very bad !!!'; // for case api will add something worse than 5 ;)
   if (airQualityNum === 5) {
-    airQuality = 'Bad :(';
+    airQuality = 'Bad';
   } else if (airQualityNum === 4) {
     airQuality = 'Not good';
   } else if (airQualityNum === 3) {
@@ -77,7 +77,7 @@ var _getAirQuality = function(airQualityNum) {
   return airQuality;
 };
 
-var _getNoiseLevelAsText = function(noiseLevels) {
+var getNoiseLevelAsText = function(noiseLevels) {
   // http://www.converter.cz/tabulky/hluk.htm
   var highValue = noiseLevels['db-high'];
 
@@ -90,133 +90,196 @@ var _getNoiseLevelAsText = function(noiseLevels) {
   }
 };
 
-var _formatLiftagoTime = function(timeInSeconds) {
-    var timeInMinutes = Math.round(timeInSeconds / 60);
-
-    if (timeInMinutes >= 60) {
-      var hours = Math.round(timeInMinutes / 60);
-      var minutes = timeInMinutes % 60;
-      return hours + ' h ' + minutes + ' min';
-    } else {
-      return timeInMinutes + ' min';
-    }
+var formatLiftagoDuration = function(liftagoResponseData) {
+    var timeInSeconds = liftagoResponseData.duration + Math.abs(liftagoResponseData.eta);
+    return formatDuration(timeInSeconds);
 };
 
-var _loadPanel = function(address) {
+var formatDuration = function(timeInSeconds) {
+  var timeInMinutes = Math.round(timeInSeconds / 60);
+
+  if (timeInMinutes >= 60) {
+    var hours = Math.round(timeInMinutes / 60);
+    var minutes = timeInMinutes % 60;
+    return hours + ' h ' + minutes + ' min';
+  } else {
+    return timeInMinutes + ' min';
+  }
+};
+
+var streetName = function(address) {
+  return address.indexOf(',') > 0 ? address.split(',')[0] : address;
+};
+
+var loadPanel = function(address) {
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
 
-      $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY, function(response) {
-          var location = response.results[0].geometry.location;
-          // var liftagoP = _loadLiftago(location, NODE5_LOCATION);
-          // var liftagoFromMuzeumToP = _loadLiftago(MUZEUM_METRO_STATION_LOCATION, location);
-          var transitP = _loadAvailibility('transit', address);
-          var drivingP = _loadAvailibility('driving', address);
+    // INJECT PANEL
+    $('body').append(html);
 
-          var pubsP = _loadPlaces('restaurant', location, 500);
-          var nightClubsP = _loadPlaces('night_club', location, 500);
-          var stopsP = _loadPlaces('transit_station', location, 400);
-          var parkP = _loadPlaces('park', location, 600);
-          var schoolP = _loadPlaces('school', location, 1000);
+    // html from panel.html is just vue.js template so let's render it
 
-          var zonesP = _loadParkingZones(location, 1000);
-          var noiseDayP = _loadNoise(location, false);
-          var noiseNightP = _loadNoise(location, true);
+    Vue.config.devtools = true;
+    Vue.filter('street-name', streetName);
 
-          var airP = _loadAir(location);
+    var $app = new Vue({
+      el: '.reality-panel',
+      methods: {
+        toggleWidget: (event) => {
+          $('.reality-panel').toggleClass('reality-panel-closed');
+        }
+      },
+      data: {
+        address: address,
+        poi: [],
+        distance: {
+          transit: {
+              muzeum: '',
+              node5: ''
+          },
+          driving: {
+            muzeum: '',
+            node5: ''
+          }
+        },
+        noiseLevel: {
+          day: '',
+          night: ''
+        },
+        airQuality: '',
+        liftago: {
+           fromMuzeum: {
+             price: '',
+             duration: ''
+           },
+           toNode5: {
+             price: '',
+             duration: ''
+           }
+        },
+        tags: ''
+      }
+    });
 
-          $.when(
-             /*liftagoP, liftagoFromMuzeumToP,*/ transitP, drivingP, pubsP, nightClubsP, stopsP, parkP,
-             schoolP, zonesP, noiseDayP, noiseNightP, airP)
-          .done(function(
-                    /*liftago, liftagoFromMuzeumTo,*/ transit, driving, pubs, nightClubs, stops, parks,
-                    schools, zonesResult, noiseDay, noiseNight, air) {
+    var geocodeApiPromise = $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY);
+    geocodeApiPromise.then((geocodingResponse) => {
+        var location = geocodingResponse.results[0].geometry.location;
+        RR.logDebug('geocoding api response: ', location);
 
-            html = html.replace(/@@ADDRESS@@/g, address.indexOf(',') > 0 ? address.split(',')[0] : address);
-
-            // liftago
-            // html = html.replace('@@LIFTAGO_NODE5@@', _formatPrice(liftago[0][0].price));
-            // html = html.replace('@@LIFTAGO_NODE5_TIME@@', _formatLiftagoTime(liftago[0][0].duration + Math.abs(liftago[0][0].eta)));
-            // html = html.replace('@@LIFTAGO_FROM_MUZEUM@@', _formatPrice(liftagoFromMuzeumTo[0][0].price));
-            // html = html.replace('@@LIFTAGO_FROM_MUZEUM_TIME@@', _formatLiftagoTime(liftagoFromMuzeumTo[0][0].duration + Math.abs(liftago[0][0].eta)));
-
-            // distances
-            var transitDistancesArray = transit[0].rows[0].elements;
-            html = html.replace('@@DOJEZD_MUZEUM_MHD@@', transitDistancesArray[0].duration.text);
-            html = html.replace('@@DOJEZD_NODE5_MHD@@', transitDistancesArray[1].duration.text);
-
-            var drivingDistancesArray = driving[0].rows[0].elements;
-            html = html.replace(/@@MILEAGE_CAR_MUZEUM@@/g, drivingDistancesArray[0].duration.text);
-            html = html.replace(/@@MILEAGE_CAR_NODE5@@/g, drivingDistancesArray[1].duration.text);
-
-            // noise levels
-            var noiseDayLevel = _getNoiseLevelAsText(noiseDay[0]);
-            var noiseNightLevel = _getNoiseLevelAsText(noiseNight[0]);
-
-            html = html.replace('@@NOISE_DAY@@', noiseDayLevel + '<br> ' + noiseDay[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
-            html = html.replace('@@NOISE_NIGHT@@', noiseNightLevel + '<br> ' + noiseNight[0]['db-low'] + ' - ' + noiseDay[0]['db-high'] + ' dB');
-
-            // air quality
-            var airQualityNum = air[0].value;
-            html = html.replace('@@AIR@@', _getAirQuality(airQualityNum));
-
-            // tags
-            var tags = ' ';
-            if (pubs[0].results.length > 3) {
-              tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
-            }
-            if (nightClubs[0].results.length > 2) {
-              tags += '<span class="tag" title="Party time! At least 2 clubs close to the property!">PARTY</span>';
-            }
-            if (stops[0].results.length > 3) {
-              tags += '<span class="tag" title="At least 3 stops in close distance.">PUBLIC&nbsp;TRANSIT</span>';
-            }
-            if (parks[0].results.length > 0) {
-              tags += '<span class="tag" title="Greeeeen!! At least 1 park in the neighbourhood.">NATURE</span>';
-            }
-            if (schools[0].results.length > 2) {
-              tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood.">KIDS</span>';
-            }
-
-            // parking zone tags
-            var zones = zonesResult[0];
-            if (zones.length > 0) {
-
-              /*
-               Description of type values - see on the very end of the page
-               http://www.geoportalpraha.cz/cs/fulltext_geoportal?id=BBDE6394-B0E1-4E8B-A656-DD69CA2EB0F8#.V_Da1HV97eR
-               */
-
-              var closeBlueZones = zones.filter(pz => { return pz.dist <= 100 /*m*/ && pz.type === 'M'; /* Modra - blue zone = parking only for residents */ });
-              if (closeBlueZones.length > 0) {
-                  tags += '<span class="tag" title="There are blue parking zones around the property. It means that only residents can park here.">RESIDENT PARKING</span>';
-
-                  if (zones.filter(pz => { return pz.dist < 600 && pz.type !== 'M'; }).length > 0) {
-                    tags += '<span class="tag" title="Paid parking available (ie. orange zones or some combined ones) in close distance.">PAID PARKING</span>';
-                  }
-              }
-
-            }
-
-            html = html.replace('@@TAGS@@', tags);
-
-            // INJECT PANEL
-            $('body').append(html);
-
-            $('.reality-panel .toggle-app-button').on('click', function() {
-                console.debug('toggle app button clicked');
-                $('.reality-panel').toggleClass('reality-panel-closed');
-            });
-          });
+         loadNoise(location, false).then((result) => {
+          RR.logDebug('Noise during the day response: ', result);
+          $app.$data.noiseLevel.day = getNoiseLevelAsText(result);
         });
+
+        loadNoise(location, true).then((result) => {
+          RR.logDebug('Noise during the night response: ', result);
+          $app.$data.noiseLevel.night = getNoiseLevelAsText(result);
+        });
+
+        loadAirPollution(location).then((airPollutionApiResult) => {
+          RR.logDebug('Air pollution api response: ', airPollutionApiResult);
+          var airQualityNum = airPollutionApiResult.value;
+          $app.$data.airQuality = getAirQuality(airQualityNum);
+        });
+
+        loadLiftago(location, NODE5_LOCATION).then((liftagoApiResult) => {
+           RR.logDebug('liftago to_node5 data response:', liftagoApiResult);
+           $app.liftago.toNode5.price = formatPrice(liftagoApiResult[0].price);
+           $app.liftago.toNode5.duration = formatLiftagoDuration(liftagoApiResult[0]);
+        });
+
+        loadLiftago(MUZEUM_METRO_STATION_LOCATION, location).then((liftagoApiResult) => {
+           RR.logDebug('liftago from_muzeum data response:', liftagoApiResult);
+           $app.liftago.fromMuzeum.price = formatPrice(liftagoApiResult[0].price);
+           $app.liftago.fromMuzeum.duration = formatLiftagoDuration(liftagoApiResult[0]);
+        });
+
+        // tags
+
+        loadPlaces('night_club', location, 500).then((nightClubsResponse) => {
+          if (nightClubsResponse.results.length > 2) {
+            $app.tags += '<span class="tag" title="Party time! At least 2 clubs close to the property!">PARTY</span>';
+          }
+        });
+
+        loadPlaces('transit_station', location, 400).then((publicTransitStopsResponse) => {
+          if (publicTransitStopsResponse.results.length > 3) {
+            $app.tags += '<span class="tag" title="At least 3 stops in close distance.">PUBLIC&nbsp;TRANSIT</span>';
+          }
+        });
+
+        loadPlaces('park', location, 600).then((parksResponse) => {
+          if (parksResponse.results.length > 0) {
+            $app.tags += '<span class="tag" title="Greeeeen!! At least 1 park in the neighbourhood.">NATURE</span>';
+          }
+        });
+
+        loadPlaces('school', location, 1000).then((schoolsResponse) => {
+          if (schoolsResponse.results.length > 2) {
+            $app.tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood.">KIDS</span>';
+          }
+        });
+
+        loadParkingZones(location, 1000).then((parkingZonesResponse) => {
+          var zones = parkingZonesResponse;
+          if (zones.length > 0) {
+
+            /*
+             Description of type values  see on the very end of the page
+             http://www.geoportalpraha.cz/cs/fulltext_geoportal?id=BBDE6394B0E14E8BA656DD69CA2EB0F8#.V_Da1HV97eR
+             */
+
+            var closeBlueZones = zones.filter(pz => { return pz.dist <= 100 /*m*/ && pz.type === 'M'; /* Modra  blue zone = parking only for residents */ });
+            if (closeBlueZones.length > 0) {
+                $app.tags += '<span class="tag" title="There are blue parking zones around the property. It means that only residents can park here.">RESIDENT PARKING</span>';
+
+                if (zones.filter(pz => { return pz.dist < 600 && pz.type !== 'M'; }).length > 0) {
+                  $app.tags += '<span class="tag" title="Paid parking available (ie. orange zones or some combined ones) in close distance.">PAID PARKING</span>';
+                }
+            }
+
+          }
+        });
+
+        loadPlaces('restaurant', location, 500).then((pubsApiResult) => {
+          if (pubsApiResult.results.length > 3) {
+            $app.tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
+          }
+        });
+
+      });
+
+      loadAvailability('transit', address).then((transit) => {
+        RR.logDebug('transit data response:', transit);
+        var transitDistancesArray = transit.rows[0].elements;
+
+        var transitDistanceMuzeum = transitDistancesArray[0];
+        var transitDistanceNode5 = transitDistancesArray[1];
+
+        $app.$data.distance.transit.muzeum = transitDistanceMuzeum.duration.text;
+        $app.$data.distance.transit.node5 = transitDistanceNode5.duration.text;
+      });
+
+      loadAvailability('driving', address).then((transit) => {
+        RR.logDebug('driving data response:', transit);
+        var transitDistancesArray = transit.rows[0].elements;
+
+        var transitDistanceMuzeum = transitDistancesArray[0];
+        var transitDistanceNode5 = transitDistancesArray[1];
+
+        $app.$data.distance.driving.muzeum = transitDistanceMuzeum.duration.text;
+        $app.$data.distance.driving.node5 = transitDistanceNode5.duration.text;
+      });
+
   });
 };
 
 window.addEventListener('load', function() {
-  console.log('Real Reality: page load event called');
+  RR.logInfo('page load event called');
 
-  _addStylesAndFonts();
+  addStylesAndFonts();
 
   var addressOfProperty = $('h2').first().text();
-  console.debug('Real Reality: address parsed: ', addressOfProperty);
-  _loadPanel(addressOfProperty);
+  RR.logDebug('address parsed: ', addressOfProperty);
+  loadPanel(addressOfProperty);
 });
