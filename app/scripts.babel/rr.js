@@ -1,3 +1,5 @@
+"use strict";
+
 var RR = { }; /* RR as Real Reality - this is utility module */
 
 RR.logPrefix = '** Real Reality ** ';
@@ -8,4 +10,8 @@ RR.logDebug = function(...args) {
 
 RR.logInfo = function(...args) {
   console.info.apply(null, [this.logPrefix, ...args]);
+};
+
+RR.logError = function(...args) {
+  console.error.apply(null, [this.logPrefix, ...args]);
 };

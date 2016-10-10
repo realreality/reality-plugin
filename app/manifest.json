@@ -30,7 +30,9 @@
     {
       "matches": [
         "http://www.bezrealitky.cz/nemovitosti-byty-domy/*",
-        "https://www.bezrealitky.cz/nemovitosti-byty-domy/*"
+        "https://www.bezrealitky.cz/nemovitosti-byty-domy/*",
+        "http://www.sreality.cz/detail/*",
+        "https://www.sreality.cz/detail/*"
       ],
       "js": [
         "bower_components/jquery/dist/jquery.min.js",

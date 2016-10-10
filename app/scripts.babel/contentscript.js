@@ -111,6 +111,22 @@ var streetName = function(address) {
   return address.indexOf(',') > 0 ? address.split(',')[0] : address;
 };
 
+var extractAddressFromPage = function() {
+
+  var currentHost = window.location.host;
+
+  switch (true) {
+    case (currentHost.includes('sreality.cz')):
+        return $('.location-text').text();
+    case (currentHost.includes('bezrealitky.cz')):
+        return $('header h2').first().text();
+    default:
+        RR.logError('cannot parse address on page: ', window.location);
+        return null;
+  }
+
+};
+
 var loadPanel = function(address) {
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
 
@@ -279,7 +295,12 @@ window.addEventListener('load', function() {
 
   addStylesAndFonts();
 
-  var addressOfProperty = $('h2').first().text();
+  var addressOfProperty = extractAddressFromPage();
   RR.logDebug('address parsed: ', addressOfProperty);
-  loadPanel(addressOfProperty);
+
+  if (addressOfProperty != null) {
+    loadPanel(addressOfProperty);
+  } else {
+    RR.logError("Cannot obtain address of property.");
+  }
 });
