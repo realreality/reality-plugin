@@ -14,7 +14,7 @@ Original idea was that Real Reality will be webpage where you can see mashup of 
 
 ## Hacking ##
 
-1. git clone git@github.com:krtek/reality.git
+1. git clone git@github.com:realreality/reality-plugin.git
 1. install npm
 1. npm install  (download all dependencies)
 1. npm install -g bower (install bower)
@@ -23,7 +23,7 @@ Original idea was that Real Reality will be webpage where you can see mashup of 
 1. git commit -m "my new great addition!"
 1. git push
 
-Quick and dirty backend source code is [here](https://github.com/bedla/praguehacks-realreality).
+Quick and dirty [source code of IPR Data Rest API Server](https://github.com/bedla/praguehacks-realreality).
 
 Main script is in **/app/scripts.babel/contentscript.js** (this is transpiled from ES6 -> ES5 by babel to placed in /app/scripts directory).
 This is quick'n'dirty solution so don't cry please :)
