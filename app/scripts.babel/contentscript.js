@@ -301,6 +301,6 @@ window.addEventListener('load', function() {
   if (addressOfProperty != null) {
     loadPanel(addressOfProperty);
   } else {
-    RR.logError("Cannot obtain address of property.");
+    RR.logError('Cannot obtain address of property.');
   }
 });

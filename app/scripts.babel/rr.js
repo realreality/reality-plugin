@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var RR = { }; /* RR as Real Reality - this is utility module */
 
