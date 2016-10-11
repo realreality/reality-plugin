@@ -15,11 +15,16 @@ const MUZEUM_METRO_STATION_LOCATION = {
 };
 
 var addStylesAndFonts = function() {
-  var cssPath = chrome.extension.getURL('/styles/panel.css');
-  $('head').append('<link rel="stylesheet" href="' + cssPath + '" type="text/css" />');
+  RR.logDebug('Adding styles and fonts..');
+  var normalizeCssPath = chrome.extension.getURL('/styles/cssnormalize-context-min.css');
+  $('head').append('<link rel="stylesheet" href="' + normalizeCssPath + '" type="text/css" />');
 
   var fontPath = chrome.extension.getURL('bower_components/font-awesome/css/font-awesome.min.css');
   $('head').append('<link rel="stylesheet" href="' + fontPath + '" type="text/css" />');
+
+  var cssPath = chrome.extension.getURL('/styles/panel.css');
+  $('head').append('<link rel="stylesheet" href="' + cssPath + '" type="text/css" />');
+
 };
 
 var loadPlaces = function(type, location, radiusMeters) {
@@ -120,6 +125,8 @@ var extractAddressFromPage = function() {
         return $('.location-text').text();
     case (currentHost.includes('bezrealitky.cz')):
         return $('header h2').first().text();
+    case (currentHost.includes('maxirealitypraha.cz')):
+        return $('tr:contains("Adresa")').find('td').html().replace(/<br>/g,' ').trim();
     default:
         RR.logError('cannot parse address on page: ', window.location);
         return null;

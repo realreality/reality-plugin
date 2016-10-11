@@ -11,39 +11,52 @@
   -ms-transition: all 0.3s ease-in;
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
-  font-size: 0; }
+  font-size: 0;
+  font-family: Arial,Helvetica,sans-serif;
+  line-height: normal; }
   .reality-panel a {
     text-decoration: none;
     color: white; }
   .reality-panel .reality-panel-bg {
     border-radius: 0 0 0 5px;
     background-color: #f44336;
-    padding: 20px 0;
     font-size: 18px;
     opacity: 0.9;
-    position: relative; }
+    position: relative;
+    padding-top: 5px; }
   .reality-panel .header {
     position: relative;
     border-radius: 5px 5px 0 0;
     width: 150px;
     transform: rotate(-90deg);
-    top: 37px;
+    top: 42px;
     left: -92px;
     background-color: #c2160a;
+    color: white;
     text-align: center; }
     .reality-panel .header h2 {
       font-size: 13px;
-      padding: 10px; }
+      padding: 10px;
+      font-weight: bold;
+      color: white;
+      line-height: normal;
+      font-family: Arial,Helvetica,sans-serif; }
   .reality-panel h3 {
     padding: 10px;
-    font-size: 15px; }
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    margin: 0px;
+    font-family: Arial,Helvetica,sans-serif; }
   .reality-panel .toggle-app-button {
     cursor: pointer; }
   .reality-panel .content {
     display: table;
     position: relative;
     top: -50px;
-    margin-bottom: -50px; }
+    margin-bottom: -50px;
+    padding: 0px;
+    text-align: left; }
     .reality-panel .content .row {
       display: table-row;
       width: 100%; }

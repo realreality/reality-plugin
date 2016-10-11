@@ -12,6 +12,8 @@
   -o-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
   font-size: 0;
+  font-family: Arial,Helvetica,sans-serif;
+  line-height: normal;
 
   a {
     text-decoration: none;
@@ -21,10 +23,10 @@
   .reality-panel-bg {
     border-radius: 0 0 0 5px;
     background-color: #f44336;
-    padding: 20px 0;
     font-size: 18px;
     opacity: 0.9;
     position: relative;
+    padding-top: 5px;
   }
 
   .header {
@@ -32,13 +34,18 @@
     border-radius: 5px 5px 0 0;
     width: 150px;
     transform: rotate(-90deg);
-    top: 37px;
+    top: 42px;
     left: -92px;
     background-color: #c2160a;
+    color: white;
 
     h2 {
       font-size: 13px;
       padding: 10px;
+      font-weight: bold;
+      color: white;
+      line-height: normal;
+      font-family: Arial,Helvetica,sans-serif;
     }
     text-align: center;
   }
@@ -46,6 +53,10 @@
   h3 {
     padding: 10px;
     font-size: 15px;
+    font-weight: bold;
+    color: white;
+    margin: 0px;
+    font-family: Arial,Helvetica,sans-serif;
   }
 
   .toggle-app-button {
@@ -57,6 +68,8 @@
     position: relative;
     top: -50px;
     margin-bottom: -50px;
+    padding: 0px;
+    text-align: left;
 
     .row {
       display: table-row;

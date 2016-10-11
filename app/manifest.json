@@ -19,6 +19,7 @@
   "web_accessible_resources": [
    "panel.html",
    "styles/panel.css",
+   "styles/cssnormalize-context-min.css",
    "bower_components/font-awesome/css/font-awesome.min.css",
    "bower_components/font-awesome/fonts/fontawesome-webfont.eot",
    "bower_components/font-awesome/fonts/fontawesome-webfont.svg",
@@ -29,10 +30,9 @@
   "content_scripts": [
     {
       "matches": [
-        "http://www.bezrealitky.cz/nemovitosti-byty-domy/*",
-        "https://www.bezrealitky.cz/nemovitosti-byty-domy/*",
-        "http://www.sreality.cz/detail/*",
-        "https://www.sreality.cz/detail/*"
+        "*://*.bezrealitky.cz/*",
+        "*://*.sreality.cz/*",
+        "*://*.maxirealitypraha.cz/*"
       ],
       "js": [
         "bower_components/jquery/dist/jquery.min.js",
