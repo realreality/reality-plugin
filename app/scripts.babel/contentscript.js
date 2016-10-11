@@ -16,6 +16,7 @@ const MUZEUM_METRO_STATION_LOCATION = {
 
 var addStylesAndFonts = function() {
   RR.logDebug('Adding styles and fonts..');
+
   var normalizeCssPath = chrome.extension.getURL('/styles/cssnormalize-context-min.css');
   $('head').append('<link rel="stylesheet" href="' + normalizeCssPath + '" type="text/css" />');
 
@@ -117,7 +118,6 @@ var streetName = function(address) {
 };
 
 var extractAddressFromPage = function() {
-
   var currentHost = window.location.host;
 
   switch (true) {
@@ -135,13 +135,18 @@ var extractAddressFromPage = function() {
 };
 
 var loadPanel = function(address) {
+  RR.logDebug('Loading template panel');
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
 
+    RR.logDebug('Panel loaded');
+
     // INJECT PANEL
+    RR.logDebug('Injecting panel (template) to page');
     $('body').append(html);
 
     // html from panel.html is just vue.js template so let's render it
 
+    RR.logDebug('Initializing view (replacing values in panel.html template)');
     Vue.config.devtools = true;
     Vue.filter('street-name', streetName);
 
@@ -297,17 +302,44 @@ var loadPanel = function(address) {
   });
 };
 
+var addressOfProperty;
+function initApp() {
+    RR.logInfo('Initializing app widget');
+    addStylesAndFonts();
+    addressOfProperty = extractAddressFromPage();
+    RR.logDebug('address parsed: ', addressOfProperty);
+
+    if (RR.String.isNotBlank(addressOfProperty)) {
+      loadPanel(addressOfProperty);
+    } else {
+      RR.logError('Cannot obtain address of property. URL:', window.location);
+    }
+
+    pollAddress();
+}
+
+var pollAddressTimerId;
+function pollAddress() {
+    //RR.logDebug('Polling address...'); // you can filter it out in console with regexp filter ^(?=.*?\b.*\b)((?!Poll).)*$ (match all except lines with 'Poll' match)
+    var currentAddressOfProperty = extractAddressFromPage();
+    //RR.logDebug('Polled address:', currentAddressOfProperty);
+    if (currentAddressOfProperty !== addressOfProperty) {
+      $(document).trigger(RR.ADDRESS_CHANGED_EVENT);
+      clearTimeout(pollAddressTimerId);
+    }
+    pollAddressTimerId = setTimeout(pollAddress, 500);
+};
+
 window.addEventListener('load', function() {
   RR.logInfo('page load event called');
+  initApp();
+});
 
-  addStylesAndFonts();
+$(document).on(RR.ADDRESS_CHANGED_EVENT, (event) => {
+  RR.logDebug('Address change in page detected.');
 
-  var addressOfProperty = extractAddressFromPage();
-  RR.logDebug('address parsed: ', addressOfProperty);
+  RR.logDebug('Removing widget');
+  $('.reality-panel').remove();
 
-  if (addressOfProperty != null) {
-    loadPanel(addressOfProperty);
-  } else {
-    RR.logError('Cannot obtain address of property.');
-  }
+  initApp();
 });
