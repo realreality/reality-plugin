@@ -82,7 +82,7 @@ var getNoiseLevelAsText = function(noiseLevels) {
   var highValue = noiseLevels['db-high'];
 
   switch (true) {
-    case (highValue >= 70): return 'Very high !!!';
+    case (highValue >= 70): return 'Very high';
     case (highValue >= 60): return 'High';
     case (highValue >= 50): return 'Moderate';
     case (highValue >= 30): return 'Low';
