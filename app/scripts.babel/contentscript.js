@@ -39,18 +39,22 @@ const loadLiftago = function(locationFrom, locationTo) {
     '&dest=' + locationTo.lat + ',' + locationTo.lng);
 };
 
-const loadAvailability = function(travelMode, address) {
+const loadAvailability = function(travelMode, fromAddress, toAddress) {
+
   // TODO: nastavit spravny cas, respektive udelat jeste nocni casy
-  const DESTINATIONS = 'Muzeum,Praha|Radlická 180/50, Praha'; // Node5 = Radlická 180/50, Praha
   const MAPS_API_BASE_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json';
 
-  const distanceMatrixApiUrl = MAPS_API_BASE_URL + '?origins=' + encodeURI(address) + '&destinations=' + encodeURI(DESTINATIONS) + '&mode=' + travelMode + '&language=cs&key=' + API_KEY;
+  const distanceMatrixApiUrl = MAPS_API_BASE_URL + '?origins=' + encodeURI(fromAddress) +
+                          '&destinations=' + encodeURI(toAddress) +
+                          '&mode=' + travelMode +
+                          '&language=cs&key=' + API_KEY;
+
   return $.get(distanceMatrixApiUrl);
 };
 
-function formatPrice(price) {
+const formatPrice = function formatPrice(price) {
   return Math.round(price) + ' Kč';
-}
+};
 
 const loadParkingZones = function(location) {
   return $.get(IPR_REST_API + '/zones-count?lat=' + location.lat + '&lon=' + location.lng + '&dist=500');
@@ -111,14 +115,18 @@ const formatDuration = function(timeInSeconds) {
     return timeInMinutes + ' min';
   }
 };
+
 const formatLiftagoDuration = function(liftagoResponseData) {
   const timeInSeconds = liftagoResponseData.duration + Math.abs(liftagoResponseData.eta);
   return formatDuration(timeInSeconds);
 };
 
-
 const streetName = function(address) {
-  return address.indexOf(',') > 0 ? address.split(',')[0] : address;
+  if (typeof(address) !== 'undefined' && address !== null) {
+    return address.indexOf(',') > 0 ? address.split(',')[0] : address;
+  } else {
+    return address;
+  }
 };
 
 const extractAddressFromPage = function() {
@@ -138,10 +146,27 @@ const extractAddressFromPage = function() {
 
 };
 
+const getPriceBySite = function getPriceBySite() {
+  const priceNA = 'N/A';
+
+  if (window.location.host.includes('sreality')) {
+    const params = Array.from(document.querySelectorAll('.params li')).map(li => li.innerText);
+    const priceString = params.filter(p => p.includes('Celková cena'));
+    const price = priceString && priceString.length === 1
+      ? priceString[0].split(':')[1].split('Kč')[0].replace(/\s/g, '')
+      : priceNA;
+    const areaString = params.filter(p => p.includes('Užitná'));
+    const livingArea = areaString && areaString.length === 1 ? areaString[0].match(/(\d){2,}/g)[0] : 0;
+
+    return (livingArea && !isNaN(livingArea) && price) ? parseInt(price, 10) / livingArea : priceNA;
+
+  }
+};
+
 const loadPanel = function(address) {
+  const DESTINATIONS = 'Muzeum,Praha|Radlická 180/50, Praha'; // Node5 = Radlická 180/50, Praha
   RR.logDebug('Loading template panel');
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
-
     RR.logDebug('Panel loaded');
 
     // INJECT PANEL
@@ -152,35 +177,82 @@ const loadPanel = function(address) {
 
     RR.logDebug('Initializing view (replacing values in panel.html template)');
     Vue.config.devtools = true;
+    Vue.config.silent = false;
     Vue.filter('street-name', streetName);
+
+    Vue.component('availibility-component', {
+      template: '#availability-component',
+      props: ['pois', 'label', 'type', 'addressFrom'],
+      data: function() {
+        return {
+          showInput: false,
+          newPoiAddress: '',
+          m_pois: []
+        };
+      },
+      methods: {
+        showInputBox: function(event) {
+          RR.logDebug('Showing input box');
+          this.showInput = true;
+        },
+        hideInputBox: function(event) {
+          RR.logDebug('Hiding input box');
+          this.showInput = false;
+        },
+        cancelInputBox: function(event) {
+          RR.logDebug('Cancelling input box');
+          this.hideInputBox();
+          this.newPoiAddress = '';
+        },
+        addPoi: function(event) {
+          var newPoiAddress = event.target.value;
+          this.$emit('poi-added', newPoiAddress, this.type);
+          this.hideInputBox();
+          this.newPoiAddress = '';
+        }
+      },
+      watch: {
+        pois: function(pois) {
+          this.m_pois = [];
+          pois.forEach((element, index, array) => {
+            var addressTo = element.address.input;
+            var addressFrom = this.addressFrom;
+            RR.logDebug('Loading ', this.type, ' data from:', addressFrom, 'to: ', addressTo);
+            loadAvailability(this.type, addressFrom, addressTo).then((data) => {
+              RR.logDebug(this.type, ' data response: ', data);
+              var distancesArray = data.rows[0].elements;
+              var distance = distancesArray[0];
+              var poi2 = $.extend({}, element);
+              poi2.duration = distance.duration.text;
+              poi2.address.interpreted = data.destination_addresses[0];  // jshint ignore:line
+              this.m_pois.push(poi2);
+            });
+          });
+        }
+      }
+    });
 
     const $app = new Vue({
       el: '.reality-panel',
       methods: {
-        /* eslint-disable no-unused-vars */
         toggleWidget: (event) => {
           $('.reality-panel').toggleClass('reality-panel-closed');
+        },
+        addPoi: function(newPoi, type) {
+          RR.logDebug('Adding POI', newPoi);
+          this.pois.push({ address: { input: newPoi }, duration: '' });
         }
-        /* eslint-enable no-unused-vars */
       },
       data: {
         address: address,
-        poi: [],
         details: {
           price: {
-            perSquareMeter: '',
+            perSquareMeter: ''
           }
         },
-        distance: {
-          transit: {
-            muzeum: '',
-            node5: ''
-          },
-          driving: {
-            muzeum: '',
-            node5: ''
-          }
-        },
+        newTransitPoiAddress: '',
+        showInput: false,
+        pois: [], /* poi = Point Of Interest */
         noiseLevel: {
           day: '',
           night: ''
@@ -200,28 +272,24 @@ const loadPanel = function(address) {
       }
     });
 
-    function getPriceBySite() {
-      const priceNA = 'N/A';
-
-      if (window.location.host.includes('sreality')) {
-        const params = Array.from(document.querySelectorAll('.params li')).map(li => li.innerText);
-        const priceString = params.filter(p => p.includes('Celková cena'));
-        const price = priceString && priceString.length === 1
-          ? priceString[0].split(':')[1].split('Kč')[0].replace(/\s/g, '')
-          : priceNA;
-        const areaString = params.filter(p => p.includes('Užitná'));
-        const livingArea = areaString && areaString.length === 1 ? areaString[0].match(/(\d){2,}/g)[0] : 0;
-
-        return (livingArea && !isNaN(livingArea) && price) ? parseInt(price, 10) / livingArea : priceNA;
-
-      }
-    }
-
     $app.$data.details.price.perSquareMeter = `${formatPrice(getPriceBySite())}/m2`;
 
-    $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY)
-      .then((geocodingResponse) => {
-        const location = geocodingResponse.results[0].geometry.location;
+    $app.pois = DESTINATIONS
+                    .split('|')
+                    .map((val) => {
+                      return {
+                        address: {
+                            input: val,
+                            interpreted: ''
+                        },
+                        duration: ''
+                      };
+                    });
+
+    var geocodeApiPromise = $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY);
+    geocodeApiPromise.then((geocodingResponse) => {
+        var location = geocodingResponse.results[0].geometry.location;
+
         RR.logDebug('geocoding api response: ', location);
 
         loadNoise(location, false).then((result) => {
@@ -253,7 +321,6 @@ const loadPanel = function(address) {
         });
 
         // tags
-
         loadPlaces('night_club', location, 500).then((nightClubsResponse) => {
           if (nightClubsResponse.results.length > 2) {
             $app.tags += '<span class="tag" title="Party time! At least 2 clubs close to the property!">PARTY</span>';
@@ -278,6 +345,12 @@ const loadPanel = function(address) {
           }
         });
 
+        loadPlaces('restaurant', location, 500).then((pubsApiResult) => {
+          if (pubsApiResult.results.length > 3) {
+            $app.tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
+          }
+        });
+
         loadParkingZones(location, 1000).then((parkingZonesResponse) => {
           const zones = parkingZonesResponse;
           if (zones.length > 0) {
@@ -299,40 +372,11 @@ const loadPanel = function(address) {
             }
 
           }
-        });
+        }); // parking zones
 
-        loadPlaces('restaurant', location, 500).then((pubsApiResult) => {
-          if (pubsApiResult.results.length > 3) {
-            $app.tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
-          }
-        });
-
-      });
-
-    loadAvailability('transit', address).then((transit) => {
-      RR.logDebug('transit data response:', transit);
-      const transitDistancesArray = transit.rows[0].elements;
-
-      const transitDistanceMuzeum = transitDistancesArray[0];
-      const transitDistanceNode5 = transitDistancesArray[1];
-
-      $app.$data.distance.transit.muzeum = transitDistanceMuzeum.duration.text;
-      $app.$data.distance.transit.node5 = transitDistanceNode5.duration.text;
-    });
-
-    loadAvailability('driving', address).then((transit) => {
-      RR.logDebug('driving data response:', transit);
-      const transitDistancesArray = transit.rows [0].elements;
-
-      const transitDistanceMuzeum = transitDistancesArray[0];
-      const transitDistanceNode5 = transitDistancesArray [1];
-
-      $app.$data.distance.driving.muzeum = transitDistanceMuzeum.duration.text;
-      $app.$data.distance.driving.node5 = transitDistanceNode5.duration.text;
-    });
-
-  });
-};
+      }); // geoCode
+    }); // getUrl panel.html
+}; // loadPanel
 
 let addressOfProperty;
 function initApp() {
@@ -367,9 +411,7 @@ window.addEventListener('load', function() {
   initApp();
 });
 
-/* eslint-disable no-unused-vars */
 $(document).on(RR.ADDRESS_CHANGED_EVENT, (event) => {
-  /* eslint-enable no-unused-vars */
   RR.logDebug('Address change in page detected.');
 
   RR.logDebug('Removing widget');

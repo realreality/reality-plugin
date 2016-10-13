@@ -20,6 +20,18 @@
     color: white;
   }
 
+  .add-address {
+    display: none;
+  }
+
+  .remove-address {
+    display: none;
+  }
+
+  .content:hover .add-address, .content:hover .remove-address {
+    display: inline;
+  }
+
   .reality-panel-bg {
     border-radius: 0 0 0 5px;
     background-color: #f44336;
@@ -61,6 +73,14 @@
 
   .toggle-app-button {
     cursor: pointer;
+  }
+
+  input.address-input {
+    color: black;
+    margin-left: 15px;
+    max-width: 130px;
+    font-size: 12px;
+    padding-left: 5px;
   }
 
   .content {
@@ -113,4 +133,8 @@
 
 .reality-panel-closed {
   right: -250px;
+}
+
+.availability-panel {
+  display: table-caption;    
 }
