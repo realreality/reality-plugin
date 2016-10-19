@@ -1,23 +1,17 @@
 'use strict';
 
-var RR = { }; /* RR as Real Reality - this is utility module */
+var RR = RR || { }; /* RR as Real Reality - this is utility module */
 
 // constants
 RR.LOG_PREFIX = '** Real Reality ** ';
 RR.ADDRESS_CHANGED_EVENT = 'rr:addressChanged';
 
 // functions
-RR.logDebug = function(...args) {
-    console.debug.apply(null, [this.LOG_PREFIX, ...args]);
-};
+RR.logDebug = console.debug.bind(window.console, RR.LOG_PREFIX);
 
-RR.logInfo = function(...args) {
-    console.info.apply(null, [this.LOG_PREFIX, ...args]);
-};
+RR.logInfo = console.info.bind(window.console, RR.LOG_PREFIX);
 
-RR.logError = function(...args) {
-  console.error.apply(null, [this.LOG_PREFIX, ...args]);
-};
+RR.logError = console.error.bind(window.console, RR.LOG_PREFIX);
 
 RR.String = {};
 RR.String.isBlank = function(str) {
