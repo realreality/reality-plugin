@@ -161,6 +161,11 @@ var loadPanel = function(address) {
       data: {
         address: address,
         poi: [],
+        details: {
+          price: {
+            perSquareMeter: '',
+          }
+        },
         distance: {
           transit: {
               muzeum: '',
@@ -189,6 +194,25 @@ var loadPanel = function(address) {
         tags: ''
       }
     });
+
+    function getPriceBySite() {
+      const priceNA = 'N/A';
+
+      if (window.location.host.includes('sreality')) {
+        const params = Array.from(document.querySelectorAll('.params li')).map(li => li.innerText);
+        const priceString = params.filter(p => p.includes('Celková cena'));
+        const price = priceString && priceString.length === 1
+          ? priceString[0].split(':')[1].split('Kč')[0].replace(/\s/g, '')
+          : priceNA;
+        const areaString = params.filter(p => p.includes('Užitná'));
+        const livingArea = areaString && areaString.length === 1 ? areaString[0].match(/(\d){2,}/g)[0] : 0;
+
+        return (livingArea && !isNaN(livingArea) && price) ? parseInt(price, 10) / livingArea : priceNA;
+
+      }
+    }
+
+    $app.$data.details.price.perSquareMeter = `${formatPrice(getPriceBySite())}/m2`;
 
     var geocodeApiPromise = $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY);
     geocodeApiPromise.then((geocodingResponse) => {
