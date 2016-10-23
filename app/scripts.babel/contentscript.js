@@ -3,7 +3,7 @@
 RR.logInfo('contentscript loaded');
 
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
-const IPR_REST_API = 'https://realreality-app.azurewebsites.net/realreality/rest';
+const IPR_REST_API = 'https://realreality.publicstaticvoidmain.cz/rest';
 
 const NODE5_LOCATION = {
   lat: 50.0663614,
