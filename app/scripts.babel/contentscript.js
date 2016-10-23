@@ -71,7 +71,7 @@ var getAirQuality = function(airQualityNum) {
   if (airQualityNum === 5) {
     airQuality = 'Bad';
   } else if (airQualityNum === 4) {
-    airQuality = 'Not good';
+    airQuality = 'Worsened';
   } else if (airQualityNum === 3) {
     airQuality = 'Acceptable';
   } else if (airQualityNum === 2) {
