@@ -20,4 +20,4 @@ RR.String.isBlank = function(str) {
 
 RR.String.isNotBlank = function(str) {
   return !this.isBlank(str);
-}
+};
