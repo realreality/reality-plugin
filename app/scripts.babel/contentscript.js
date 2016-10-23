@@ -153,6 +153,7 @@ var loadPanel = function(address) {
     var $app = new Vue({
       el: '.reality-panel',
       methods: {
+        /* jshint unused:false */
         toggleWidget: (event) => {
           $('.reality-panel').toggleClass('reality-panel-closed');
         }
@@ -328,13 +329,14 @@ function pollAddress() {
       clearTimeout(pollAddressTimerId);
     }
     pollAddressTimerId = setTimeout(pollAddress, 500);
-};
+}
 
 window.addEventListener('load', function() {
   RR.logInfo('page load event called');
   initApp();
 });
 
+/* jshint unused:false */
 $(document).on(RR.ADDRESS_CHANGED_EVENT, (event) => {
   RR.logDebug('Address change in page detected.');
 

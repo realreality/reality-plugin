@@ -23,7 +23,9 @@
     "_": false,
     "md5": false,
     "$": false,
-    "chrome": false
+    "chrome": false,
+    "RR":false,
+    "Vue": false
   },
   "-W003": true
 }
