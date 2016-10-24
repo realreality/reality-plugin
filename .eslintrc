@@ -7,12 +7,14 @@
   "rules": {
     "indent": [
       "warn",
-      2
+      2,
+      { "SwitchCase": 1 }
     ],
     "linebreak-style": [
       "error",
       "unix"
     ],
+    "no-console": ["warn"],
     "quotes": [
       "error",
       "single"
