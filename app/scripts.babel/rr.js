@@ -15,7 +15,7 @@ RR.logError = console.error.bind(window.console, RR.LOG_PREFIX);
 
 RR.String = {};
 RR.String.isBlank = function(str) {
-    return (!str || /^\s*$/.test(str));
+  return (!str || /^\s*$/.test(str));
 };
 
 RR.String.isNotBlank = function(str) {
