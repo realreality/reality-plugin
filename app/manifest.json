@@ -1,8 +1,8 @@
 {
   "name": "Real Reality",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "manifest_version": 2,
-  "description": "Adds little side panel to bezrealitky.cz which shows you quality of location (commutation times, air pollution, noisiness..etc.)",
+  "description": "Adds little side panel to some real estate sites which shows you quality of location eg. commutation times, air pollution.",
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"
