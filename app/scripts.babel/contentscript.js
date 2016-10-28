@@ -2,6 +2,8 @@
 
 RR.logInfo('contentscript loaded');
 
+chrome.runtime.sendMessage({ 'switchIconOn' : true });
+
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
 const IPR_REST_API = 'https://realreality.publicstaticvoidmain.cz/rest';
 
