@@ -38,7 +38,10 @@
       "js": [
         "bower_components/jquery/dist/jquery.min.js",
         "bower_components/vue/dist/vue.min.js",
+        "bower_components/vue-i18n/dist/vue-i18n.min.js",
         "scripts/rr.js",
+        "scripts/i18n/en.js",
+        "scripts/i18n/cs.js",
         "scripts/contentscript.js"
       ],
       "run_at": "document_end",

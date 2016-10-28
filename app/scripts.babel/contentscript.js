@@ -30,9 +30,14 @@ const addStylesAndFonts = function() {
 
 };
 
-const loadPlaces = function(type, location, radiusMeters) {
-  return $.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + location.lat + ',' + location.lng +
-    '&radius=' + radiusMeters + '&type=' + type + '&key=' + API_KEY);
+const loadTags = function(type, location, radiusMeters, minCount, app) {
+  $.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + location.lat + ',' + location.lng +
+    '&radius=' + radiusMeters + '&type=' + type + '&key=' + API_KEY).then((response) => {
+      if (response.results.length > minCount) {
+        app.tags += '<span class="tag" title="' + Vue.t('tags.' + type + '.desc') + '">' +
+          Vue.t('tags.' + type + '.title') + '</span>';
+      }
+    });
 };
 
 const loadLiftago = function(locationFrom, locationTo) {
@@ -73,19 +78,8 @@ const loadAirPollution = function(location) {
 const getAirQuality = function(airQualityNum) {
   /*  Definice: Klasifikace klimatologické charakteristiky 1 = velmi dobrá 2 = dobrá 3 = přijatelná 4 = zhoršená 5 = špatná  */
 
-  if (airQualityNum === 5) {
-    return 'Bad';
-  } else if (airQualityNum === 4) {
-    return 'Worsened';
-  } else if (airQualityNum === 3) {
-    return 'Acceptable';
-  } else if (airQualityNum === 2) {
-    return 'Good';
-  } else if (airQualityNum === 1) {
-    return 'Very good';
-  }
+  return Vue.t('pollution.value.val' + airQualityNum);
 
-  return 'Very bad'; // for case api will add something worse than 5 ;)
 };
 
 const getNoiseLevelAsText = function(noiseLevels) {
@@ -94,15 +88,15 @@ const getNoiseLevelAsText = function(noiseLevels) {
 
   switch (true) {
     case (highValue >= 70):
-      return 'Very high';
+      return Vue.t('noise.value.veryHigh');
     case (highValue >= 60):
-      return 'High';
+      return Vue.t('noise.value.high');
     case (highValue >= 50):
-      return 'Moderate';
+      return Vue.t('noise.value.moderate');
     case (highValue >= 30):
-      return 'Low';
+      return Vue.t('noise.value.low');
     case (highValue < 30):
-      return 'Very low';
+      return Vue.t('noise.value.veryLow');
   }
 };
 
@@ -163,6 +157,18 @@ const getPriceBySite = function getPriceBySite() {
     return (livingArea && !isNaN(livingArea) && price) ? parseInt(price, 10) / livingArea : priceNA;
 
   }
+};
+
+const initLanguage = function() {
+  Vue.use(VueI18n);
+
+  chrome.i18n.getAcceptLanguages(function(languages) {
+    Vue.config.lang = languages[0];
+
+    Object.keys(RRLocales).forEach(function (lang) {
+      Vue.locale(lang, RRLocales[lang]);
+    });
+  });
 };
 
 const loadPanel = function(address) {
@@ -343,35 +349,11 @@ const loadPanel = function(address) {
       });
 
       // tags
-      loadPlaces('night_club', location, 500).then((nightClubsResponse) => {
-        if (nightClubsResponse.results.length > 2) {
-          $app.tags += '<span class="tag" title="Party time! At least 2 clubs close to the property!">PARTY</span>';
-        }
-      });
-
-      loadPlaces('transit_station', location, 400).then((publicTransitStopsResponse) => {
-        if (publicTransitStopsResponse.results.length > 3) {
-          $app.tags += '<span class="tag" title="At least 3 stops in close distance.">PUBLIC&nbsp;TRANSIT</span>';
-        }
-      });
-
-      loadPlaces('park', location, 600).then((parksResponse) => {
-        if (parksResponse.results.length > 0) {
-          $app.tags += '<span class="tag" title="Greeeeen!! At least 1 park in the neighbourhood.">NATURE</span>';
-        }
-      });
-
-      loadPlaces('school', location, 1000).then((schoolsResponse) => {
-        if (schoolsResponse.results.length > 2) {
-          $app.tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood.">KIDS</span>';
-        }
-      });
-
-      loadPlaces('restaurant', location, 500).then((pubsApiResult) => {
-        if (pubsApiResult.results.length > 3) {
-          $app.tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
-        }
-      });
+      loadTags('night_club', location, 500, 2, $app);
+      loadTags('transit_station', location, 400, 3, $app);
+      loadTags('park', location, 600, 0, $app);
+      loadTags('school', location, 1000, 2, $app);
+      loadTags('restaurant', location, 500, 3, $app);
 
       loadParkingZones(location, 1000).then((parkingZonesResponse) => {
         const zones = parkingZonesResponse;
@@ -427,6 +409,8 @@ function pollAddress() {
   }
   pollAddressTimerId = setTimeout(pollAddress, 500);
 }
+
+initLanguage();
 
 window.addEventListener('load', function() {
   RR.logInfo('page load event called');

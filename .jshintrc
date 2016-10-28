@@ -25,7 +25,9 @@
     "$": false,
     "chrome": false,
     "RR":false,
-    "Vue": false
+    "Vue": false,
+    "VueI18n": false,
+    "RRLocales": false
   },
   "-W003": true,
   "-W098": true
