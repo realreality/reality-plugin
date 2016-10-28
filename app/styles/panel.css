@@ -94,7 +94,8 @@
         font-size: 10px;
         display: block;
         float: left;
-        margin-bottom: 5px; }
+        margin-bottom: 5px;
+        cursor: default; }
 
 .reality-panel-closed {
   right: -250px; }

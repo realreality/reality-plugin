@@ -126,6 +126,7 @@
         display: block;
         float: left;
         margin-bottom: 5px;
+        cursor: default;
       }
     }
   }
@@ -136,5 +137,5 @@
 }
 
 .availability-panel {
-  display: table-caption;    
+  display: table-caption;
 }
