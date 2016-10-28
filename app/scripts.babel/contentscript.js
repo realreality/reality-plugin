@@ -164,7 +164,7 @@ const getPriceBySite = function getPriceBySite() {
 };
 
 const loadPanel = function(address) {
-  const DESTINATIONS = 'Muzeum,Praha|Radlická 180/50, Praha'; // Node5 = Radlická 180/50, Praha
+  const DEFAULT_DESTINATIONS = 'Muzeum,Praha|Radlická 180/50, Praha'; // Node5 = Radlická 180/50, Praha
   RR.logDebug('Loading template panel');
   $.get(chrome.extension.getURL('/panel.html'), function(html) {
     RR.logDebug('Panel loaded');
@@ -269,22 +269,42 @@ const loadPanel = function(address) {
           }
         },
         tags: ''
+      },
+      watch: {
+        pois: function(newPois) {
+          chrome.storage.local.set({'pois': newPois}, function() {
+            RR.logDebug('New pois saved to local storage');
+          });
+        }
       }
     });
 
     $app.$data.details.price.perSquareMeter = `${formatPrice(getPriceBySite())}/m2`;
 
-    $app.pois = DESTINATIONS
-                    .split('|')
-                    .map((val) => {
-                      return {
-                        address: {
-                          input: val,
-                          interpreted: ''
-                        },
-                        duration: ''
-                      };
-                    });
+    chrome.storage.local.get('pois', function(items) {
+      if (chrome.runtime.lastError) {
+        RR.logError('Error during obtaining pois from local storage. Error:', chrome.runtime.lastError);
+      } else {
+        if (typeof(items.pois) !== 'undefined' && items.pois !== null) {
+          $app.$data.pois = items.pois;
+        } else {
+          /* eslint-disable indent */
+          $app.$data.pois = DEFAULT_DESTINATIONS
+                              .split('|')
+                              .map((val) => {
+                                return {
+                                   address: {
+                                       input: val,
+                                       interpreted: ''
+                                   },
+                                   duration: ''
+                                };
+                              });
+          /* eslint-enable indent */
+        }
+      }
+    });
+
 
     var geocodeApiPromise = $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY);
     geocodeApiPromise.then((geocodingResponse) => {
