@@ -279,8 +279,8 @@ const loadPanel = function(address) {
                     .map((val) => {
                       return {
                         address: {
-                            input: val,
-                            interpreted: ''
+                          input: val,
+                          interpreted: ''
                         },
                         duration: ''
                       };
@@ -288,94 +288,94 @@ const loadPanel = function(address) {
 
     var geocodeApiPromise = $.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURI(address) + '&key=' + API_KEY);
     geocodeApiPromise.then((geocodingResponse) => {
-        var location = geocodingResponse.results[0].geometry.location;
+      var location = geocodingResponse.results[0].geometry.location;
 
-        RR.logDebug('geocoding api response: ', location);
+      RR.logDebug('geocoding api response: ', location);
 
-        loadNoise(location, false).then((result) => {
-          RR.logDebug('Noise during the day response: ', result);
-          $app.$data.noiseLevel.day = getNoiseLevelAsText(result);
-        });
+      loadNoise(location, false).then((result) => {
+        RR.logDebug('Noise during the day response: ', result);
+        $app.$data.noiseLevel.day = getNoiseLevelAsText(result);
+      });
 
-        loadNoise(location, true).then((result) => {
-          RR.logDebug('Noise during the night response: ', result);
-          $app.$data.noiseLevel.night = getNoiseLevelAsText(result);
-        });
+      loadNoise(location, true).then((result) => {
+        RR.logDebug('Noise during the night response: ', result);
+        $app.$data.noiseLevel.night = getNoiseLevelAsText(result);
+      });
 
-        loadAirPollution(location).then((airPollutionApiResult) => {
-          RR.logDebug('Air pollution api response: ', airPollutionApiResult);
-          const airQualityNum = airPollutionApiResult.value;
-          $app.$data.airQuality = getAirQuality(airQualityNum);
-        });
+      loadAirPollution(location).then((airPollutionApiResult) => {
+        RR.logDebug('Air pollution api response: ', airPollutionApiResult);
+        const airQualityNum = airPollutionApiResult.value;
+        $app.$data.airQuality = getAirQuality(airQualityNum);
+      });
 
-        loadLiftago(location, NODE5_LOCATION).then((liftagoApiResult) => {
-          RR.logDebug('liftago to_node5 data response:', liftagoApiResult);
-          $app.liftago.toNode5.price = formatPrice(liftagoApiResult[0].price);
-          $app.liftago.toNode5.duration = formatLiftagoDuration(liftagoApiResult[0]);
-        });
+      loadLiftago(location, NODE5_LOCATION).then((liftagoApiResult) => {
+        RR.logDebug('liftago to_node5 data response:', liftagoApiResult);
+        $app.liftago.toNode5.price = formatPrice(liftagoApiResult[0].price);
+        $app.liftago.toNode5.duration = formatLiftagoDuration(liftagoApiResult[0]);
+      });
 
-        loadLiftago(MUZEUM_METRO_STATION_LOCATION, location).then((liftagoApiResult) => {
-          RR.logDebug('liftago from_muzeum data response:', liftagoApiResult);
-          $app.liftago.fromMuzeum.price = formatPrice(liftagoApiResult[0].price);
-          $app.liftago.fromMuzeum.duration = formatLiftagoDuration(liftagoApiResult[0]);
-        });
+      loadLiftago(MUZEUM_METRO_STATION_LOCATION, location).then((liftagoApiResult) => {
+        RR.logDebug('liftago from_muzeum data response:', liftagoApiResult);
+        $app.liftago.fromMuzeum.price = formatPrice(liftagoApiResult[0].price);
+        $app.liftago.fromMuzeum.duration = formatLiftagoDuration(liftagoApiResult[0]);
+      });
 
-        // tags
-        loadPlaces('night_club', location, 500).then((nightClubsResponse) => {
-          if (nightClubsResponse.results.length > 2) {
-            $app.tags += '<span class="tag" title="Party time! At least 2 clubs close to the property!">PARTY</span>';
-          }
-        });
+      // tags
+      loadPlaces('night_club', location, 500).then((nightClubsResponse) => {
+        if (nightClubsResponse.results.length > 2) {
+          $app.tags += '<span class="tag" title="Party time! At least 2 clubs close to the property!">PARTY</span>';
+        }
+      });
 
-        loadPlaces('transit_station', location, 400).then((publicTransitStopsResponse) => {
-          if (publicTransitStopsResponse.results.length > 3) {
-            $app.tags += '<span class="tag" title="At least 3 stops in close distance.">PUBLIC&nbsp;TRANSIT</span>';
-          }
-        });
+      loadPlaces('transit_station', location, 400).then((publicTransitStopsResponse) => {
+        if (publicTransitStopsResponse.results.length > 3) {
+          $app.tags += '<span class="tag" title="At least 3 stops in close distance.">PUBLIC&nbsp;TRANSIT</span>';
+        }
+      });
 
-        loadPlaces('park', location, 600).then((parksResponse) => {
-          if (parksResponse.results.length > 0) {
-            $app.tags += '<span class="tag" title="Greeeeen!! At least 1 park in the neighbourhood.">NATURE</span>';
-          }
-        });
+      loadPlaces('park', location, 600).then((parksResponse) => {
+        if (parksResponse.results.length > 0) {
+          $app.tags += '<span class="tag" title="Greeeeen!! At least 1 park in the neighbourhood.">NATURE</span>';
+        }
+      });
 
-        loadPlaces('school', location, 1000).then((schoolsResponse) => {
-          if (schoolsResponse.results.length > 2) {
-            $app.tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood.">KIDS</span>';
-          }
-        });
+      loadPlaces('school', location, 1000).then((schoolsResponse) => {
+        if (schoolsResponse.results.length > 2) {
+          $app.tags += '<span class="tag" title="Lot of kids around. Number of schools > 2 in neighbourhood.">KIDS</span>';
+        }
+      });
 
-        loadPlaces('restaurant', location, 500).then((pubsApiResult) => {
-          if (pubsApiResult.results.length > 3) {
-            $app.tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
-          }
-        });
+      loadPlaces('restaurant', location, 500).then((pubsApiResult) => {
+        if (pubsApiResult.results.length > 3) {
+          $app.tags += '<span class="tag" title="No beer no fun, right? Walk a little bit and choose at least from 3 pubs/restaurants!">PUBS</span>';
+        }
+      });
 
-        loadParkingZones(location, 1000).then((parkingZonesResponse) => {
-          const zones = parkingZonesResponse;
-          if (zones.length > 0) {
-            /*
-             Description of type values  see on the very end of the page
-             http://www.geoportalpraha.cz/cs/fulltext_geoportal?id=BBDE6394B0E14E8BA656DD69CA2EB0F8#.V_Da1HV97eR
-             */
+      loadParkingZones(location, 1000).then((parkingZonesResponse) => {
+        const zones = parkingZonesResponse;
+        if (zones.length > 0) {
+          /*
+           Description of type values  see on the very end of the page
+           http://www.geoportalpraha.cz/cs/fulltext_geoportal?id=BBDE6394B0E14E8BA656DD69CA2EB0F8#.V_Da1HV97eR
+           */
 
-            const closeBlueZones = zones.filter(pz => {
-              return pz.dist <= 100 /*m*/ && pz.type === 'M';
-              /* Modra  blue zone = parking only for residents */
-            });
-            if (closeBlueZones.length > 0) {
-              $app.tags += '<span class="tag" title="There are blue parking zones around the property. It means that only residents can park here.">RESIDENT PARKING</span>';
+          const closeBlueZones = zones.filter(pz => {
+            return pz.dist <= 100 /*m*/ && pz.type === 'M';
+            /* Modra  blue zone = parking only for residents */
+          });
+          if (closeBlueZones.length > 0) {
+            $app.tags += '<span class="tag" title="There are blue parking zones around the property. It means that only residents can park here.">RESIDENT PARKING</span>';
 
-              if (zones.filter(pz => pz.dist < 600 && pz.type !== 'M').length > 0) {
-                $app.tags += '<span class="tag" title="Paid parking available (ie. orange zones or some combined ones) in close distance.">PAID PARKING</span>';
-              }
+            if (zones.filter(pz => pz.dist < 600 && pz.type !== 'M').length > 0) {
+              $app.tags += '<span class="tag" title="Paid parking available (ie. orange zones or some combined ones) in close distance.">PAID PARKING</span>';
             }
-
           }
-        }); // parking zones
 
-      }); // geoCode
-    }); // getUrl panel.html
+        }
+      }); // parking zones
+
+    }); // geoCode
+  }); // getUrl panel.html
 }; // loadPanel
 
 let addressOfProperty;

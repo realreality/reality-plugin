@@ -15,7 +15,7 @@
       "unix"
     ],
     "no-unused-vars": ["warn", { "vars": "all", "args": "none" }],
-    "no-console": ["warn"],
+    "no-console": ["off"],
     "quotes": [
       "error",
       "single"
