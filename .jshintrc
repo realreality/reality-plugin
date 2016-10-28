@@ -27,5 +27,6 @@
     "RR":false,
     "Vue": false
   },
-  "-W003": true
+  "-W003": true,
+  "-W098": true
 }

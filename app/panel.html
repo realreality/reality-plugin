@@ -104,7 +104,7 @@
          {{ label }} <i v-on:click="showInputBox" class="add-address fa fa-plus-circle" aria-hidden="true" title="Add new address"></i>
       </h3>
     </div>
-    <div class="row" v-for="(poi, index) in m_pois">
+    <div class="row" v-for="(poi, index) in mPois">
       <div class="col" :title="poi.address.interpreted">
         {{ poi.address.interpreted | street-name }} <!-- TODO: component is coupled with global "street-name" filter ... not good -->
       </div>

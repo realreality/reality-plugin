@@ -152,9 +152,9 @@ const getPriceBySite = function getPriceBySite() {
   if (window.location.host.includes('sreality')) {
     const params = Array.from(document.querySelectorAll('.params li')).map(li => li.innerText);
     const priceString = params.filter(p => p.includes('Celková cena'));
-    const price = priceString && priceString.length === 1
-      ? priceString[0].split(':')[1].split('Kč')[0].replace(/\s/g, '')
-      : priceNA;
+    const price = priceString && priceString.length === 1 ?
+      priceString[0].split(':')[1].split('Kč')[0].replace(/\s/g, '') :
+      priceNA;
     const areaString = params.filter(p => p.includes('Užitná'));
     const livingArea = areaString && areaString.length === 1 ? areaString[0].match(/(\d){2,}/g)[0] : 0;
 
@@ -187,7 +187,7 @@ const loadPanel = function(address) {
         return {
           showInput: false,
           newPoiAddress: '',
-          m_pois: []
+          mPois: []
         };
       },
       methods: {
@@ -213,7 +213,7 @@ const loadPanel = function(address) {
       },
       watch: {
         pois: function(pois) {
-          this.m_pois = [];
+          this.mPois = [];
           pois.forEach((element, index, array) => {
             var addressTo = element.address.input;
             var addressFrom = this.addressFrom;
@@ -225,7 +225,7 @@ const loadPanel = function(address) {
               var poi2 = $.extend({}, element);
               poi2.duration = distance.duration.text;
               poi2.address.interpreted = data.destination_addresses[0];  // jshint ignore:line
-              this.m_pois.push(poi2);
+              this.mPois.push(poi2);
             });
           });
         }
