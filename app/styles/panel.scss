@@ -84,7 +84,7 @@
   }
 
   .content {
-    display: table;
+    //display: table;
     position: relative;
     top: -50px;
     margin-bottom: -50px;
@@ -92,16 +92,22 @@
     text-align: left;
 
     .row {
-      display: table-row;
+      //display: table-row;
       width: 100%;
+      columns: 2;
+    }
+
+    .row-title {
+      width: 100%;
+      columns: 1;
     }
 
     .col {
-      display: table-cell;
       min-width: 100px;
       padding-left: 15px;
       padding-right: 10px;
       font-size: 12px;
+      width: 50%;
     }
 
     .text-right {
@@ -115,7 +121,8 @@
     .tags {
       padding-left: 20px;
       padding-top: 20px;
-      display: block;
+      padding-bottom: 10px;
+      display: inline-block;
 
       .tag {
         border-radius: 5px;
@@ -137,5 +144,5 @@
 }
 
 .availability-panel {
-  display: table-caption;
+  //display: table-caption;
 }

@@ -63,21 +63,23 @@
     font-size: 12px;
     padding-left: 5px; }
   .reality-panel .content {
-    display: table;
     position: relative;
     top: -50px;
     margin-bottom: -50px;
     padding: 0px;
     text-align: left; }
     .reality-panel .content .row {
-      display: table-row;
-      width: 100%; }
+      width: 100%;
+      columns: 2; }
+    .reality-panel .content .row-title {
+      width: 100%;
+      columns: 1; }
     .reality-panel .content .col {
-      display: table-cell;
       min-width: 100px;
       padding-left: 15px;
       padding-right: 10px;
-      font-size: 12px; }
+      font-size: 12px;
+      width: 50%; }
     .reality-panel .content .text-right {
       text-align: right; }
   .reality-panel .footer {
@@ -85,7 +87,8 @@
     .reality-panel .footer .tags {
       padding-left: 20px;
       padding-top: 20px;
-      display: block; }
+      padding-bottom: 10px;
+      display: inline-block; }
       .reality-panel .footer .tags .tag {
         border-radius: 5px;
         padding: 5px;
@@ -99,6 +102,3 @@
 
 .reality-panel-closed {
   right: -250px; }
-
-.availability-panel {
-  display: table-caption; }

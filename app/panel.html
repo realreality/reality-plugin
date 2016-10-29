@@ -28,7 +28,7 @@
           :pois="pois"
           @poi-added="addPoi" />
 
-      <div class="row">
+      <div class="row-title">
         <h3>{{$t('liftago.header')}}</h3>
       </div>
       <div class="row">
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row-title">
         <h3>{{$t('noise.header')}}</h3>
       </div>
       <div class="row">
@@ -61,7 +61,7 @@
       </div>
 
 
-      <div class="row">
+      <div class="row-title">
         <h3>{{$t('pollution.header')}}</h3>
       </div>
       <div class="row">
@@ -73,7 +73,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row-title">
         <h3>{{$t('propertyDetails.header')}}</h3>
       </div>
       <div class="row">
@@ -99,7 +99,7 @@
 
 <script id="availability-component" type="text/x-template">
   <div class="availability-panel">
-    <div class="row">
+    <div class="row-title">
       <h3>
          {{ $t(label) }} <i v-on:click="showInputBox" class="add-address fa fa-plus-circle" aria-hidden="true" title="Add new address"></i>
       </h3>
