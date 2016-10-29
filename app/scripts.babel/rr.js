@@ -1,6 +1,4 @@
-'use strict';
-
-var RR = RR || { }; /* RR as Real Reality - this is utility module */
+const RR = {}; /* RR as Real Reality - this is utility module */
 
 // constants
 RR.LOG_PREFIX = '** Real Reality ** ';
@@ -21,3 +19,5 @@ RR.String.isBlank = function(str) {
 RR.String.isNotBlank = function(str) {
   return !this.isBlank(str);
 };
+
+export default RR;
