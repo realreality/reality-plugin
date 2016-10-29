@@ -368,10 +368,12 @@ const loadPanel = function(address) {
             /* Modra  blue zone = parking only for residents */
           });
           if (closeBlueZones.length > 0) {
-            $app.tags += '<span class="tag" title="There are blue parking zones around the property. It means that only residents can park here.">RESIDENT PARKING</span>';
+            $app.tags += '<span class="tag" title="' + Vue.t('tags.resident_parking.desc') + '">' +
+              Vue.t('tags.resident_parking.title') +'</span>';
 
             if (zones.filter(pz => pz.dist < 600 && pz.type !== 'M').length > 0) {
-              $app.tags += '<span class="tag" title="Paid parking available (ie. orange zones or some combined ones) in close distance.">PAID PARKING</span>';
+              $app.tags += '<span class="tag" title="' + Vue.t('tags.paid_parking.desc') + '">' +
+                Vue.t('tags.paid_parking.title') +'</span>';
             }
           }
 

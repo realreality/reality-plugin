@@ -59,6 +59,14 @@ RRLocales.en = {
     restaurant: {
       title: 'PUBS',
       desc: 'Beer! Food! At least three pubs/restaurants in the area.'
+    },
+    resident_parking: {
+      title: 'RESIDENT PARKING',
+      desc: 'Blue parking zones around the property. It means that only residents can park here.'
+    },
+    paid_parking: {
+      title: 'PAID PARKING',
+      desc: 'Paid parking available (ie. orange zones or some combined ones) in close distance.'
     }
   }
 };

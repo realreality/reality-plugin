@@ -59,6 +59,14 @@ RRLocales.cs = {
     restaurant: {
       title: 'HOSPODY',
       desc: 'Pivo! Jídlo! Hlady neumřete, v okolí jsou aspoň tři hospody.'
+    },
+    resident_parking: {
+      title: 'MODRÉ ZÓNY',
+      desc: 'V okolí jsou modré parkovací zóny – pouze pro rezidenty.'
+    },
+    paid_parking: {
+      title: 'PARKOVACÍ ZÓNY',
+      desc: 'Placené parkování (např. oranžové zóny) v okolí objektu.'
     }
   }
 };
