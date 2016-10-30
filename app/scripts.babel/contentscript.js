@@ -1,6 +1,7 @@
 'use strict';
 
 import RR from './rr';
+import { extractors } from './sites/index';
 
 RR.logInfo('contentscript loaded');
 
@@ -145,20 +146,7 @@ const extractAddressFromPage = function() {
 };
 
 const getPriceBySite = function getPriceBySite() {
-  const priceNA = 'N/A';
-
-  if (window.location.host.includes('sreality')) {
-    const params = Array.from(document.querySelectorAll('.params li')).map(li => li.innerText);
-    const priceString = params.filter(p => p.includes('Celková cena'));
-    const price = priceString && priceString.length === 1 ?
-      priceString[0].split(':')[1].split('Kč')[0].replace(/\s/g, '') :
-      priceNA;
-    const areaString = params.filter(p => p.includes('Užitná'));
-    const livingArea = areaString && areaString.length === 1 ? areaString[0].match(/(\d){2,}/g)[0] : 0;
-
-    return (livingArea && !isNaN(livingArea) && price) ? parseInt(price, 10) / livingArea : priceNA;
-
-  }
+  return extractors.getPrices(window.location.host); // { perMeterLiving, perMeterArea }
 };
 
 const initLanguage = function() {
@@ -289,7 +277,8 @@ const loadPanel = function(address) {
       }
     });
 
-    $app.$data.details.price.perSquareMeter = `${formatPrice(getPriceBySite())}/m2`;
+    const pricePerSquareMeter = getPriceBySite();
+    $app.$data.details.price.perSquareMeter = pricePerSquareMeter ? `${formatPrice(pricePerSquareMeter)}/m2`: 'N/A';
 
     chrome.storage.local.get('pois', function(items) {
       if (chrome.runtime.lastError) {
