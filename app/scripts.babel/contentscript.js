@@ -195,7 +195,7 @@ const loadPanel = function(address) {
         return {
           showInput: false,
           newPoiAddress: '',
-          mPois: []
+          enrichedPois: []
         };
       },
       methods: {
@@ -221,7 +221,7 @@ const loadPanel = function(address) {
       },
       watch: {
         pois: function(pois) {
-          this.mPois = [];
+          this.enrichedPois = [];
           pois.forEach((element, index, array) => {
             var addressTo = element.address.input;
             var addressFrom = this.addressFrom;
@@ -230,10 +230,10 @@ const loadPanel = function(address) {
               RR.logDebug(this.type, ' data response: ', data);
               var distancesArray = data.rows[0].elements;
               var distance = distancesArray[0];
-              var poi2 = $.extend({}, element);
-              poi2.duration = distance.duration.text;
-              poi2.address.interpreted = data.destination_addresses[0];  // jshint ignore:line
-              this.mPois.push(poi2);
+              var poiCopy = $.extend({}, element);
+              poiCopy.duration = distance.duration.text;
+              poiCopy.address.interpreted = data.destination_addresses[0];  // jshint ignore:line
+              this.enrichedPois.push(poiCopy);
             });
           });
         }

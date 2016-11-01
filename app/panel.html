@@ -15,14 +15,14 @@
                 all unknown elements are stripped (ignored) by browser
       -->
       <div is="availibility-component"
-           label="publicTransit.header"
+           :label="$t('publicTransit.header')"
            type="transit"
            :address-from="address"
            :pois="pois"
            @poi-added="addPoi" />
 
      <div is="availibility-component"
-          label="car.header"
+          :label="$t('car.header')"
           type="driving"
           :address-from="address"
           :pois="pois"
@@ -101,10 +101,10 @@
   <div class="availability-panel">
     <div class="row-title">
       <h3>
-         {{ $t(label) }} <i v-on:click="showInputBox" class="add-address fa fa-plus-circle" aria-hidden="true" title="Add new address"></i>
+         {{ label }} <i v-on:click="showInputBox" class="add-address fa fa-plus-circle" aria-hidden="true" title="Add new address"></i>
       </h3>
     </div>
-    <div class="row" v-for="(poi, index) in mPois">
+    <div class="row" v-for="(poi, index) in enrichedPois">
       <div class="col" :title="poi.address.interpreted">
         {{ poi.address.interpreted | street-name }} <!-- TODO: component is coupled with global "street-name" filter ... not good -->
       </div>
