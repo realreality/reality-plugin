@@ -107,8 +107,9 @@ gulp.task('rollup', function () {
       plugins: [
         babel({
           exclude: 'node_modules/**',
-          presets: ['es2015-rollup'],
-        }),
+          presets: [ 'es2015-rollup' ],
+          babelrc: false
+        })
       ],
     }))
     .pipe(sourcemaps.write('.'))

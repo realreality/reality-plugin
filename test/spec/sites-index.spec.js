@@ -1,0 +1,143 @@
+
+import { expect } from 'chai';
+import { extractors } from '../../app/scripts.babel/sites/index';
+import jsdom from 'jsdom';
+
+const bezRealitkyString = `
+<html>
+<body>
+<div class="block-params col-1" data-bzr-col="1">
+  <div class="box box-params col-1">
+    <div class="box-header">
+        <h3>Detailní informace</h3>
+    </div>
+    <div class="row" data-ng-if="upcLink">
+        <div class="key">UPC dostupné!:</div>
+        <div class="value" data-ng-bind-html="upcLink"></div>
+    </div>
+    <div class="row" data-ng-if="skyLink">
+        <div class="key">dostupnost TV:</div>
+        <div class="value" data-ng-bind-html="skyLink"></div>
+    </div>
+    <div class="row">
+        <div class="key">číslo inzerátu:</div>
+        <div class="value">446394</div>
+    </div>
+    <div class="row">
+        <div class="key">typ nabídky:</div>
+        <div class="value">Prodej</div>
+    </div>
+    <div class="row">
+        <div class="key">typ nemovitosti:</div>
+        <div class="value">Byt</div>
+    </div>
+    <div class="row" data-ng-if="shownInfoItems.disposition">
+        <div class="key">dispozice:</div>
+        <div class="value">2+1</div>
+    </div>
+    <div class="row">
+        <div class="key">plocha:</div>
+        <div class="value">54 m²</div>
+    </div>
+    <div class="row">
+        <div class="key">cena:</div>
+        <div class="value">1.200.000 Kč</div>
+    </div>
+                    <div class="row" data-ng-if="shownInfoItems.ownership">
+        <div class="key">typ vlastnictví:</div>
+        <div class="value">Osobní</div>
+    </div>
+                    <div class="row" data-ng-if="shownInfoItems.construction">
+        <div class="key">typ budovy:</div>
+        <div class="value">Panel</div>
+    </div>
+    <div class="row" data-ng-if="shownInfoItems.equipped">
+        <div class="key">vybavení:</div>
+        <div class="value">Částečně</div>
+    </div>
+    <div class="row" data-ng-if="shownInfoItems.etage || shownInfoItems.etageFrom || shownInfoItems.etageTo">
+        <div class="key">podlaží:</div>
+        <div class="value">2</div>
+    </div>
+    <div class="row" data-ng-if="shownInfoItems.balcony">
+        <div class="key">balkón:</div>
+        <div class="value">Ano</div>
+    </div>
+    <div class="row" data-ng-if="shownInfoItems.terrace">
+        <div class="key">terasa:</div>
+        <div class="value">Ne</div>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+const srealityString = `
+<html>
+<body>
+<div class="params">
+  <ul>
+    <li><label>Celkov&aacute; cena:</label><strong> 4&nbsp;050&nbsp;000 Kč za nemovitost </strong></li>
+    <li><label>Hypot&eacute;ka:</label><strong> 8&nbsp;421,91&nbsp;Kč měs&iacute;čně <button>v&iacute;ce&raquo;</button> </strong></li>
+    <li><label>Pozn&aacute;mka k ceně:</label><strong> Doporučen&aacute; kupn&iacute; cena </strong></li>
+    <li><label>ID zak&aacute;zky:</label><strong> N01401 </strong></li>
+    <li><label>Aktualizace:</label><strong> 22.09.2016 </strong></li>
+    <li><label>Stavba:</label><strong> Cihlov&aacute; </strong></li>
+    <li><label>Stav objektu:</label><strong> Před rekonstrukc&iacute; </strong></li>
+    <li><label>Vlastnictv&iacute;:</label><strong> Osobn&iacute; </strong></li>
+    <li><label>Um&iacute;stěn&iacute; objektu:</label><strong> Centrum obce </strong></li>
+    <li><label>Podlaž&iacute;:</label><strong> 5. podlaž&iacute; z celkem 6 </strong></li>
+    <li><label>Užitn&aacute; plocha:</label><strong> 71 m<sup>2</sup> </strong></li>
+  </ul>
+  <ul>
+    <li><label>Plocha podlahov&aacute;:</label><strong> 71 m<sup>2</sup> </strong></li>
+    <li><label>Balk&oacute;n:</label><strong> 1 m<sup>2</sup> </strong></li>
+    <li><label>Voda:</label><strong> D&aacute;lkov&yacute; vodovod </strong></li>
+    <li><label>Topen&iacute;:</label><strong> &Uacute;středn&iacute; d&aacute;lkov&eacute; </strong></li>
+    <li><label>Plyn:</label><strong> Plynovod </strong></li>
+    <li><label>Odpad:</label><strong> Veřejn&aacute; kanalizace </strong></li>
+    <li><label>Elektřina:</label><strong> 230V, 400V </strong></li>
+    <li><label>Doprava:</label><strong> Vlak, D&aacute;lnice, Silnice, MHD, Autobus </strong></li>
+    <li><label>Energetick&aacute; n&aacute;ročnost budovy:</label><strong> Tř&iacute;da G - Mimoř&aacute;dně nehospod&aacute;rn&aacute; </strong></li>
+    <li><label>Bezbari&eacute;rov&yacute;:</label></li>
+  </ul>
+</div>
+</body>
+</html>
+`;
+
+describe('extractors', () => {
+  describe('bezrealitky', () => {
+    before(() => {
+      global.document = jsdom.jsdom(bezRealitkyString);
+      global.window = document.defaultView;
+      jsdom.changeURL(window, 'https://www.bezrealitky.cz/nemovitosti-byty-domy/12345');
+    });
+
+    after(() => {
+      global.document = undefined;
+      global.window = undefined;
+    });
+
+    it('should return price per m2', () => {
+      expect(extractors.getPrices(window.location.host)).to.equal(22222.222222222223);
+    });
+  });
+
+  describe('sreality', () => {
+    before(() => {
+      global.document = jsdom.jsdom(srealityString);
+      global.window = document.defaultView;
+      jsdom.changeURL(window, 'https://www.sreality.cz/detail/prodej/byt/3+1/praha');
+    });
+
+    after(() => {
+      global.document = undefined;
+      global.window = undefined;
+    });
+
+    it('should return price per m2', () => {
+      expect(extractors.getPrices(window.location.host)).to.equal(57042.25352112676);
+    });
+  });
+});
