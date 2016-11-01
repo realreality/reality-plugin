@@ -1,14 +1,13 @@
 // generated on 2016-09-28 using generator-chrome-extension 0.6.1
-const gulp = require('gulp');
-const gulpLoadPlugins = require('gulp-load-plugins');
-const del = require('del');
-const runSequence = require('run-sequence');
-const wiredep= require('wiredep').stream; /* Wire Bower Dependencies */
-
-const rollup = require('gulp-rollup');
-const sourcemaps = require('gulp-sourcemaps');
-const babel = require('rollup-plugin-babel');
-const sass = require('gulp-sass');
+import gulp from 'gulp';
+import gulpLoadPlugins from 'gulp-load-plugins';
+import del from 'del';
+import runSequence from 'run-sequence';
+import { stream as wiredep} from 'wiredep'; /* Wire Bower Dependencies */
+import rollup from 'gulp-rollup';
+import sourcemaps from 'gulp-sourcemaps';
+import babel from 'rollup-plugin-babel';
+import sass from 'gulp-sass';
 
 const $ = gulpLoadPlugins();
 
@@ -87,16 +86,6 @@ gulp.task('chromeManifest', () => {
   .pipe($.if('*.js', $.sourcemaps.write('.')))
   .pipe(gulp.dest('dist'));
 });
-//
-// gulp.task('res', function() {
-//   const manifest = require('manifest.json');
-//   return gulp.src(manifest.web_accessible_resource).
-//         .pipe(gulpif('*.css', cssmin()))
-//         .pipe(gulpif('*.js', sourcemaps.init()))
-//         .pipe(gulpif('*.js', uglify()))
-//         .pipe(gulpif('*.js', sourcemaps.write()))
-//         .pipe(gulp.dest('dist'));
-// });
 
 gulp.task('rollup', function () {
   gulp
