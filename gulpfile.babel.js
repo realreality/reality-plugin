@@ -8,6 +8,7 @@ import rollup from 'gulp-rollup';
 import sourcemaps from 'gulp-sourcemaps';
 import babel from 'rollup-plugin-babel';
 import sass from 'gulp-sass';
+import path from 'path';
 
 const $ = gulpLoadPlugins();
 
@@ -87,6 +88,16 @@ gulp.task('chromeManifest', () => {
   .pipe(gulp.dest('dist'));
 });
 
+gulp.task('babel', () => {
+  const files = ['background.js'];
+
+  return gulp.src(files.map((filePath) => 'app/scripts.babel/' + filePath ))
+      .pipe($.babel({
+        presets: ['es2015']
+      }))
+      .pipe(gulp.dest('app/scripts'));
+});
+
 gulp.task('rollup', function () {
   gulp
     .src('app/scripts.babel/**/*.js')
@@ -114,7 +125,7 @@ gulp.task('sass', function () {
 });
 
 
-gulp.task('watch', ['lint', 'rollup'], () => {
+gulp.task('watch', ['lint', 'compile'], () => {
   $.livereload.listen();
 
   gulp.watch([
@@ -143,6 +154,7 @@ gulp.task('wiredep', () => {
     .pipe(gulp.dest('app'));
 });
 
+gulp.task('compile', ['babel', 'rollup']);
 
 gulp.task('package', ['build'], function () {
   var manifest = require('./dist/manifest.json');
@@ -153,7 +165,7 @@ gulp.task('package', ['build'], function () {
 
 gulp.task('build', (cb) => {
   runSequence(
-    'lint', 'rollup', 'chromeManifest',
+    'lint', 'compile', 'chromeManifest',
     ['html', 'images', 'extras', 'sass'],
     'size', cb);
 });
