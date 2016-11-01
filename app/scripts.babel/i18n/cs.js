@@ -2,7 +2,7 @@
 
 /* jshint -W106 */
 
-var RRLocales = RRLocales || { };
+const RRLocales = {};
 
 RRLocales.cs = {
   publicTransit: {
@@ -70,3 +70,5 @@ RRLocales.cs = {
     }
   }
 };
+
+export default RRLocales.cs;

@@ -1,6 +1,7 @@
 'use strict';
 
 import RR from './rr';
+import RRLocales from './i18n/locales.js';
 import { extractors } from './sites/index';
 
 RR.logInfo('contentscript loaded');
@@ -153,11 +154,17 @@ const initLanguage = function() {
   Vue.use(VueI18n);
 
   chrome.i18n.getAcceptLanguages(function(languages) {
-    Vue.config.lang = languages[0];
+    RR.logDebug('Detected accepted languages: ', languages);
+
+    const appLanguage = languages[0];
+    RR.logInfo('Selected app language: ', appLanguage);
+    Vue.config.lang = appLanguage;
 
     Object.keys(RRLocales).forEach(function (lang) {
+      RR.logDebug('RRLocales key: ', lang, '. Localization bundle: ', RRLocales[lang]);
       Vue.locale(lang, RRLocales[lang]);
     });
+
   });
 };
 
@@ -174,6 +181,9 @@ const loadPanel = function(address) {
     // html from panel.html is just vue.js template so let's render it
 
     RR.logDebug('Initializing view (replacing values in panel.html template)');
+
+    initLanguage();
+
     Vue.config.devtools = true;
     Vue.config.silent = false;
     Vue.filter('street-name', streetName);
@@ -402,8 +412,6 @@ function pollAddress() {
   }
   pollAddressTimerId = setTimeout(pollAddress, 500);
 }
-
-initLanguage();
 
 window.addEventListener('load', function() {
   RR.logInfo('page load event called');
