@@ -1,11 +1,14 @@
 // generated on 2016-09-28 using generator-chrome-extension 0.6.1
-import gulp from 'gulp';
-import gulpLoadPlugins from 'gulp-load-plugins';
-import del from 'del';
-import runSequence from 'run-sequence';
-import {stream as wiredep} from 'wiredep'; /* Wire Bower Dependencies */
+const gulp = require('gulp');
+const gulpLoadPlugins = require('gulp-load-plugins');
+const del = require('del');
+const runSequence = require('run-sequence');
+const wiredep= require('wiredep').stream; /* Wire Bower Dependencies */
 
-var sass = require('gulp-sass');
+const rollup = require('gulp-rollup');
+const sourcemaps = require('gulp-sourcemaps');
+const babel = require('rollup-plugin-babel');
+const sass = require('gulp-sass');
 
 const $ = gulpLoadPlugins();
 
@@ -95,12 +98,21 @@ gulp.task('chromeManifest', () => {
 //         .pipe(gulp.dest('dist'));
 // });
 
-gulp.task('babel', () => {
-  return gulp.src('app/scripts.babel/**/*.js')
-      .pipe($.babel({
-        presets: ['es2015']
-      }))
-      .pipe(gulp.dest('app/scripts'));
+gulp.task('rollup', function () {
+  gulp
+    .src('app/scripts.babel/**/*.js')
+    .pipe(sourcemaps.init())
+    .pipe(rollup({
+      entry: 'app/scripts.babel/contentscript.js',
+      plugins: [
+        babel({
+          exclude: 'node_modules/**',
+          presets: ['es2015-rollup'],
+        }),
+      ],
+    }))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('app/scripts'));
 });
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
@@ -112,7 +124,7 @@ gulp.task('sass', function () {
 });
 
 
-gulp.task('watch', ['lint', 'babel'], () => {
+gulp.task('watch', ['lint', 'rollup'], () => {
   $.livereload.listen();
 
   gulp.watch([
@@ -123,7 +135,7 @@ gulp.task('watch', ['lint', 'babel'], () => {
     'app/_locales/**/*.json'
   ]).on('change', $.livereload.reload);
 
-  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'babel']);
+  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'rollup']);
   gulp.watch('app/styles/*.scss', ['sass']);
   gulp.watch('bower.json', ['wiredep']);
 });
@@ -151,7 +163,7 @@ gulp.task('package', ['build'], function () {
 
 gulp.task('build', (cb) => {
   runSequence(
-    'lint', 'babel', 'chromeManifest',
+    'lint', 'rollup', 'chromeManifest',
     ['html', 'images', 'extras', 'sass'],
     'size', cb);
 });

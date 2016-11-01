@@ -1,5 +1,7 @@
 'use strict';
 
+import RR from './rr';
+
 RR.logInfo('contentscript loaded');
 
 chrome.runtime.sendMessage({ 'switchIconOn' : true });
