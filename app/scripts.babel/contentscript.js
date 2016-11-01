@@ -11,15 +11,6 @@ chrome.runtime.sendMessage({ 'switchIconOn' : true });
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
 const IPR_REST_API = 'https://realreality.publicstaticvoidmain.cz/rest';
 
-const NODE5_LOCATION = {
-  lat: 50.0663614,
-  lng: 14.4005557
-};
-const MUZEUM_METRO_STATION_LOCATION = {
-  lat: 50.0814746,
-  lng: 14.4302696
-};
-
 const addStylesAndFonts = function() {
   RR.logDebug('Adding styles and fonts..');
   const $head = $('head');
@@ -42,12 +33,6 @@ const loadTags = function(type, location, radiusMeters, minCount, app) {
           Vue.t('tags.' + type + '.title') + '</span>';
       }
     });
-};
-
-const loadLiftago = function(locationFrom, locationTo) {
-  // TODO: najit spravny cas pro data
-  return $.get('http://54.93.66.14:8000/api?t=1468582200&pickup=' + locationFrom.lat + ',' + locationFrom.lng +
-    '&dest=' + locationTo.lat + ',' + locationTo.lng);
 };
 
 const loadAvailability = function(travelMode, fromAddress, toAddress) {
@@ -102,23 +87,6 @@ const getNoiseLevelAsText = function(noiseLevels) {
     case (highValue < 30):
       return Vue.t('noise.value.veryLow');
   }
-};
-
-const formatDuration = function(timeInSeconds) {
-  const timeInMinutes = Math.round(timeInSeconds / 60);
-
-  if (timeInMinutes >= 60) {
-    const hours = Math.round(timeInMinutes / 60);
-    const minutes = timeInMinutes % 60;
-    return hours + ' h ' + minutes + ' min';
-  } else {
-    return timeInMinutes + ' min';
-  }
-};
-
-const formatLiftagoDuration = function(liftagoResponseData) {
-  const timeInSeconds = liftagoResponseData.duration + Math.abs(liftagoResponseData.eta);
-  return formatDuration(timeInSeconds);
 };
 
 const streetName = function(address) {
@@ -266,22 +234,12 @@ const loadPanel = function(address) {
           night: ''
         },
         airQuality: '',
-        liftago: {
-          fromMuzeum: {
-            price: '',
-            duration: ''
-          },
-          toNode5: {
-            price: '',
-            duration: ''
-          }
-        },
         tags: ''
       },
       watch: {
         pois: function(newPois) {
           chrome.storage.local.set({'pois': newPois}, function() {
-            RR.logDebug('New pois saved to local storage');
+            RR.logDebug('New pois saved to local storage.', newPois);
           });
         }
       }
@@ -335,18 +293,6 @@ const loadPanel = function(address) {
         RR.logDebug('Air pollution api response: ', airPollutionApiResult);
         const airQualityNum = airPollutionApiResult.value;
         $app.$data.airQuality = getAirQuality(airQualityNum);
-      });
-
-      loadLiftago(location, NODE5_LOCATION).then((liftagoApiResult) => {
-        RR.logDebug('liftago to_node5 data response:', liftagoApiResult);
-        $app.liftago.toNode5.price = formatPrice(liftagoApiResult[0].price);
-        $app.liftago.toNode5.duration = formatLiftagoDuration(liftagoApiResult[0]);
-      });
-
-      loadLiftago(MUZEUM_METRO_STATION_LOCATION, location).then((liftagoApiResult) => {
-        RR.logDebug('liftago from_muzeum data response:', liftagoApiResult);
-        $app.liftago.fromMuzeum.price = formatPrice(liftagoApiResult[0].price);
-        $app.liftago.fromMuzeum.duration = formatLiftagoDuration(liftagoApiResult[0]);
       });
 
       // tags
