@@ -19,14 +19,16 @@
            type="transit"
            :address-from="address"
            :pois="pois"
-           @poi-added="addPoi" />
+           @poi-added="addPoi"
+           @poi-removed="removePoi" />
 
      <div is="availibility-component"
           :label="$t('car.header')"
           type="driving"
           :address-from="address"
           :pois="pois"
-          @poi-added="addPoi" />
+          @poi-added="addPoi"
+          @poi-removed="removePoi" />
 
       <div class="row-title">
         <h3>{{$t('noise.header')}}</h3>
@@ -90,7 +92,7 @@
       </div>
       <div class="col text-right">
         {{ poi.duration }}
-        <i v-on:click="pois.splice(index, 1)" class="remove-address fa fa-minus-circle" aria-hidden="true" title="Remove address"></i>
+        <i v-on:click="removePoi(poi, index)" class="remove-address fa fa-minus-circle" aria-hidden="true" title="Remove address"></i>
       </div>
     </div>
     <div class="row" v-if="showInput">

@@ -185,6 +185,9 @@ const loadPanel = function(address) {
           this.$emit('poi-added', newPoiAddress, this.type);
           this.hideInputBox();
           this.newPoiAddress = '';
+        },
+        removePoi: function(poi, index) {
+          this.$emit('poi-removed', poi, index);
         }
       },
       watch: {
@@ -193,15 +196,26 @@ const loadPanel = function(address) {
           pois.forEach((element, index, array) => {
             var addressTo = element.address.input;
             var addressFrom = this.addressFrom;
+
+            var poiCopy = $.extend({}, element);
+            poiCopy.duration = 'N/A';
+            poiCopy.address.interpreted = 'N/A';
+            this.enrichedPois.splice(index, 1, poiCopy);
+
             RR.logDebug('Loading ', this.type, ' data from:', addressFrom, 'to: ', addressTo);
             loadAvailability(this.type, addressFrom, addressTo).then((data) => {
               RR.logDebug(this.type, ' data response: ', data);
-              var distancesArray = data.rows[0].elements;
-              var distance = distancesArray[0];
               var poiCopy = $.extend({}, element);
-              poiCopy.duration = distance.duration.text;
-              poiCopy.address.interpreted = data.destination_addresses[0];  // jshint ignore:line
-              this.enrichedPois.push(poiCopy);
+
+              try {
+                var distancesArray = data.rows[0].elements;
+                var distance = distancesArray[0];
+                poiCopy.address.interpreted = data.destination_addresses[0];
+                poiCopy.duration = distance.duration.text;
+              } catch (ex) {
+                RR.logError('Error when parsing availibility data: ', ex);
+              }
+              this.enrichedPois.splice(index, 1, poiCopy);
             });
           });
         }
@@ -217,6 +231,10 @@ const loadPanel = function(address) {
         addPoi: function(newPoi, type) {
           RR.logDebug('Adding POI', newPoi);
           this.pois.push({ address: { input: newPoi }, duration: '' });
+        },
+        removePoi : function(poi, index) {
+          RR.logDebug('Removing poi', poi, 'with index', index, ' from pois:', this.pois);
+          this.pois.splice(index, 1);
         }
       },
       data: {
@@ -250,10 +268,11 @@ const loadPanel = function(address) {
 
     chrome.storage.local.get('pois', function(items) {
       if (chrome.runtime.lastError) {
-        RR.logError('Error during obtaining pois from local storage. Error:', chrome.runtime.lastError);
+        RR.logError('Error during obtaining POIs from local storage. Error:', chrome.runtime.lastError);
       } else {
         if (typeof(items.pois) !== 'undefined' && items.pois !== null) {
           $app.$data.pois = items.pois;
+          RR.logInfo('POIs loaded from Chrome Local Storage: ', $app.$data.pois);
         } else {
           /* eslint-disable indent */
           $app.$data.pois = DEFAULT_DESTINATIONS
@@ -267,6 +286,7 @@ const loadPanel = function(address) {
                                    duration: ''
                                 };
                               });
+          RR.logInfo('No data founda in Chrome Local Storage. Using default data: ', $app.$data.pois);
           /* eslint-enable indent */
         }
       }
