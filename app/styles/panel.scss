@@ -83,8 +83,12 @@
     font-family: Arial,Helvetica,sans-serif;
   }
 
-  .toggle-app-button, .add-address, .remove-address {
+  .button {
     cursor: pointer;
+  }
+
+  .close-input-button {
+    font-size: 12px;
   }
 
   input.address-input {

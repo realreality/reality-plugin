@@ -156,7 +156,13 @@ const loadPanel = function(address) {
     Vue.config.silent = false;
     Vue.filter('street-name', streetName);
 
-    Vue.component('availibility-component', {
+    Vue.directive('focus', {
+      inserted: function(element) {
+        element.focus();
+      }
+    });
+
+    Vue.component('availibility-component', {      
       template: '#availability-component',
       props: ['pois', 'label', 'type', 'addressFrom'],
       data: function() {
