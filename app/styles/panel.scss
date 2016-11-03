@@ -83,7 +83,7 @@
     font-family: Arial,Helvetica,sans-serif;
   }
 
-  .toggle-app-button {
+  .toggle-app-button, .add-address, .remove-address {
     cursor: pointer;
   }
 
@@ -153,8 +153,4 @@
 
 .reality-panel-closed {
   right: -250px;
-}
-
-.availability-panel {
-  //display: table-caption;
 }

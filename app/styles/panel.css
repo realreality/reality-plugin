@@ -63,7 +63,7 @@
     color: white;
     margin: 0px;
     font-family: Arial,Helvetica,sans-serif; }
-  .reality-panel .toggle-app-button {
+  .reality-panel .toggle-app-button, .reality-panel .add-address, .reality-panel .remove-address {
     cursor: pointer; }
   .reality-panel input.address-input {
     color: black;
