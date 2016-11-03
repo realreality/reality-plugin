@@ -89,7 +89,7 @@ gulp.task('chromeManifest', () => {
 });
 
 gulp.task('babel', () => {
-  const files = ['background.js'];
+  const files = ['background.js', 'chromereload.js'];
 
   return gulp.src(files.map((filePath) => 'app/scripts.babel/' + filePath ))
       .pipe($.babel({
