@@ -22,7 +22,6 @@ const addStylesAndFonts = function() {
 
   const cssPath = chrome.extension.getURL('/styles/panel.css');
   $head.append('<link rel="stylesheet" href="' + cssPath + '" type="text/css" />');
-
 };
 
 const loadTags = function(type, location, radiusMeters, minCount, app) {
@@ -162,7 +161,7 @@ const loadPanel = function(address) {
       }
     });
 
-    Vue.component('availibility-component', {      
+    Vue.component('availibility-component', {
       template: '#availability-component',
       props: ['pois', 'label', 'type', 'addressFrom'],
       data: function() {
@@ -183,6 +182,7 @@ const loadPanel = function(address) {
         },
         cancelInputBox: function(event) {
           RR.logDebug('Cancelling input box');
+          ga('rr.send', 'event', 'Availibility-Component', 'cancel-input-box-clicked'); /* TODO: mbernhard - should be propagated as an event and ga called in event handler to decouple GA code and component */
           this.hideInputBox();
           this.newPoiAddress = '';
         },
@@ -233,13 +233,16 @@ const loadPanel = function(address) {
       methods: {
         toggleWidget: (event) => {
           $('.reality-panel').toggleClass('reality-panel-closed');
+          ga('rr.send', 'event', 'App-Panel', 'toggle-clicked');
         },
         addPoi: function(newPoi, type) {
           RR.logDebug('Adding POI', newPoi);
+          ga('rr.send', 'event', 'Availibility-Component', 'addPoi', type /*[eventLabel]*/);
           this.pois.push({ address: { input: newPoi }, duration: '' });
         },
         removePoi : function(poi, index) {
           RR.logDebug('Removing poi', poi, 'with index', index, ' from pois:', this.pois);
+          ga('rr.send', 'event', 'Availibility-Component', 'removePoi');
           this.pois.splice(index, 1);
         }
       },
@@ -360,11 +363,11 @@ const loadPanel = function(address) {
 let addressOfProperty;
 function initApp() {
   RR.logInfo('Initializing app widget');
-  addStylesAndFonts();
   addressOfProperty = extractAddressFromPage();
   RR.logDebug('address parsed: ', addressOfProperty);
 
   if (RR.String.isNotBlank(addressOfProperty)) {
+    addStylesAndFonts();
     loadPanel(addressOfProperty);
   } else {
     RR.logError('Cannot obtain address of property. URL:', window.location);
@@ -372,6 +375,13 @@ function initApp() {
 
   pollAddress();
 }
+
+/**
+  call ga (google analytics) in context of current page - we cannot directly call page functions here
+**/
+const ga = function ga(...args) {
+  window.location.href='javascript:ga(' + args.map(arg => '\'' + arg.toString() + '\'').join(',')  + '); void 0';
+};
 
 let pollAddressTimerId;
 function pollAddress() {
