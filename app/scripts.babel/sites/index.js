@@ -24,6 +24,21 @@ const priceAreaGuard = (price, area) => (area && !isNaN(area) && (price && !isNa
 
 // TODO add extractor's methods for sites dynamically
 export const extractors = {
+  getAddress(host) {
+    if (isCurrentHost(siteHosts.SREALITY, host)) {
+      return document.querySelector('.location-text').textContent;
+    }
+    if (isCurrentHost(siteHosts.BEZREALITKY, host)) {
+      return document.querySelector('header h2').textContent;
+    }
+    if (isCurrentHost(siteHosts.MAXIREALITY, host)) {
+      const addressRow = Array.from(document.querySelectorAll('tr'))
+        .filter(node => node.textContent.includes('Adresa'))[0];
+      return addressRow && addressRow.querySelector('td').innerHTML.replace(/<br>/g, ' ').trim();
+    }
+    RR.logError('cannot parse address on page: ', window.location);
+    return undefined;
+  },
   getPrices(host) {
     if (isCurrentHost(siteHosts.SREALITY, host)) {
       const propertyParams = Array.from(document.querySelectorAll('.params li'));
@@ -51,7 +66,7 @@ export const extractors = {
 
     if (isCurrentHost(siteHosts.MAXIREALITY, host)) {
       const areaRow = Array.from(document.querySelectorAll('#makler_zaklad > table tr'))
-        .filter(node => node.textContent.includes('Užitná plocha'))[0];
+        .filter(node => node.innerHTML.includes('Užitná plocha'))[0];
       const priceNode = document.querySelector('.two.price');
       const priceArray = priceNode && priceNode.textContent.match(/\d/g);
       const price = priceArray && parseInt(priceArray.join(''), 10);
