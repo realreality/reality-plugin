@@ -6,6 +6,9 @@ export const siteHosts = {
   },
   BEZREALITKY: {
     hostString: 'bezrealitky'
+  },
+  MAXIREALITY: {
+    hostString: 'maxirealitypraha'
   }
 };
 
@@ -17,6 +20,8 @@ export const siteHosts = {
  */
 export const isCurrentHost = (hostId, host) => host.includes(hostId.hostString);
 
+const priceAreaGuard = (price, area) => (area && !isNaN(area) && (price && !isNaN(price))) && price / area;
+
 // TODO add extractor's methods for sites dynamically
 export const extractors = {
   getPrices(host) {
@@ -27,7 +32,7 @@ export const extractors = {
 
       const price = priceRow && parseInt(priceRow.innerHTML.match(/\d/g).join(''), 10);
       const area = areaRow && parseInt(areaRow.innerHTML.match(/(\d){2,}/g)[0], 10);
-      return (area && !isNaN(area) && (price && !isNaN(price))) && price / area;
+      return priceAreaGuard(price, area);
     }
 
     if (isCurrentHost(siteHosts.BEZREALITKY, host)) {
@@ -41,7 +46,17 @@ export const extractors = {
 
       // DOMNode => "plocha:\n54 m²\n" => 54
       const area = areaRow && parseInt(areaRow.innerHTML.match(/(\d){2,}/g)[0], 10);
-      return (price && !isNaN(price)) && (area && !isNaN(area)) && price / area;
+      return priceAreaGuard(price, area);
+    }
+
+    if (isCurrentHost(siteHosts.MAXIREALITY, host)) {
+      const areaRow = Array.from(document.querySelectorAll('#makler_zaklad > table tr'))
+        .filter(node => node.textContent.includes('Užitná plocha'))[0];
+      const priceNode = document.querySelector('.two.price');
+      const priceArray = priceNode && priceNode.textContent.match(/\d/g);
+      const price = priceArray && parseInt(priceArray.join(''), 10);
+      const area = areaRow && areaRow.textContent.match(/(\d){2,}/g)[0];
+      return priceAreaGuard(price, area);
     }
 
     return undefined;
