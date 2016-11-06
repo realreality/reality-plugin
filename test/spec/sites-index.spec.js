@@ -106,6 +106,53 @@ const srealityString = `
 </html>
 `;
 
+const maxirealityString =
+`
+<html>
+<body>
+<div>
+  <div class="one price">
+    <big>Cena: </big>
+  </div>
+  <div class="two price"><big>4.990.000 Kč</big></div>
+  <div class="clear"></div>
+  <div id="makler_zaklad">
+    <div class="one price"><big>Cena: </big></div>
+    <div class="two price"><big>4.990.000 Kč</big></div>
+    <div class="clear"></div>
+    <table>
+      <tr>
+        <th class="one pozz">Poznámka k ceně: </th>
+        <td class="two pozz">plus provize RK a daň z nabytí nemovitosti </td>
+      </tr>
+    </table>
+    <table>
+        <th>Adresa: </th>
+        <td>Praha - Smíchov<br />Vrázova  <br /></td>
+      </tr>
+      <tr>
+        <th>Vlastnictvi: </th>
+        <td>V soukromém vlastnictví</td>
+      </tr>
+      <tr>
+        <th>Celková plocha: </th>
+        <td>77 m<sup>2</sup></td>
+      </tr>
+      <tr>
+        <th>Užitná plocha: </th>
+        <td>77 m<sup>2</sup></td>
+      </tr>
+      <tr>
+        <th>Energetická náročnost budovy</th>
+        <td>G - mimořádně nehospodárná</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</body>
+</html>
+`;
+
 describe('extractors', () => {
   describe('bezrealitky', () => {
     before(() => {
@@ -138,6 +185,23 @@ describe('extractors', () => {
 
     it('should return price per m2', () => {
       expect(extractors.getPrices(window.location.host)).to.equal(57042.25352112676);
+    });
+  });
+
+  describe('maxireality', () => {
+    before(() => {
+      global.document = jsdom.jsdom(maxirealityString);
+      global.window = document.defaultView;
+      jsdom.changeURL(window, 'http://www.maxirealitypraha.cz/byty/byty-3-1/?id=FOOBAR');
+    });
+
+    after(() => {
+      global.document = undefined;
+      global.window = undefined;
+    });
+
+    it('should return price per m2', () => {
+      expect(extractors.getPrices(window.location.host)).to.equal(64805.194805194806);
     });
   });
 });
