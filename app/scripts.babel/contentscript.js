@@ -3,6 +3,7 @@
 import RR from './rr';
 import RRLocales from './i18n/locales.js';
 import { extractors } from './sites/index';
+import { streetNamePredicate, formatPrice } from './utils';
 
 RR.logInfo('contentscript loaded');
 
@@ -47,20 +48,16 @@ const loadAvailability = function(travelMode, fromAddress, toAddress) {
   return $.get(distanceMatrixApiUrl);
 };
 
-const formatPrice = function formatPrice(price) {
-  return Math.round(price) + ' Kč';
-};
-
 const loadParkingZones = function(location) {
-  return $.get(IPR_REST_API + '/zones-count?lat=' + location.lat + '&lon=' + location.lng + '&dist=500');
+  return $.get(`${IPR_REST_API}/zones-count?lat=${location.lat}&lon=${location.lng}&dist=500`);
 };
 
 const loadNoise = function(location, night) {
-  return $.get(IPR_REST_API + '/noise?lat=' + location.lat + '&lon=' + location.lng + '&dist=500' + '&at-night=' + night);
+  return $.get(`${IPR_REST_API}/noise?lat=${location.lat}&lon=${location.lng}&dist=500&at-night=${night}`);
 };
 
 const loadAirPollution = function(location) {
-  return $.get(IPR_REST_API + '/atmosphere?lat=' + location.lat + '&lon=' + location.lng);
+  return $.get(`${IPR_REST_API}/atmosphere?lat=${location.lat}&lon=${location.lng}`);
 };
 
 const getAirQuality = function(airQualityNum) {
@@ -86,35 +83,6 @@ const getNoiseLevelAsText = function(noiseLevels) {
     case (highValue < 30):
       return Vue.t('noise.value.veryLow');
   }
-};
-
-const streetName = function(address) {
-  if (typeof(address) !== 'undefined' && address !== null) {
-    return address.indexOf(',') > 0 ? address.split(',')[0] : address;
-  } else {
-    return address;
-  }
-};
-
-const extractAddressFromPage = function() {
-  const currentHost = window.location.host;
-
-  switch (true) {
-    case (currentHost.includes('sreality.cz')):
-      return $('.location-text').text();
-    case (currentHost.includes('bezrealitky.cz')):
-      return $('header h2').first().text();
-    case (currentHost.includes('maxirealitypraha.cz')):
-      return $('tr:contains("Adresa")').find('td').html().replace(/<br>/g, ' ').trim();
-    default:
-      RR.logError('cannot parse address on page: ', window.location);
-      return null;
-  }
-
-};
-
-const getPriceBySite = function getPriceBySite() {
-  return extractors.getPrices(window.location.host); // { perMeterLiving, perMeterArea }
 };
 
 const initLanguage = function() {
@@ -153,7 +121,7 @@ const loadPanel = function(address) {
 
     Vue.config.devtools = true;
     Vue.config.silent = false;
-    Vue.filter('street-name', streetName);
+    Vue.filter('street-name', streetNamePredicate);
 
     Vue.directive('focus', {
       inserted: function(element) {
@@ -272,7 +240,7 @@ const loadPanel = function(address) {
       }
     });
 
-    const pricePerSquareMeter = getPriceBySite();
+    const pricePerSquareMeter = extractors.getPrices(window.location.host);
     $app.$data.details.price.perSquareMeter = pricePerSquareMeter ? `${formatPrice(pricePerSquareMeter)}/m2`: 'N/A';
 
     chrome.storage.local.get('pois', function(items) {
@@ -363,7 +331,7 @@ const loadPanel = function(address) {
 let addressOfProperty;
 function initApp() {
   RR.logInfo('Initializing app widget');
-  addressOfProperty = extractAddressFromPage();
+  addressOfProperty = extractors.getAddress(window.location.host);
   RR.logDebug('address parsed: ', addressOfProperty);
 
   if (RR.String.isNotBlank(addressOfProperty)) {
@@ -386,7 +354,7 @@ const ga = function ga(...args) {
 let pollAddressTimerId;
 function pollAddress() {
   //RR.logDebug('Polling address...'); // you can filter it out in console with regexp filter ^(?=.*?\b.*\b)((?!Poll).)*$ (match all except lines with 'Poll' match)
-  const currentAddressOfProperty = extractAddressFromPage();
+  const currentAddressOfProperty = extractors.getAddress(window.location.host);
   //RR.logDebug('Polled address:', currentAddressOfProperty);
   if (currentAddressOfProperty !== addressOfProperty) {
     $(document).trigger(RR.ADDRESS_CHANGED_EVENT);
