@@ -2,7 +2,7 @@
 
 import RR from './rr';
 import RRLocales from './i18n/locales.js';
-import { extractors } from './sites/index';
+import { extractors as pageDataExtractor } from './sites/index';
 import { streetNamePredicate, formatPrice } from './utils';
 
 RR.logInfo('contentscript loaded');
@@ -19,14 +19,14 @@ const addStyles = function() {
     'bower_components/font-awesome/css/font-awesome.min.css',
     '/styles/panel.css'
   ];
-  addStylesAsUris(stylesRelativePath);
+  addStylesByUri(stylesRelativePath);
 };
 
-const addStylesAsUris = function(styleUris) {
+const addStylesByUri = function(styleRelativePath) {
   const $head = $('head');
 
-  styleUris
-    .map(relativeUri => chrome.extension.getURL(relativeUri))
+  styleRelativePath
+    .map(relativePath => chrome.extension.getURL(relativePath))
     .forEach(uri => {
       if ($head.find(`*[href="${uri}"]`).length === 0) {
         $head.append(`<link rel="stylesheet" href="${uri}" type="text/css" />`);
@@ -249,7 +249,7 @@ const loadPanel = function(address) {
       }
     });
 
-    const pricePerSquareMeter = extractors.getPrices(window.location.host);
+    const pricePerSquareMeter = pageDataExtractor.getPrices(window.location.host);
     $app.$data.details.price.perSquareMeter = pricePerSquareMeter ? `${formatPrice(pricePerSquareMeter)}/m2`: 'N/A';
 
     chrome.storage.local.get('pois', function(items) {
@@ -340,7 +340,7 @@ const loadPanel = function(address) {
 let addressOfProperty;
 function initApp() {
   RR.logInfo('Initializing app widget');
-  addressOfProperty = extractors.getAddress(window.location.host);
+  addressOfProperty = pageDataExtractor.getAddress(window.location.host);
   RR.logDebug('address parsed: ', addressOfProperty);
 
   if (RR.String.isNotBlank(addressOfProperty)) {
@@ -363,7 +363,7 @@ const ga = function ga(...args) {
 let pollAddressTimerId;
 function pollAddress() {
   //RR.logDebug('Polling address...'); // you can filter it out in console with regexp filter ^(?=.*?\b.*\b)((?!Poll).)*$ (match all except lines with 'Poll' match)
-  const currentAddressOfProperty = extractors.getAddress(window.location.host);
+  const currentAddressOfProperty = pageDataExtractor.getAddress(window.location.host);
   //RR.logDebug('Polled address:', currentAddressOfProperty);
   if (currentAddressOfProperty !== addressOfProperty) {
     $(document).trigger(RR.ADDRESS_CHANGED_EVENT);

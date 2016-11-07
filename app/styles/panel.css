@@ -81,14 +81,16 @@
     text-align: left; }
     .reality-panel .content .row {
       width: 100%;
-      columns: 2; }
+      columns: 2;
+      padding-top: 0px !important;
+      padding-bottom: 0px !important; }
     .reality-panel .content .row-title {
       width: 100%;
       columns: 1; }
     .reality-panel .content .col {
       min-width: 100px;
-      padding-left: 15px;
-      padding-right: 10px;
+      padding-left: 15px !important;
+      padding-right: 10px !important;
       font-size: 12px;
       width: 50%; }
     .reality-panel .content .text-right {
