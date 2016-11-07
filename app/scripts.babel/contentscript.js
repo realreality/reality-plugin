@@ -372,11 +372,6 @@ function pollAddress() {
   pollAddressTimerId = setTimeout(pollAddress, 500);
 }
 
-window.addEventListener('load', function() {
-  RR.logInfo('page load event called');
-  initApp();
-});
-
 $(document).on(RR.ADDRESS_CHANGED_EVENT, (event) => {
   RR.logDebug('Address change in page detected.');
 
@@ -385,3 +380,5 @@ $(document).on(RR.ADDRESS_CHANGED_EVENT, (event) => {
 
   initApp();
 });
+
+initApp();

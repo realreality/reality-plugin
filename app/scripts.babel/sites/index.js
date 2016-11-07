@@ -1,5 +1,13 @@
 'use strict';
 
+const textOrNull = textElement => {
+  if (textElement === null) {
+    return null;
+  } else {
+    return textElement.textContent;
+  }
+};
+
 export const siteHosts = {
   SREALITY: {
     hostString: 'sreality'
@@ -26,18 +34,18 @@ const priceAreaGuard = (price, area) => (area && !isNaN(area) && (price && !isNa
 export const extractors = {
   getAddress(host) {
     if (isCurrentHost(siteHosts.SREALITY, host)) {
-      return document.querySelector('.location-text').textContent;
+      return textOrNull(document.querySelector('.location-text'));
     }
     if (isCurrentHost(siteHosts.BEZREALITKY, host)) {
-      return document.querySelector('header h2').textContent;
+      return textOrNull(document.querySelector('header h2'));
     }
     if (isCurrentHost(siteHosts.MAXIREALITY, host)) {
       const addressRow = Array.from(document.querySelectorAll('tr'))
         .filter(node => node.textContent.includes('Adresa'))[0];
-      return addressRow && addressRow.querySelector('td').innerHTML.replace(/<br>/g, ' ').trim();
+      return addressRow && addressRow.querySelector('td').innerHTML.replace(/<br>/g, ' ').trim();      
     }
     RR.logError('cannot parse address on page: ', window.location);
-    return undefined;
+    return null;
   },
   getPrices(host) {
     if (isCurrentHost(siteHosts.SREALITY, host)) {
