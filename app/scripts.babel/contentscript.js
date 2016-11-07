@@ -12,17 +12,26 @@ chrome.runtime.sendMessage({ 'switchIconOn' : true });
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
 const IPR_REST_API = 'https://realreality.publicstaticvoidmain.cz/rest';
 
-const addStylesAndFonts = function() {
+const addStyles = function() {
   RR.logDebug('Adding styles and fonts..');
+  var stylesRelativePath = [
+    '/styles/cssnormalize-context-min.css',
+    'bower_components/font-awesome/css/font-awesome.min.css',
+    '/styles/panel.css'
+  ];
+  addStylesAsUris(stylesRelativePath);
+};
+
+const addStylesAsUris = function(styleUris) {
   const $head = $('head');
-  const normalizeCssPath = chrome.extension.getURL('/styles/cssnormalize-context-min.css');
-  $head.append('<link rel="stylesheet" href="' + normalizeCssPath + '" type="text/css" />');
 
-  const fontPath = chrome.extension.getURL('bower_components/font-awesome/css/font-awesome.min.css');
-  $head.append('<link rel="stylesheet" href="' + fontPath + '" type="text/css" />');
-
-  const cssPath = chrome.extension.getURL('/styles/panel.css');
-  $head.append('<link rel="stylesheet" href="' + cssPath + '" type="text/css" />');
+  styleUris
+    .map(relativeUri => chrome.extension.getURL(relativeUri))
+    .forEach(uri => {
+      if ($head.find(`*[href="${uri}"]`).length === 0) {
+        $head.append(`<link rel="stylesheet" href="${uri}" type="text/css" />`);
+      }
+    });
 };
 
 const loadTags = function(type, location, radiusMeters, minCount, app) {
@@ -335,7 +344,7 @@ function initApp() {
   RR.logDebug('address parsed: ', addressOfProperty);
 
   if (RR.String.isNotBlank(addressOfProperty)) {
-    addStylesAndFonts();
+    addStyles();
     loadPanel(addressOfProperty);
   } else {
     RR.logError('Cannot obtain address of property. URL:', window.location);
