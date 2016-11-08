@@ -5,6 +5,7 @@
 const RRLocales = {};
 
 RRLocales.cs = {
+  contactUs: 'Chcete nám něco říct?',
   publicTransit: {
     header: 'MHD'
   },

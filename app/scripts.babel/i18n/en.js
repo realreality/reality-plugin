@@ -5,6 +5,7 @@
 const RRLocales = {};
 
 RRLocales.en = {
+  contactUs: 'Any feedback? Tell us!',
   publicTransit: {
     header: 'Public transit'
   },

@@ -131,6 +131,7 @@
     .text-right {
       text-align: right;
     }
+
   }
 
   .footer {
@@ -152,6 +153,15 @@
         float: left;
         margin-bottom: 5px;
         cursor: default;
+      }
+    }
+
+    .contact-us {
+      text-align: center;
+      padding-bottom: 10px;
+
+      a {
+        font-size: 12px;
       }
     }
   }

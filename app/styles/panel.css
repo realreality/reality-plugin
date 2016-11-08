@@ -112,6 +112,11 @@
         float: left;
         margin-bottom: 5px;
         cursor: default; }
+    .reality-panel .footer .contact-us {
+      text-align: center;
+      padding-bottom: 10px; }
+      .reality-panel .footer .contact-us a {
+        font-size: 12px; }
 
 .reality-panel-closed {
   right: -250px; }
