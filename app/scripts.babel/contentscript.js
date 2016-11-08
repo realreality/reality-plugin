@@ -19,19 +19,17 @@ const addStyles = function() {
     'bower_components/font-awesome/css/font-awesome.min.css',
     '/styles/panel.css'
   ];
-  addStylesByUri(stylesRelativePath);
-};
 
-const addStylesByUri = function(styleRelativePath) {
-  const $head = $('head');
-
-  styleRelativePath
+  const $head = $('head'); /* it could be in forEach loop, but this is more performant */
+  stylesRelativePath
     .map(relativePath => chrome.extension.getURL(relativePath))
     .forEach(uri => {
-      if ($head.find(`*[href="${uri}"]`).length === 0) {
+      const notAlreadyThere = $head.find(`*[href="${uri}"]`).length === 0;
+      if (notAlreadyThere) { 
         $head.append(`<link rel="stylesheet" href="${uri}" type="text/css" />`);
       }
     });
+
 };
 
 const loadTags = function(type, location, radiusMeters, minCount, app) {
@@ -272,7 +270,7 @@ const loadPanel = function(address) {
                                    duration: ''
                                 };
                               });
-          RR.logInfo('No data founda in Chrome Local Storage. Using default data: ', $app.$data.pois);
+          RR.logInfo('No data found in Chrome Local Storage. Using default data: ', $app.$data.pois);
           /* eslint-enable indent */
         }
       }
@@ -341,7 +339,7 @@ let addressOfProperty;
 function initApp() {
   RR.logInfo('Initializing app widget');
   addressOfProperty = pageDataExtractor.getAddress(window.location.host);
-  RR.logDebug('address parsed: ', addressOfProperty);
+  RR.logDebug('Address parsed: ', addressOfProperty);
 
   if (RR.String.isNotBlank(addressOfProperty)) {
     addStyles();
