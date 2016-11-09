@@ -1,6 +1,6 @@
 {
   "name": "Real Reality",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "manifest_version": 2,
   "description": "Adds little side panel to some real estate sites which shows you quality of location eg. commutation times, air pollution.",
   "icons": {
