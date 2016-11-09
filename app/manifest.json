@@ -15,12 +15,14 @@
     "https://*/*",
     "pageCapture",
     "webRequest",
-    "*://*.google.com/"
+    "*://*.google.com/",
+    "*://*.googleapis.com/"
   ],
   "web_accessible_resources": [
    "panel.html",
    "styles/panel.css",
    "styles/cssnormalize-context-min.css",
+   "bower_components/geocomplete/jquery.geocomplete.min.js",
    "bower_components/font-awesome/css/font-awesome.min.css",
    "bower_components/font-awesome/fonts/fontawesome-webfont.eot",
    "bower_components/font-awesome/fonts/fontawesome-webfont.svg",
@@ -37,14 +39,16 @@
       ],
       "js": [
         "bower_components/jquery/dist/jquery.min.js",
+        "bower_components/geocomplete/jquery.geocomplete.min.js",
         "bower_components/vue/dist/vue.min.js",
-        "bower_components/vue-i18n/dist/vue-i18n.min.js",        
+        "bower_components/vue-i18n/dist/vue-i18n.min.js",
         "scripts/contentscript.js"
       ],
       "run_at": "document_end",
       "all_frames": false
     }
   ],
+  "content_security_policy": "script-src 'self' https://maps.googleapis.com; object-src 'self'",
   "browser_action": {
     "default_icon": {
       "19": "images/icon-19-off.png",

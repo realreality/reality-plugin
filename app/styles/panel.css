@@ -1,3 +1,8 @@
+/* pac-container is html widget of jQuery.geocomplete */
+.pac-container {
+  z-index: 1000001 !important;
+  /* we need to override it's original zindex definition otherwise it's under our widget */ }
+
 .reality-panel {
   position: fixed;
   top: 60px;
@@ -70,7 +75,9 @@
   .reality-panel input.address-input {
     color: black;
     margin-left: 15px;
-    max-width: 130px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 80%;
     font-size: 12px;
     padding-left: 5px; }
   .reality-panel .content {

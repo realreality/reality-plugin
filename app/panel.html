@@ -102,7 +102,7 @@
         <i v-on:click="removePoi(poi, index)" class="button remove-address fa fa-minus-circle" aria-hidden="true" title="Remove address"></i>
       </div>
     </div>
-    <div class="row-title" v-if="showInput">
+    <div class="row-title" v-show="showInput">
       <input class="address-input"
              v-focus
              placeholder="Address"

@@ -12,6 +12,7 @@ chrome.runtime.sendMessage({ 'switchIconOn' : true });
 const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
 const IPR_REST_API = 'https://realreality.publicstaticvoidmain.cz/rest';
 
+
 const addStyles = function() {
   RR.logDebug('Adding styles and fonts..');
   var stylesRelativePath = [
@@ -25,7 +26,7 @@ const addStyles = function() {
     .map(relativePath => chrome.extension.getURL(relativePath))
     .forEach(uri => {
       const notAlreadyThere = $head.find(`*[href="${uri}"]`).length === 0;
-      if (notAlreadyThere) { 
+      if (notAlreadyThere) {
         $head.append(`<link rel="stylesheet" href="${uri}" type="text/css" />`);
       }
     });
@@ -244,6 +245,22 @@ const loadPanel = function(address) {
             RR.logDebug('New pois saved to local storage.', newPois);
           });
         }
+      },
+      mounted: function() {
+        RR.logDebug('mounted');
+
+        //TODO michalbcz I know using of setTimeout is pure desparation, but when use it without it or in jQuery#ready it throw error that geocomplete is not defined
+        $('head').append(`
+          <script>
+            setTimeout(function() {
+              $("input.address-input").geocomplete({
+                  types: ["geocode", "establishment"],
+                  componentRestrictions: { country: "CZ" }
+                });
+            }, 1000);
+          </script>
+        `);
+
       }
     });
 
@@ -335,6 +352,13 @@ const loadPanel = function(address) {
   }); // getUrl panel.html
 }; // loadPanel
 
+const addScripts = function() {
+  const geocompleteJsPath = chrome.extension.getURL('bower_components/geocomplete/jquery.geocomplete.min.js');
+  const $head = $('head');
+  $head.append(`<script src="${geocompleteJsPath}"></script>`);
+  $head.append(`<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places"></script>`);
+};
+
 let addressOfProperty;
 function initApp() {
   RR.logInfo('Initializing app widget');
@@ -343,6 +367,7 @@ function initApp() {
 
   if (RR.String.isNotBlank(addressOfProperty)) {
     addStyles();
+    addScripts();
     loadPanel(addressOfProperty);
   } else {
     RR.logError('Cannot obtain address of property. URL:', window.location);
