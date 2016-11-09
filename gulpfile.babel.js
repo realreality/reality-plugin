@@ -65,7 +65,7 @@ gulp.task('html',  () => {
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.cleanCss({compatibility: '*'})))
     .pipe($.sourcemaps.write())
-    .pipe($.if('*.html', $.htmlmin({removeComments: true, collapseWhitespace: true})))
+    /*.pipe($.if('*.html', $.htmlmin({removeComments: true, collapseWhitespace: true})))*/ /* this mess up panel.html */
     .pipe(gulp.dest('dist'));
 });
 
