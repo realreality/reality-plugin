@@ -1,0 +1,52 @@
+{
+  "name": "Real Reality",
+  "version": "0.0.12",
+  "manifest_version": 2,
+  "description": "Adds little side panel to some real estate sites which shows you quality of location eg. commutation times, air pollution.",
+  "icons": {
+    "16": "images/icon-16.png",
+    "128": "images/icon-128.png"
+  },
+  "default_locale": "en",
+  "permissions": [
+    "storage",
+    "tabs",
+    "http://*/*",
+    "https://*/*",
+    "pageCapture",
+    "webRequest",
+    "*://*.google.com/",
+    "*://*.googleapis.com/"
+  ],
+  "web_accessible_resources": [
+    "panel.html",
+    "css/panel.css",
+    "css/font-awesome.css",
+    "fonts/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.bezrealitky.cz/*",
+        "*://*.sreality.cz/*",
+        "*://*.maxirealitypraha.cz/*"
+      ],
+      "js": [
+        "contentscript.bundle.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "browser_action": {
+    "default_icon": {
+      "19": "images/icon-19-off.png",
+      "38": "images/icon-38-off.png"
+    },
+    "default_title": "Real Reality"
+  },
+  "background": {
+    "scripts": ["background.bundle.js"]
+  },
+  "content_security_policy": "script-src 'self' https://maps.googleapis.com; 'unsafe-eval' http://localhost:%PORT%; object-src 'self'"
+}

@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { extractors } from '../../app/scripts.babel/sites/index';
-import jsdom from 'jsdom';
+import { extractors } from './index.js';
 
 const bezRealitkyString = `
 <html>
@@ -114,7 +113,7 @@ const srealityString = `
 `;
 
 const maxirealityString =
-`
+  `
 <html>
 <body>
 <div>
@@ -161,16 +160,18 @@ const maxirealityString =
 `;
 
 describe('extractors', () => {
-  describe('bezrealitky', () => {
-    before(() => {
-      global.document = jsdom.jsdom(bezRealitkyString);
-      global.window = document.defaultView;
-      jsdom.changeURL(window, 'https://www.bezrealitky.cz/nemovitosti-byty-domy/12345');
-    });
 
-    after(() => {
-      global.document = undefined;
-      global.window = undefined;
+  afterEach(() => {
+    delete window.location.href;
+  });
+
+  describe('bezrealitky', () => {
+    beforeEach(() => {
+      global.document.body.innerHTML = bezRealitkyString;
+      Object.defineProperty(window.location, 'host', {
+        writable: true,
+        value: 'www.bezrealitky.cz'
+      });
     });
 
     it('should return price per m2', () => {
@@ -183,15 +184,12 @@ describe('extractors', () => {
   });
 
   describe('sreality', () => {
-    before(() => {
-      global.document = jsdom.jsdom(srealityString);
-      global.window = document.defaultView;
-      jsdom.changeURL(window, 'https://www.sreality.cz/detail/prodej/byt/3+1/praha');
-    });
-
-    after(() => {
-      global.document = undefined;
-      global.window = undefined;
+    beforeEach(() => {
+      global.document.body.innerHTML = srealityString;
+      Object.defineProperty(window.location, 'host', {
+        writable: true,
+        value: 'www.sreality.cz'
+      });
     });
 
     it('should return price per m2', () => {
@@ -204,15 +202,12 @@ describe('extractors', () => {
   });
 
   describe('maxireality', () => {
-    before(() => {
-      global.document = jsdom.jsdom(maxirealityString);
-      global.window = document.defaultView;
-      jsdom.changeURL(window, 'http://www.maxirealitypraha.cz/byty/byty-3-1/?id=FOOBAR');
-    });
-
-    after(() => {
-      global.document = undefined;
-      global.window = undefined;
+    beforeEach(() => {
+      global.document.body.innerHTML = maxirealityString;
+      Object.defineProperty(window.location, 'host', {
+        writable: true,
+        value: 'www.maxirealitypraha.cz'
+      });
     });
 
     it('should return price per m2', () => {
