@@ -131,6 +131,7 @@ const initLanguage = function() {
     const appLanguage = languages[0];
     RR.logInfo('Selected app language: ', appLanguage);
     Vue.config.lang = appLanguage;
+    Vue.config.fallbackLang = 'en';
 
     Object.keys(RRLocales).forEach(function (lang) {
       RR.logDebug('RRLocales key: ', lang, '. Localization bundle: ', RRLocales[lang]);
