@@ -4,3 +4,4 @@ secrets.*.js
 .idea
 coverage
 *.log
+.env

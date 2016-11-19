@@ -20,4 +20,8 @@ RR.String.isNotBlank = function(str) {
   return !this.isBlank(str);
 };
 
+export const GMAPS_API_KEY = process.env.GMAPS_API_KEY;
+export const IPR_REST_API = process.env.IPR_REST_API;
+export const MAPS_URL = 'https://maps.googleapis.com/maps/api';
+
 export default RR;
