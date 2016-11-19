@@ -69,6 +69,17 @@ RRLocales.cs = {
       title: 'PARKOVACÍ ZÓNY',
       desc: 'Placené parkování (např. oranžové zóny) v okolí objektu.'
     }
+  },
+  availibility: {
+    add_address: {
+      button_desc: 'Přidat adresu'
+    },
+    remove_address: {
+      button_desc: 'Odstranit'
+    },
+    cancel_input_address_button: {
+      desc: 'Zavřít'
+    }
   }
 };
 

@@ -69,6 +69,17 @@ RRLocales.en = {
       title: 'PAID PARKING',
       desc: 'Paid parking available (ie. orange zones or some combined ones) in close distance.'
     }
+  },
+  availibility: {
+    add_address: {
+      button_desc: 'Add address'
+    },
+    remove_address: {
+      button_desc: 'Remove'
+    },
+    cancel_input_address_button: {
+      desc: 'Close input...'
+    }
   }
 };
 

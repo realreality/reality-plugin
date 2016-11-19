@@ -90,7 +90,7 @@
   <div class="availability-panel">
     <div class="row-title">
       <h3>
-         {{ label }} <i v-on:click="showInputBox" class="button add-address fa fa-plus-circle" aria-hidden="true" title="Add new address"></i>
+         {{ label }} <i v-on:click="showInputBox" class="button add-address fa fa-plus-circle" aria-hidden="true" :title="$t('availibility.add_address.button_desc')"></i>
       </h3>
     </div>
     <div class="row" v-for="(poi, index) in enrichedPois">
@@ -99,7 +99,7 @@
       </div>
       <div class="col text-right">
         {{ poi.duration }}
-        <i v-on:click="removePoi(poi, index)" class="button remove-address fa fa-minus-circle" aria-hidden="true" title="Remove address"></i>
+        <i v-on:click="removePoi(poi, index)" class="button remove-address fa fa-minus-circle" aria-hidden="true" :title="$t('availibility.remove_address.button_desc')"></i>
       </div>
     </div>
     <div class="row-title" v-show="showInput">
@@ -111,7 +111,7 @@
              v-on:keyup.stop="" v-on:keydown.stop="" v-on:keypress.stop=""
              v-on:keyup.enter.stop="addPoi"
              v-on:keyup.esc.stop="cancelInputBox" /> <!-- keyup.esc doesn't work TODO: solve it, meanwhile we have special close button next to input box -->
-      <i v-on:click="cancelInputBox" class="button close-input-button fa fa-times-circle" aria-hidden="true" title="Close POI input box"></i>
+      <i v-on:click="cancelInputBox" class="button close-input-button fa fa-times-circle" aria-hidden="true" :title="$t('availibility.cancel_input_address_button.desc')"></i>
     </div>
   </div>
 </script>
