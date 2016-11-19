@@ -79,7 +79,8 @@ RRLocales.en = {
     },
     cancel_input_address_button: {
       desc: 'Close input...'
-    }
+    },
+    address_input_label: 'Address'
   }
 };
 

@@ -70,7 +70,7 @@ RRLocales.cs = {
       desc: 'Placené parkování (např. oranžové zóny) v okolí objektu.'
     }
   },
-  availibility: {
+  availability: {
     add_address: {
       button_desc: 'Přidat adresu'
     },
@@ -79,7 +79,8 @@ RRLocales.cs = {
     },
     cancel_input_address_button: {
       desc: 'Zavřít'
-    }
+    },
+    address_input_label: 'Adresa zájmu'
   }
 };
 
