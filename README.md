@@ -1,4 +1,4 @@
-# Real Reality
+# Real Reality (winner of [Prague Hacks 2016 Hackathon](http://www.praguehacks.cz/)) 
 
 When you want to buy or rent an apartment (house) you do (or should do) research about things that matter to you. Air pollution, parking, public transport availability (commutation time!), noisiness, places for kids...you name it. But it is unfortunately very time consuming. Until now! Now you've got our beautiful Chrome extension which do all the research for you. Well right now just part of it, but more will come!
 
@@ -41,3 +41,5 @@ IPR API is backed by [IPR Data Rest API Server](https://github.com/realreality/r
 ## Notice
 
 Thanks to Samuel Simões - this extension is built on top of the scaffold [chrome-extension-webpack-boilerplate](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate)
+
+Thanks to [Institut plánování a rozvoje hlavního města Prahy](http://www.iprpraha.cz/) for [releasing used data sets (like air pollution)](http://www.geoportalpraha.cz/cs/clanek/271/prazska-otevrena-data) for free.
