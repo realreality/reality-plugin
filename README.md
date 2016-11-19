@@ -16,7 +16,7 @@ Original idea was that Real Reality will be webpage where you can see mashup of 
 
 1. get code `git clone git@github.com:realreality/reality-plugin.git`
 1. inside run `yarn` / `npm install` to install dependencies
-1. `yarn start` / `npm start` starts a dev servers and creates a `./build` directory in `<project-root>` which can be loaded as unpacked extension
+1. `yarn start` / `npm start` starts a dev servers and creates a `./build` directory in `<project-root>` which can be loaded as unpacked extension in Chrome (type to url bar `chrome://extensions`)
 1. `<your-code-here>`
 1. to get the production version run `yarn build` / `npm run build`
 1. check the code style with `yarn lint` / `npm run lint`
