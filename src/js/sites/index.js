@@ -1,5 +1,3 @@
-'use strict';
-
 const textOrNull = textElement => {
   if (textElement === null) {
     return null;

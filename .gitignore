@@ -1,11 +1,6 @@
 node_modules
-temp
-.tmp
-dist
-.sass-cache
-app/bower_components
-test/bower_components
-package
-app/scripts
+build
+secrets.*.js
 .idea
+coverage
 *.log

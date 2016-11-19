@@ -2,24 +2,25 @@
   "env": {
     "browser": true,
     "es6": true,
-    "mocha": true
+    "jest": true,
+    "node": true
   },
   "extends": "eslint:recommended",
   "parserOptions": {
     "sourceType": "module"
   },
   "rules": {
-    "indent": [
-      "warn",
-      2,
+    "indent": [ "warn", 2,
       { "SwitchCase": 1 }
     ],
+    "key-spacing": "error",
     "linebreak-style": [
       "error",
       "unix"
     ],
     "no-unused-vars": ["warn", { "vars": "all", "args": "none" }],
     "no-console": ["off"],
+    "no-var": "error",
     "prefer-const": "error",
     "quotes": [
       "error",
