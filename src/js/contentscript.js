@@ -42,13 +42,13 @@ const initAutoCompleteFields = () => {
     <script>
       function initAutocomplete() {
         const inputs = document.querySelectorAll("input.address-input");
-        new google.maps.places.Autocomplete(inputs[0])
-        new google.maps.places.Autocomplete(inputs[1])
+        inputs.forEach(function(input) {
+          new google.maps.places.Autocomplete(input, { componentRestrictions: { country: "CZ" } });
+        });
       }
-    </script>
-    <script>
+
       setTimeout(function() {
-        if (!window.google) {
+        if (!window.google || !window.google.places) {
           const scriptTag = document.createElement('script');
           scriptTag.type= "text/javascript";
           scriptTag.defer = true;
@@ -56,9 +56,7 @@ const initAutoCompleteFields = () => {
           scriptTag.src="https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initAutocomplete"
           document.head.appendChild(scriptTag)
         } else {
-          const inputs = document.querySelectorAll("input.address-input");
-          new google.maps.places.Autocomplete(inputs[0])
-          new google.maps.places.Autocomplete(inputs[1])
+          initAutocomplete();
         }
       }, 1000);
     </script>
