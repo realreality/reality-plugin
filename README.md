@@ -38,8 +38,14 @@ Main script is in **./src/js/contentscript.js**
 
 IPR API is backed by [IPR Data Rest API Server](https://github.com/realreality/reality-backend).
 
-## Notice
+## Thanks to
 
-Thanks to Samuel Simões - this extension is built on top of the scaffold [chrome-extension-webpack-boilerplate](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate)
+[Institut plánování a rozvoje hlavního města Prahy](http://www.iprpraha.cz/) for [releasing used data sets (like air pollution)](http://www.geoportalpraha.cz/cs/clanek/271/prazska-otevrena-data) for free.
 
-Thanks to [Institut plánování a rozvoje hlavního města Prahy](http://www.iprpraha.cz/) for [releasing used data sets (like air pollution)](http://www.geoportalpraha.cz/cs/clanek/271/prazska-otevrena-data) for free.
+[Open Society Fund Praha / Fond Otakara Motejla](http://www.otevrenadata.cz/) for their [open data](https://en.wikipedia.org/wiki/Open_data) activities (like organizing Prague Hacks hackathon and other similar events, propagation the open data idea in goverment institutions..etc.). 
+
+ Samuel Simões - this extension is built on top of the scaffold [chrome-extension-webpack-boilerplate](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate)
+
+
+
+
