@@ -1,6 +1,7 @@
 import 'expose?$!expose?jQuery!jquery/dist/jquery.min.js';
 import 'expose?Vue!vue/dist/vue.min.js'; // Can't just import Vue from 'vue' because of async dependencies
 import VueI18n from 'vue-i18n';
+import moment from 'moment';
 
 import template from 'html!../templates/panel.html';
 import RR from './rr';
@@ -76,10 +77,18 @@ const loadTags = function(type, location, radiusMeters, minCount, app) {
 
 const loadAvailability = function(travelMode, fromAddress, toAddress) {
   // TODO: nastavit spravny cas, respektive udelat jeste nocni casy
+  const DEPARTURE_TIME = moment()
+                            /* we need this date to be stable at least during a month because of caching,
+                               1 month in future seems as maximum for transit data */
+                            .startOf('month').add(1, 'weeks').add(2, 'months')
+                            .isoWeekday('Monday').startOf('day')
+                            .hours(8).minutes(30); /* assume that on monday 8:30 will be worst traffic */
+  RR.logDebug('departure time: ', DEPARTURE_TIME.toObject());
   const DIST_MATRIX_URL = `${MAPS_URL}/distancematrix/json`;
   const distanceMatrixApiUrl = DIST_MATRIX_URL + '?origins=' + encodeURI(fromAddress) +
                           '&destinations=' + encodeURI(toAddress) +
                           '&mode=' + travelMode +
+                          '&departure_time=' + DEPARTURE_TIME.unix() +
                           '&language=cs&key=' + API_KEY;
 
   return fetch(distanceMatrixApiUrl).then(response => response.json());
