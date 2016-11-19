@@ -160,6 +160,9 @@ const loadPanel = function(address) {
   Vue.directive('focus', {
     inserted: function(element) {
       element.focus();
+    },
+    update: function(element) {
+      element.focus();
     }
   });
 
