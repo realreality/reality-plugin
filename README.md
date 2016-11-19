@@ -34,10 +34,9 @@ build
 ├── images
 └── manifest.json
 ```
-
-Quick and dirty [source code of IPR Data Rest API Server](https://github.com/bedla/praguehacks-realreality).
-
 Main script is in **./src/js/contentscript.js**
+
+IPR API is backed by [IPR Data Rest API Server](https://github.com/realreality/reality-backend).
 
 ## Notice
 
