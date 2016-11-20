@@ -13,12 +13,12 @@ const initAutoCompleteFields = () => {
         });
       }
       setTimeout(function() {
-        if (!window.google || !window.google.places) {
+        if (!window.google || !window.google.maps || !window.google.maps.places) {
           const scriptTag = document.createElement('script');
           scriptTag.type= "text/javascript";
           scriptTag.defer = true;
           scriptTag.async = true;
-          scriptTag.src="${MAPS_URL}/js?key=${GMAPS_API_KEY}&libraries=places&components=country:CZ&callback=initAutocomplete"
+          scriptTag.src="${MAPS_URL}/js?key=${GMAPS_API_KEY}&libraries=places&callback=initAutocomplete"
           document.head.appendChild(scriptTag)
         } else {
           initAutocomplete();
@@ -71,7 +71,6 @@ export const App = {
   },
   mounted() {
     RR.logDebug('App mounted');
-    // //TODO michalbcz I know using of setTimeout is pure desparation, but when use it without it or in jQuery#ready it throw error that geocomplete is not defined
     initAutoCompleteFields();
   }
 };
