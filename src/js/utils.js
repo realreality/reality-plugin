@@ -6,3 +6,11 @@ export const streetNamePredicate = (address) => {
 };
 
 export const formatPrice = price => Math.round(price) + ' Kč';
+
+/**
+ * Call ga (google analytics) in context of current page - we cannot directly call page functions here
+ * @param args
+ */
+export const ga = (...args) => {
+  window.location.href= 'javascript:ga(' + args.map(arg => '\'' + arg.toString() + '\'').join(',')  + '); void 0';
+};
