@@ -80,7 +80,7 @@ const loadAvailability = function(travelMode, fromAddress, toAddress) {
                                1 month in future seems as maximum for transit data */
                             .startOf('month').add(1, 'weeks').add(2, 'months')
                             .isoWeekday('Monday').startOf('day')
-                            .hours(8).minutes(30); /* assume that on monday 8:30 will be worst traffic */
+                            .hours(8).minutes(0); /* assume that on monday 8:30 will be worst traffic */
   RR.logDebug('departure time: ', DEPARTURE_TIME.toObject());
   const DIST_MATRIX_URL = `${MAPS_URL}/distancematrix/json`;
   const distanceMatrixApiUrl = DIST_MATRIX_URL + '?origins=' + encodeURI(fromAddress) +
@@ -231,7 +231,12 @@ const loadPanel = function(address) {
                 const distancesArray = data.rows[0].elements;
                 const distance = distancesArray[0];
                 poiCopy.address.interpreted = data.destination_addresses[0];
-                poiCopy.duration = distance.duration.text;
+                let duration = distance.duration.text;
+                if (distance.duration_in_traffic) {
+                  /* when exists pessimistic version of duration we use it */
+                  duration = distance.duration_in_traffic.text;
+                }
+                poiCopy.duration = duration;
               } catch (ex) {
                 RR.logError('Error when parsing availibility data: ', ex);
               }
