@@ -19,7 +19,7 @@
     "*://*.googleapis.com/"
   ],
   "web_accessible_resources": [
-    "panel.html",
+    "panel.html",    
     "css/panel.css",
     "css/font-awesome.css",
     "fonts/*"
@@ -43,7 +43,8 @@
       "19": "images/icon-19-off.png",
       "38": "images/icon-38-off.png"
     },
-    "default_title": "Real Reality"
+    "default_title": "Real Reality",
+    "default_popup": "popup.html"
   },
   "background": {
     "scripts": ["background.bundle.js"]
