@@ -4,18 +4,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const precss = require('precss');
 const path = require('path');
-const fileSystem = require('fs');
 
 const env = require('./config/env');
-
-// load the secrets
-const alias = {};
-const secretsPath = path.join(__dirname, ('secrets.' + env.NODE_ENV + '.js'));
-
-if (fileSystem.existsSync(secretsPath)) {
-  alias['secrets'] = secretsPath;
-}
-
 const basePath = fileName => path.join(__dirname, 'src', 'js', fileName);
 
 module.exports = {
@@ -38,9 +28,6 @@ module.exports = {
       }
     ]
   },
-  resolve: {
-    alias: alias
-  },
   postcss: function() {
     return [autoprefixer, precss];
   },
@@ -48,8 +35,10 @@ module.exports = {
     // expose and write the allowed env vars on the compiled bundle
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify(env.NODE_ENV)
-      }
+        NODE_ENV: JSON.stringify(env.NODE_ENV),
+        GMAPS_API_KEY: JSON.stringify(env.GMAPS_API_KEY),
+        IPR_REST_API: JSON.stringify(env.IPR_REST_API),
+      },
     }),
     new CopyWebpackPlugin([
       { from: path.join(__dirname, 'node_modules/font-awesome/css/font-awesome.css'), to: 'css'},

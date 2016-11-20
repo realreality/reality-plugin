@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import template from 'html!../templates/panel.html';
 import RR from './rr';
+import { IPR_REST_API, GMAPS_API_KEY, MAPS_URL} from './rr';
 import RRLocales from './i18n/locales.js';
 import { extractors as pageDataExtractor } from './sites/index';
 import { streetNamePredicate, formatPrice } from './utils';
@@ -16,9 +17,6 @@ RR.logInfo('contentscript loaded');
 
 chrome.runtime.sendMessage({ 'switchIconOn': true });
 
-const API_KEY = 'AIzaSyDP6X1_N95A5pEKOyNgzWNtRK04sL12oek';
-const IPR_REST_API = 'https://realreality.publicstaticvoidmain.cz/rest';
-const MAPS_URL = 'https://maps.googleapis.com/maps/api';
 
 const addStyles = function() {
   RR.logDebug('Adding styles and fonts..');
@@ -54,7 +52,7 @@ const initAutoCompleteFields = () => {
           scriptTag.type= "text/javascript";
           scriptTag.defer = true;
           scriptTag.async = true;
-          scriptTag.src="https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places&callback=initAutocomplete"
+          scriptTag.src="https://maps.googleapis.com/maps/api/js?key=${GMAPS_API_KEY}&libraries=places&callback=initAutocomplete"
           document.head.appendChild(scriptTag)
         } else {
           initAutocomplete();
@@ -66,7 +64,7 @@ const initAutoCompleteFields = () => {
 
 const loadTags = function(type, location, radiusMeters, minCount, app) {
   const baseURL = `${MAPS_URL}/place/nearbysearch`;
-  fetch(`${baseURL}/json?location=${location.lat},${location.lng}&radius=${radiusMeters}&type=${type}&key=${API_KEY}`)
+  fetch(`${baseURL}/json?location=${location.lat},${location.lng}&radius=${radiusMeters}&type=${type}&key=${GMAPS_API_KEY}`)
     .then(response => response.json())
     .then(response => {
       if (response.results.length > minCount) {
@@ -89,7 +87,7 @@ const loadAvailability = function(travelMode, fromAddress, toAddress) {
                           '&destinations=' + encodeURI(toAddress) +
                           '&mode=' + travelMode +
                           '&departure_time=' + DEPARTURE_TIME.unix() +
-                          '&language=cs&key=' + API_KEY;
+                          '&language=cs&key=' + GMAPS_API_KEY;
 
   return fetch(distanceMatrixApiUrl).then(response => response.json());
 };
@@ -323,7 +321,7 @@ const loadPanel = function(address) {
   });
 
 
-  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(address)}&key=${API_KEY}`)
+  fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(address)}&key=${GMAPS_API_KEY}`)
     .then(response => response.json())
     .then((geocodingResponse) => {
       const location = geocodingResponse.results[0].geometry.location;
