@@ -1,7 +1,6 @@
 import 'expose?$!expose?jQuery!jquery/dist/jquery.min.js';
 import 'expose?Vue!vue/dist/vue.min.js'; // Can't just import Vue from 'vue' because of async dependencies
 import VueI18n from 'vue-i18n';
-import moment from 'moment';
 
 import template from 'html!../templates/panel.html';
 import RR from './rr';

@@ -1,5 +1,7 @@
 # Real Reality (winner of [Prague Hacks 2016 Hackathon](http://www.praguehacks.cz/)) 
 
+[![Build Status](https://travis-ci.org/realreality/reality-plugin.svg?branch=master)](https://travis-ci.org/realreality/reality-plugin) [![codecov](https://codecov.io/gh/realreality/reality-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/realreality/reality-plugin)
+
 When you want to buy or rent an apartment (house) you do (or should do) research about things that matter to you. Air pollution, parking, public transport availability (commutation time!), noisiness, places for kids...you name it. But it is unfortunately very time consuming. Until now! Now you've got our beautiful Chrome extension which do all the research for you. Well right now just part of it, but more will come!
 
 Original idea was that Real Reality will be webpage where you can see mashup of real estate offers and interesting data (see above). But it's more work and we want to just show proof of concept before next steps, so we choose to create Chrome extension first (extension deployed to [Chrome Web Store](https://chrome.google.com/webstore/detail/real-reality/obkcimklomeknmfjmglfggenjijioenj?utm_source=gmail)).
