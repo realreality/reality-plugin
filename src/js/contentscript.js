@@ -67,7 +67,7 @@ const loadPanel = function(address) {
     .then(pois => { vueApp.$data.pois = pois; }) // must be in curly braces because of sideEffect
     .catch(err => console.error('An error occurred during POI load from storage' + err.message));
 
-  loadLocation()
+  loadLocation(address)
     .then(({ results }) => {
       const location = results[0].geometry.location;
       RR.logDebug('geocoding api response: ', location);
