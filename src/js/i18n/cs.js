@@ -1,10 +1,4 @@
-'use strict';
-
-/* jshint -W106 */
-
-const RRLocales = {};
-
-RRLocales.cs = {
+const cs = {
   contactUs: 'Chcete nám něco říct?',
   publicTransit: {
     header: 'MHD'
@@ -84,4 +78,4 @@ RRLocales.cs = {
   }
 };
 
-export default RRLocales.cs;
+export default cs;

@@ -1,10 +1,4 @@
-'use strict';
-
-/* jshint -W106 */
-
-const RRLocales = {};
-
-RRLocales.en = {
+const en = {
   contactUs: 'Any feedback? Tell us!',
   publicTransit: {
     header: 'Public transit'
@@ -84,4 +78,4 @@ RRLocales.en = {
   }
 };
 
-export default RRLocales.en;
+export default en;

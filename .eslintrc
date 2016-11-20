@@ -36,7 +36,6 @@
     "chrome": false,
     "global": true,
     "RR": true,
-    "RRLocales": true,
     "Vue": false,
     "VueI18n": false
   }

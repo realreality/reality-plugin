@@ -1,6 +1,7 @@
 import { ga, formatPrice } from '../utils';
 import RR from '../rr';
 import { GMAPS_API_KEY, MAPS_URL } from '../rr';
+import { setPOIs } from '../services/storage';
 
 const initAutoCompleteFields = () => {
   $('head').append(`
@@ -66,11 +67,7 @@ export const App = {
     tags: ''
   },
   watch: {
-    pois(newPois) {
-      chrome.storage.local.set({'pois': newPois}, () => {
-        RR.logDebug('New pois saved to local storage.', newPois);
-      });
-    }
+    pois: setPOIs,
   },
   mounted() {
     RR.logDebug('App mounted');

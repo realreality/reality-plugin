@@ -36,6 +36,7 @@ build
 ├── images
 └── manifest.json
 ```
+
 ### Environment variables
 
   This project supports [dotenv](https://www.npmjs.com/package/dotenv) variables, by creating a `.env` file, you can put your secrets there. All `env` variables are then available in `./config/env.js` where you can export them and use in webpack `DefinePlugin` in `webpack.conf.js`

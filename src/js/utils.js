@@ -1,3 +1,5 @@
+import RR from './rr';
+
 export const streetNamePredicate = (address) => {
   if (typeof(address) !== 'undefined' && address !== null) {
     return address.indexOf(',') > 0 ? address.split(',')[0] : address;
@@ -13,4 +15,40 @@ export const formatPrice = price => Math.round(price) + ' Kč';
  */
 export const ga = (...args) => {
   window.location.href= 'javascript:ga(' + args.map(arg => '\'' + arg.toString() + '\'').join(',')  + '); void 0';
+};
+
+export const addStyles = function() {
+  RR.logDebug('Adding styles and fonts..');
+  const stylesRelativePath = [
+    'css/panel.css', // this loads the actual compiled scss version
+    'css/font-awesome.css',
+  ];
+
+  const $head = $('head'); /* it could be in forEach loop, but this is more performant */
+  stylesRelativePath
+    .map(relativePath => chrome.extension.getURL(relativePath))
+    .forEach(uri => {
+      const notAlreadyThere = $head.find(`*[href="${uri}"]`).length === 0;
+      if (notAlreadyThere) {
+        $head.append(`<link rel="stylesheet" href="${uri}" type="text/css" />`);
+      }
+    });
+};
+
+export const getNoiseLevelAsText = function(noiseLevels) {
+  // http://www.converter.cz/tabulky/hluk.htm
+  const highValue = noiseLevels['db-high'];
+
+  switch (true) {
+    case (highValue >= 70):
+      return 'noise.value.veryHigh';
+    case (highValue >= 60):
+      return 'noise.value.high';
+    case (highValue >= 50):
+      return 'noise.value.moderate';
+    case (highValue >= 30):
+      return 'noise.value.low';
+    case (highValue < 30):
+      return 'noise.value.veryLow';
+  }
 };
