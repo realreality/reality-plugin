@@ -39,6 +39,15 @@
     "write-file-webpack-plugin": "^3.4.2"
   },
   "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "**/src/js/*.js",
+      "**/src/js/components/**.js",
+      "**/src/js/sites/**.js",
+      "**/src/js/services/**.js",
+      "!**/src/js/18n/*.js",
+      "!**/src/js/background.js"
+    ],
     "testRegex": "<rootDir>/src/.*\\.spec\\.(js)$",
     "verbose": true
   },
