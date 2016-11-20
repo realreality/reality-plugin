@@ -8,15 +8,16 @@ import RR from './rr';
 import { IPR_REST_API, GMAPS_API_KEY, MAPS_URL} from './rr';
 import RRLocales from './i18n/locales.js';
 import { extractors as pageDataExtractor } from './sites/index';
-import { streetNamePredicate, formatPrice } from './utils';
+import { streetNamePredicate } from './utils';
 
 import '../css/cssnormalize.scss';
 import '../css/panel.scss';
+import { App } from './components/App';
+import { AvailabilityComponent } from './components/Availability';
 
 RR.logInfo('contentscript loaded');
 
 chrome.runtime.sendMessage({ 'switchIconOn': true });
-
 
 const addStyles = function() {
   RR.logDebug('Adding styles and fonts..');
@@ -36,32 +37,6 @@ const addStyles = function() {
     });
 };
 
-const initAutoCompleteFields = () => {
-  $('head').append(`
-    <script>
-      function initAutocomplete() {
-        const inputs = document.querySelectorAll("input.address-input");
-        inputs.forEach(function(input) {
-          new google.maps.places.Autocomplete(input, { componentRestrictions: { country: "CZ" } });
-        });
-      }
-
-      setTimeout(function() {
-        if (!window.google || !window.google.places) {
-          const scriptTag = document.createElement('script');
-          scriptTag.type= "text/javascript";
-          scriptTag.defer = true;
-          scriptTag.async = true;
-          scriptTag.src="https://maps.googleapis.com/maps/api/js?key=${GMAPS_API_KEY}&libraries=places&callback=initAutocomplete"
-          document.head.appendChild(scriptTag)
-        } else {
-          initAutocomplete();
-        }
-      }, 1000);
-    </script>
-  `);
-};
-
 const loadTags = function(type, location, radiusMeters, minCount, app) {
   const baseURL = `${MAPS_URL}/place/nearbysearch`;
   fetch(`${baseURL}/json?location=${location.lat},${location.lng}&radius=${radiusMeters}&type=${type}&key=${GMAPS_API_KEY}`)
@@ -71,25 +46,6 @@ const loadTags = function(type, location, radiusMeters, minCount, app) {
         app.tags += `<span class="tag" title="${Vue.t('tags.' + type + '.desc')}">${Vue.t('tags.' + type + '.title')}</span>`;
       }
     });
-};
-
-const loadAvailability = function(travelMode, fromAddress, toAddress) {
-  // TODO: nastavit spravny cas, respektive udelat jeste nocni casy
-  const DEPARTURE_TIME = moment()
-                            /* we need this date to be stable at least during a month because of caching,
-                               1 month in future seems as maximum for transit data */
-                            .startOf('month').add(1, 'weeks').add(2, 'months')
-                            .isoWeekday('Monday').startOf('day')
-                            .hours(8).minutes(0); /* assume that on monday 8:30 will be worst traffic */
-  RR.logDebug('departure time: ', DEPARTURE_TIME.toObject());
-  const DIST_MATRIX_URL = `${MAPS_URL}/distancematrix/json`;
-  const distanceMatrixApiUrl = DIST_MATRIX_URL + '?origins=' + encodeURI(fromAddress) +
-                          '&destinations=' + encodeURI(toAddress) +
-                          '&mode=' + travelMode +
-                          '&departure_time=' + DEPARTURE_TIME.unix() +
-                          '&language=cs&key=' + GMAPS_API_KEY;
-
-  return fetch(distanceMatrixApiUrl).then(response => response.json());
 };
 
 const loadParkingZones = function(location) {
@@ -174,130 +130,11 @@ const loadPanel = function(address) {
     }
   });
 
-  Vue.component('availibility-component', {
-    template: '#availability-component',
-    props: ['pois', 'label', 'type', 'addressFrom'],
-    data: function() {
-      return {
-        showInput: false,
-        newPoiAddress: '',
-        enrichedPois: []
-      };
-    },
-    methods: {
-      showInputBox: function(event) {
-        RR.logDebug('Showing input box');
-        this.showInput = true;
-      },
-      hideInputBox: function(event) {
-        RR.logDebug('Hiding input box');
-        this.showInput = false;
-      },
-      cancelInputBox: function(event) {
-        RR.logDebug('Cancelling input box');
-        ga('rr.send', 'event', 'Availibility-Component', 'cancel-input-box-clicked'); /* TODO: mbernhard - should be propagated as an event and ga called in event handler to decouple GA code and component */
-        this.hideInputBox();
-        this.newPoiAddress = '';
-      },
-      addPoi: function(event) {
-        const newPoiAddress = event.target.value;
-        this.$emit('poi-added', newPoiAddress, this.type);
-        this.hideInputBox();
-        this.newPoiAddress = '';
-      },
-      removePoi: function(poi, index) {
-        this.$emit('poi-removed', poi, index);
-      }
-    },
-    watch: {
-      pois: function(pois) {
-        this.enrichedPois = [];
-        pois.forEach((element, index, array) => {
-          const addressTo = element.address.input;
-          const addressFrom = this.addressFrom;
+  Vue.component('availibility-component', AvailabilityComponent);
 
-          const poiCopy = $.extend({}, element);
-          poiCopy.duration = 'N/A';
-          poiCopy.address.interpreted = 'N/A';
-          this.enrichedPois.splice(index, 1, poiCopy);
-
-          RR.logDebug('Loading ', this.type, ' data from:', addressFrom, 'to: ', addressTo);
-          loadAvailability(this.type, addressFrom, addressTo)
-            .then((data) => {
-              RR.logDebug(this.type, ' data response: ', data);
-              const poiCopy = $.extend({}, element);
-
-              try {
-                const distancesArray = data.rows[0].elements;
-                const distance = distancesArray[0];
-                poiCopy.address.interpreted = data.destination_addresses[0];
-                let duration = distance.duration.text;
-                if (distance.duration_in_traffic) {
-                  /* when exists pessimistic version of duration we use it */
-                  duration = distance.duration_in_traffic.text;
-                }
-                poiCopy.duration = duration;
-              } catch (ex) {
-                RR.logError('Error when parsing availibility data: ', ex);
-              }
-              this.enrichedPois.splice(index, 1, poiCopy);
-            });
-        });
-      }
-    }
-  });
-
-  const $app = new Vue({
-    el: '.reality-panel',
-    methods: {
-      toggleWidget: (event) => {
-        $('.reality-panel').toggleClass('reality-panel-closed');
-        ga('rr.send', 'event', 'App-Panel', 'toggle-clicked');
-      },
-      addPoi: function(newPoi, type) {
-        RR.logDebug('Adding POI', newPoi);
-        ga('rr.send', 'event', 'Availibility-Component', 'addPoi', type /*[eventLabel]*/);
-        this.pois.push({ address: { input: newPoi }, duration: '' });
-      },
-      removePoi: function(poi, index) {
-        RR.logDebug('Removing poi', poi, 'with index', index, ' from pois:', this.pois);
-        ga('rr.send', 'event', 'Availibility-Component', 'removePoi');
-        this.pois.splice(index, 1);
-      }
-    },
-    data: {
-      address: address,
-      details: {
-        price: {
-          perSquareMeter: ''
-        }
-      },
-      newTransitPoiAddress: '',
-      showInput: false,
-      pois: [], /* poi = Point Of Interest */
-      noiseLevel: {
-        day: '',
-        night: ''
-      },
-      airQuality: '',
-      tags: ''
-    },
-    watch: {
-      pois: function(newPois) {
-        chrome.storage.local.set({'pois': newPois}, function() {
-          RR.logDebug('New pois saved to local storage.', newPois);
-        });
-      }
-    },
-    mounted: function() {
-      RR.logDebug('mounted');
-      // //TODO michalbcz I know using of setTimeout is pure desparation, but when use it without it or in jQuery#ready it throw error that geocomplete is not defined
-      initAutoCompleteFields();
-    }
-  });
-
-  const pricePerSquareMeter = pageDataExtractor.getPrices(window.location.host);
-  $app.$data.details.price.perSquareMeter = pricePerSquareMeter ? `${formatPrice(pricePerSquareMeter)}/m2`: 'N/A';
+  const $app = new Vue(App);
+  $app.$data.address = address;
+  $app.$data.details.price.perSquareMeter = pageDataExtractor.getPrices(window.location.host);
 
   chrome.storage.local.get('pois', function(items) {
     if (chrome.runtime.lastError) {
@@ -398,13 +235,6 @@ function initApp() {
 
   pollAddress();
 }
-
-/**
-  call ga (google analytics) in context of current page - we cannot directly call page functions here
-**/
-const ga = function ga(...args) {
-  window.location.href='javascript:ga(' + args.map(arg => '\'' + arg.toString() + '\'').join(',')  + '); void 0';
-};
 
 let pollAddressTimerId;
 function pollAddress() {
