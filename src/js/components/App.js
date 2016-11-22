@@ -49,28 +49,30 @@ export const App = {
       this.pois.splice(index, 1);
     }
   },
-  data: {
-    address: '',
-    details: {
-      price: {
-        perSquareMeter: ''
-      }
-    },
-    newTransitPoiAddress: '',
-    showInput: false,
-    pois: [], /* poi = Point Of Interest */
-    noiseLevel: {
-      day: '',
-      night: ''
-    },
-    airQuality: '',
-    tags: ''
+  data() { /* es6 way how to express data: function() { */
+    return {
+      address: '',
+      details: {
+        price: {
+          perSquareMeter: ''
+        }
+      },
+      newTransitPoiAddress: '',
+      showInput: false,
+      pois: [], /* poi = Point Of Interest */
+      noiseLevel: {
+        day: '',
+        night: ''
+      },
+      airQuality: '',
+      tags: ''
+    };
   },
   watch: {
     pois: setPOIs,
   },
-  mounted() {
-    RR.logDebug('App mounted');
+  mounted() { /* es6 way how to express mounted: function() { */
+    RR.logDebug('App mounted (ie. rendered)');
     initAutoCompleteFields();
   }
 };
