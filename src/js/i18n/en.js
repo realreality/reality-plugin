@@ -64,7 +64,7 @@ const en = {
       desc: 'Paid parking available (ie. orange zones or some combined ones) in close distance.'
     }
   },
-  availibility: {
+  availability: {
     add_address: {
       button_desc: 'Add address'
     },
