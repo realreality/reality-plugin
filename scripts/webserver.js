@@ -7,26 +7,36 @@ const config = require('../webpack.config');
 const env = require('./../config/env');
 
 require('./prepare');
-require('./prepare-script-tags');
 
-config.entry['webpack-server'] =
-  ('webpack-dev-server/client?http://localhost:' + env.PORT);
+const {
+  entry,
+  excludeEntriesToHotReload = [],
+  plugins = [],
+} = config;
 
-for (const entryName in config.entry) {
-  config.entry[entryName] = ['webpack/hot/dev-server'].concat(config.entry[entryName]);
-}
+Object.keys(entry)
+  .filter(entryName => !excludeEntriesToHotReload.includes(entryName)) // not possible to hot-reload contentscript
+  .forEach(entryName => {
+    entry[entryName] = [
+      `webpack-dev-server/client?https://localhost:${env.PORT}`,
+      'webpack/hot/dev-server',
+      entry[entryName]
+    ];
+  });
 
-config.output.pathinfo = true;
-config.output.publicPath = ('http://localhost:' + env.PORT + '/');
+const compilerOptions = Object.assign({}, config, {
+  entry,
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new WriteFilePlugin({ log: false}),
+    ...plugins
+  ]
+});
 
-config.plugins = [
-  new webpack.HotModuleReplacementPlugin(),
-  new WriteFilePlugin()
-].concat(config.plugins || []);
-
-const compiler = webpack(config);
+const compiler = webpack(compilerOptions);
 const server = new WebpackDevServer(compiler, {
   hot: true,
+  https: true,
   contentBase: path.join(__dirname, '../build'),
   headers: { 'Access-Control-Allow-Origin': '*' },
   stats: { colors: true }
