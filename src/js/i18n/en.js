@@ -72,7 +72,7 @@ const en = {
       button_desc: 'Remove'
     },
     cancel_input_address_button: {
-      desc: 'Close input...'
+      desc: 'Close'
     },
     address_input_label: 'Address'
   }
