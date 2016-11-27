@@ -21,7 +21,6 @@
   "web_accessible_resources": [
     "panel.html",
     "css/panel.css",
-    "css/popup.css",
     "css/font-awesome.css",
     "fonts/*"
   ],

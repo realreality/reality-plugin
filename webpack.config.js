@@ -23,7 +23,14 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.js$/, loader: 'babel'
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          // vue-loader options go here
+        }
+      },
+      {
+        test: /\.js$/, exclude: /node_modules/, loader: 'babel'
       },
       {
         test: /\.scss$/,
@@ -48,7 +55,6 @@ module.exports = {
       { from: path.join(__dirname, 'node_modules/font-awesome/css/font-awesome.css'), to: 'css'},
       { from: path.join(__dirname, 'node_modules/font-awesome/fonts'), to: 'fonts'},
     ]),
-    new ExtractTextPlugin('./css/panel.css'),
-    new ExtractTextPlugin('./css/popup.css')
+    new ExtractTextPlugin('./css/panel.css')
   ]
 };
