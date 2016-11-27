@@ -56,7 +56,7 @@ const loadPanel = function(address) {
       element.focus();
     }
   });
-  Vue.component('availibility-component', AvailabilityComponent);
+  Vue.component('availability-component', AvailabilityComponent);
 
   const vueApp = new Vue(App);
   vueApp.$data.address = address;

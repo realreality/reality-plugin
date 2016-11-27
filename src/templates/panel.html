@@ -14,7 +14,7 @@
                 when you use just <availibility-component> it won't work because as we use DOM as a source of template
                 all unknown elements are stripped (ignored) by browser
       -->
-      <div is="availibility-component"
+      <div is="availability-component"
            :label="$t('publicTransit.header')"
            type="transit"
            :address-from="address"
@@ -22,7 +22,7 @@
            @poi-added="addPoi"
            @poi-removed="removePoi" />
 
-     <div is="availibility-component"
+     <div is="availability-component"
           :label="$t('car.header')"
           type="driving"
           :address-from="address"
