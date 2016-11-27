@@ -1,8 +1,8 @@
 {
   "name": "Real Reality",
-  "version": "0.0.12",
+  "version": "0.0.11.3",
   "manifest_version": 2,
-  "description": "Adds little side panel to some real estate sites which shows you quality of location eg. commutation times, air pollution.",
+  "description": "__MSG_appDescription__",
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"
@@ -19,7 +19,7 @@
     "*://*.googleapis.com/"
   ],
   "web_accessible_resources": [
-    "panel.html",    
+    "panel.html",
     "css/panel.css",
     "css/font-awesome.css",
     "fonts/*"

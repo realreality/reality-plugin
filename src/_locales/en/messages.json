@@ -1,10 +1,6 @@
 {
-  "appName": {
-    "message": "reality",
-    "description": "The name of the application"
-  },
   "appDescription": {
-    "message": "Real Reality",
-    "description": "The description of the application"
+    "message": "Adds little side panel to some real estate sites which shows you quality of location eg. commutation times, air pollution.",
+    "description": ""
   }
 }
