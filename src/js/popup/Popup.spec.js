@@ -15,8 +15,7 @@ describe('Popup', () => {
 
   it('should render', () => {
     expect(vm).toBeDefined();
-    expect(vm.$el.querySelector('.reality-app-popup-message').textContent).toEqual('message.desc');
-    expect(vm.$el.querySelector('ul').textContent).toEqual('sreality.cz bezrealitky.cz maxirealitypraha.cz');
+    expect(vm.$el.querySelector('.reality-app-popup-message').textContent).toEqual('message.desc');    
   });
 
   it('should fire action', () => {
