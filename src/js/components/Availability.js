@@ -6,7 +6,7 @@ import { ga } from '../utils';
 const loadAvailability = function(travelMode, fromAddress, toAddress) {
   const DEPARTURE_TIME = moment()
     /* we need this date to be stable at least during a month because of caching,
-     1 month in future seems as maximum for transit data */
+     1 week in future is safe enough */
     .startOf('month').add(1, 'weeks')
     .isoWeekday('Monday').startOf('day')
     .hours(8).minutes(0); /* assume that on monday 8:30 will be worst traffic */
@@ -20,6 +20,8 @@ const loadAvailability = function(travelMode, fromAddress, toAddress) {
     '&language=cs&key=' + GMAPS_API_KEY;
 
   if (travelMode === 'driving') {
+    /* this is important for caching - default mode 'best_guess' use live traffic
+       so google api always return new response */
     distanceMatrixApiUrl += '&traffic_model=pessimistic';
   }
 
