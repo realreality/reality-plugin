@@ -7,18 +7,22 @@ const loadAvailability = function(travelMode, fromAddress, toAddress) {
   const DEPARTURE_TIME = moment()
     /* we need this date to be stable at least during a month because of caching,
      1 month in future seems as maximum for transit data */
-    .startOf('month').add(1, 'weeks').add(2, 'months')
+    .startOf('month').add(1, 'weeks')
     .isoWeekday('Monday').startOf('day')
     .hours(8).minutes(0); /* assume that on monday 8:30 will be worst traffic */
   RR.logDebug('Availability Departure time: ', DEPARTURE_TIME.toObject());
 
   const DIST_MATRIX_URL = `${MAPS_URL}/distancematrix/json`;
-  const distanceMatrixApiUrl = DIST_MATRIX_URL + '?origins=' + encodeURI(fromAddress) +
+  let distanceMatrixApiUrl = DIST_MATRIX_URL + '?origins=' + encodeURI(fromAddress) +
     '&destinations=' + encodeURI(toAddress) +
     '&mode=' + travelMode +
     '&departure_time=' + DEPARTURE_TIME.unix() +
     '&language=cs&key=' + GMAPS_API_KEY;
-    
+
+  if (travelMode === 'driving') {
+    distanceMatrixApiUrl += '&traffic_model=pessimistic';
+  }
+
   return fetch(distanceMatrixApiUrl).then(response => response.json());
 };
 
