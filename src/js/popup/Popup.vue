@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <h1>Real Reality Extension</h1>
+    <h1 v-html="$t('app.name')">[Real Reality]</h1>  <!-- [Real Reality] will be replaced, we use v-html because of &nbsp; -->
     <div class="reality-app-popup">
-      <div class="reality-app-popup-message">{{ $t("message.desc") }}</div>
+      <div class="reality-app-popup-message">{{ $t('message.desc') }}</div>
       <ul>
         <li>
           <a v-on:click="visit('https://sreality.cz')" href="https://sreality.cz">sreality.cz</a>
