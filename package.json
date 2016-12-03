@@ -33,6 +33,7 @@
     "html-loader": "^0.4.4",
     "html-webpack-plugin": "^2.24.1",
     "jest": "^17.0.3",
+    "jest-vue-preprocessor": "^0.1.0",
     "postcss-loader": "^1.1.1",
     "precss": "^1.4.0",
     "pug": "^2.0.0-beta6",
@@ -47,6 +48,7 @@
     "collectCoverage": false,
     "collectCoverageFrom": [
       "**/src/js/*.js",
+      "**/src/**/*.vue",
       "**/src/js/components/**.js",
       "**/src/js/sites/**.js",
       "**/src/js/services/**.js",
@@ -55,12 +57,13 @@
     ],
     "moduleFileExtensions": [
       "js",
-      "json"
+      "json",
+      "vue"
     ],
     "testRegex": "<rootDir>/src/.*\\.spec\\.(js)$",
     "transform": {
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-      "^.+\\.vue$": "<rootDir>/config/jest/vue-preprocessor.js"
+      "^.+\\.vue$": "<rootDir>/node_modules/jest-vue-preprocessor"
     },
     "verbose": true
   },
