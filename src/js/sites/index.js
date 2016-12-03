@@ -1,3 +1,5 @@
+import 'expose?$!expose?jQuery!jquery/dist/jquery.min.js';
+
 const textOrNull = textElement => {
   if (textElement === null) {
     return null;
@@ -8,13 +10,16 @@ const textOrNull = textElement => {
 
 export const siteHosts = {
   SREALITY: {
-    hostString: 'sreality'
+    hostString: 'sreality.cz'
   },
   BEZREALITKY: {
-    hostString: 'bezrealitky'
+    hostString: 'bezrealitky.cz'
   },
   MAXIREALITY: {
-    hostString: 'maxirealitypraha'
+    hostString: 'maxirealitypraha.cz'
+  },
+  REALITY_IDNES: {
+    hostString: 'reality.idnes.cz'
   }
 };
 
@@ -34,14 +39,21 @@ export const extractors = {
     if (isCurrentHost(siteHosts.SREALITY, host)) {
       return textOrNull(document.querySelector('.location-text'));
     }
+
     if (isCurrentHost(siteHosts.BEZREALITKY, host)) {
       return textOrNull(document.querySelector('header h2'));
     }
+
     if (isCurrentHost(siteHosts.MAXIREALITY, host)) {
       const addressRow = Array.from(document.querySelectorAll('tr'))
         .filter(node => node.textContent.includes('Adresa'))[0];
-      return addressRow && addressRow.querySelector('td').innerHTML.replace(/<br>/g, ' ').trim();      
+      return addressRow && addressRow.querySelector('td').innerHTML.replace(/<br>/g, ' ').trim();
     }
+
+    if (isCurrentHost(siteHosts.REALITY_IDNES, host)) {
+      return textOrNull(document.querySelector('.realAddress'));
+    }
+
     RR.logError('cannot parse address on page: ', window.location);
     return null;
   },
@@ -77,6 +89,16 @@ export const extractors = {
       const priceArray = priceNode && priceNode.textContent.match(/\d/g);
       const price = priceArray && parseInt(priceArray.join(''), 10);
       const area = areaRow && areaRow.textContent.match(/(\d){2,}/g)[0];
+      return priceAreaGuard(price, area);
+    }
+
+    if (isCurrentHost(siteHosts.REALITY_IDNES, host)) {
+      const areaText = jQuery('.parameters .leftCol dt:contains("Užitná plocha")').next().text();
+      const area = Number.parseInt(areaText); // eg. when text is "34 m2" Number.parseInt can strip text parts and parse it as just 34
+
+      const priceText =  document.querySelectorAll('.priceBox strong')[0].innerHTML;
+      const price = Number.parseInt(priceText.replace(/&nbsp;/gi,''));
+
       return priceAreaGuard(price, area);
     }
 

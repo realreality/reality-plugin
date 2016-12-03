@@ -29,7 +29,8 @@
       "matches": [
         "*://*.bezrealitky.cz/*",
         "*://*.sreality.cz/*",
-        "*://*.maxirealitypraha.cz/*"
+        "*://*.maxirealitypraha.cz/*",
+        "*://reality.idnes.cz/*"
       ],
       "js": [
         "contentscript.bundle.js"

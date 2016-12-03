@@ -37,6 +37,7 @@
     "global": true,
     "RR": true,
     "Vue": false,
-    "VueI18n": false
+    "VueI18n": false,
+    "jQuery": false
   }
 }
