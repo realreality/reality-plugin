@@ -5,3 +5,5 @@ secrets.*.js
 coverage
 *.log
 .env
+yarn.lock.save
+.yarn.lock.swp
