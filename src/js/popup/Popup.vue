@@ -4,6 +4,7 @@
     <div class="reality-app-popup">
       <div class="reality-app-popup-message">{{ $t('message.desc') }}</div>
       <ul>
+        <!-- TODO: mbernhard (03.12.2016) generovat ze sites/index.js -->
         <li>
           <a v-on:click="visit('https://sreality.cz')" href="https://sreality.cz">sreality.cz</a>
         </li>
@@ -12,6 +13,9 @@
         </li>
         <li>
           <a v-on:click="visit('http://maxirealitypraha.cz')" href="http://maxirealitypraha.cz">maxirealitypraha.cz</a>
+        </li>
+        <li>
+          <a v-on:click="visit('http://reality.idnes.cz')" href="http://reality.idnes.cz">reality.idnes.cz</a>
         </li>
       </ul>
     </div>
