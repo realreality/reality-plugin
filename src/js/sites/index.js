@@ -1,5 +1,3 @@
-import 'expose?$!expose?jQuery!jquery/dist/jquery.min.js';
-
 const textOrNull = textElement => {
   if (textElement === null) {
     return null;
@@ -93,7 +91,7 @@ export const extractors = {
     }
 
     if (isCurrentHost(siteHosts.REALITY_IDNES, host)) {
-      const areaText = jQuery('.parameters .leftCol dt:contains("Užitná plocha")').next().text();
+      const areaText = $('.parameters .leftCol dt:contains("Užitná plocha")').next().text();
       const area = Number.parseInt(areaText); // eg. when text is "34 m2" Number.parseInt can strip text parts and parse it as just 34
 
       const priceText =  document.querySelectorAll('.priceBox strong')[0].innerHTML;

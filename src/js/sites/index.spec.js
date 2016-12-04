@@ -218,4 +218,9 @@ describe('extractors', () => {
       expect(extractors.getAddress(window.location.host)).to.equal('Praha - Smíchov Vrázova');
     });
   });
+
+  describe('reality.idnes', () => {
+    it.skip('should return price per m2');
+    it.skip('should return address');
+  });
 });
