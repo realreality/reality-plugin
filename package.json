@@ -1,6 +1,6 @@
 {
   "name": "reality",
-  "version": "0.12.0",
+  "version": "0.12.6",
   "description": "Adds little side panel to some real estate sites which shows you quality of location eg. commutation times, air pollution.",
   "private": true,
   "scripts": {
