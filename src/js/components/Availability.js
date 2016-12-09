@@ -7,7 +7,7 @@ const loadAvailability = function(travelMode, fromAddress, toAddress) {
   const DEPARTURE_TIME = moment()
     /* we need this date to be stable at least during a month because of caching,
      1 week in future is safe enough */
-    .startOf('month').add(1, 'weeks')
+    .add(1, 'weeks')
     .isoWeekday('Monday').startOf('day')
     .hours(8).minutes(0); /* assume that on monday 8:30 will be worst traffic */
   RR.logDebug('Availability Departure time: ', DEPARTURE_TIME.toObject());
