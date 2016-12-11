@@ -39,6 +39,7 @@ export const loadTags = (type, location, radius, minCount, vueApp) => {
     });
 };
 
-export const loadLocation = address =>
-  fetch(`${MAPS_URL}/geocode/json?address=${encodeURI(address)}&key=${GMAPS_API_KEY}`)
+export const loadLocation = address => {
+  return fetch(`${MAPS_URL}/geocode/json?address=${encodeURI(address)}&key=${GMAPS_API_KEY}`)
     .then(response => response.json());
+};

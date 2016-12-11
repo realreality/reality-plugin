@@ -52,3 +52,28 @@ export const getNoiseLevelAsText = function(noiseLevels) {
       return 'noise.value.veryLow';
   }
 };
+
+export const initAutoCompleteFields = (url, key) => {
+  $('head').append(`
+    <script>
+      function initAutocomplete() {
+        const inputs = document.querySelectorAll("input.address-input");
+        inputs.forEach(function(input) {
+          new google.maps.places.Autocomplete(input, { componentRestrictions: { country: "CZ" } });
+        });
+      }
+      setTimeout(function() {
+        if (!window.google || !window.google.maps || !window.google.maps.places) {
+          const scriptTag = document.createElement('script');
+          scriptTag.type= "text/javascript";
+          scriptTag.defer = true;
+          scriptTag.async = true;
+          scriptTag.src="${url}/js?key=${key}&libraries=places&callback=initAutocomplete"
+          document.head.appendChild(scriptTag)
+        } else {
+          initAutocomplete();
+        }
+      }, 1000);
+    </script>
+  `);
+};
