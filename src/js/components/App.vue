@@ -70,8 +70,10 @@
 
 
     <div class="footer">
-      <div v-html="tags" class="tags">
-
+      <div v-if="tags.length" class="tags">
+        <span v-for="tag in tags" class="tag" v-bind:title="[$t('tags.' + tag + '.desc')]">
+          {{$t('tags.' + tag + '.title')}}
+        </span>
       </div>
 
       <div class="contact-us">
@@ -172,13 +174,19 @@ export default {
             this.$data.airQuality = this.$t('pollution.value.val' + airPollutionApiResult.value);
           });
 
-        // TODO vire: map to array of promises and resolve at once
-        // tags
-        loadTags('night_club', location, 500, 2, this);
-        loadTags('transit_station', location, 400, 3, this);
-        loadTags('park', location, 600, 0, this);
-        loadTags('school', location, 1000, 2, this);
-        loadTags('restaurant', location, 500, 3, this);
+        const tags = [
+          { type: 'night_club', location, radius: 500, minCount: 2 },
+          { type: 'transit_station', location, radius: 400, minCount: 3 },
+          { type: 'park', location, radius: 600, minCount: 0 },
+          { type: 'school', location, radius: 1000, minCount: 2 },
+          { type: 'restaurant', location, radius: 500, minCount: 3 }
+        ];
+        Promise.all(tags.map(loadTags))
+          .then(results => {
+            this.tags = results
+              .filter(({ response, minCount }) => response.results.length > minCount)
+              .map(({type}) => type);
+          });
 
         loadParkingZones(location, 1000)
           .then(zones => {

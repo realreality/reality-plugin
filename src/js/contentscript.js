@@ -39,8 +39,8 @@ const initVueTranslations = () => {
 
 const loadPanel = function(address) {
   RR.logDebug('Injecting panel (template) to page');
+  // html from panelTemplate holds the entry-point `#reality-panel-root`
   $('body').append(panelTemplate);
-  // html from panel.html is just vue.js template so let's render it
 
   RR.logDebug('Initializing view (replacing values in panel.html template)');
 
@@ -58,7 +58,7 @@ const loadPanel = function(address) {
         }
       });
 
-      // vire: instance is store nowhere
+      // vire: instance is stored nowhere
       new Vue({
         el: '#reality-panel-root',
         render: h => h(App, {

@@ -16,7 +16,7 @@ export const loadAirPollution = ({lat, lng}) =>
   fetch(`${IPR_REST_API}/atmosphere?lat=${lat}&lon=${lng}`)
     .then(response => response.json());
 
-export const loadTags = (type, location, radius, minCount, vueApp) => {
+export const loadTags = ({type, location, radius, minCount}) => {
   const params = {
     location: encodeURI(`${location.lat},${location.lng}`),
     radius,
@@ -28,15 +28,13 @@ export const loadTags = (type, location, radius, minCount, vueApp) => {
     .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
     .join('&');
 
-  fetch(`${MAPS_URL}/place/nearbysearch/json?${query}`)
+  return fetch(`${MAPS_URL}/place/nearbysearch/json?${query}`)
     .then(response => response.json())
-    .then(response => {
-      if (response.results.length > minCount) {
-        // TODO refactor side effect
-        vueApp.tags +=
-          `<span class="tag" title="${vueApp.$t('tags.' + type + '.desc')}">${vueApp.$t('tags.' + type + '.title')}</span>`;
-      }
-    });
+    .then(response => ({
+      minCount,
+      response,
+      type
+    }));
 };
 
 export const loadLocation = address => {
