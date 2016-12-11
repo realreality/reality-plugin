@@ -91,10 +91,13 @@
 import { ga, formatPrice, initAutoCompleteFields } from '../utils';
 import RR from '../rr';
 import { GMAPS_API_KEY, MAPS_URL } from '../rr';
-import { setPOIs } from '../services/storage';
+import { setPOIs, getPOIs } from '../services/storage';
 import AvailabilityComponent from './Availability.vue';
+import { extractors as pageDataExtractor } from "../sites/index";
 
 export default {
+  name: 'app',
+  props: ['address', 'details'],
   components: {
     AvailabilityComponent
   },
@@ -119,12 +122,6 @@ export default {
   },
   data() { /* es6 way how to express data: function() { */
     return {
-      address: '',
-      details: {
-        price: {
-          perSquareMeter: ''
-        }
-      },
       newTransitPoiAddress: '',
       showInput: false,
       pois: [], /* poi = Point Of Interest */
@@ -137,10 +134,18 @@ export default {
     };
   },
   watch: {
+    // this is maybe not best idea - updating data in LS via `view` component that receives data
+    // persisting data should be a concert of some data service
     pois: setPOIs,
   },
   mounted() { /* es6 way how to express mounted: function() { */
     RR.logDebug('App mounted (ie. rendered)');
+
+    // populate vueApp here with Data
+    getPOIs()
+      .then(pois => { this.$data.pois = pois; }) // must be in curly braces because of sideEffect
+      .catch(err => console.error('An error occurred during POI load from storage' + err.message));
+
     initAutoCompleteFields(MAPS_URL, GMAPS_API_KEY);
   }
 };

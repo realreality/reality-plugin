@@ -7,7 +7,6 @@ import RRLocales from './i18n/locales.js';
 import { extractors as pageDataExtractor } from './sites/index';
 import { streetNamePredicate, addStyles, getNoiseLevelAsText } from './utils';
 import { loadParkingZones, loadNoise, loadAirPollution, loadTags, loadLocation } from './services/api';
-import { getPOIs } from './services/storage';
 
 import '../css/cssnormalize.scss';
 import '../css/panel.scss';
@@ -62,16 +61,18 @@ const loadPanel = function(address) {
 
       const root = new Vue({
         el: '#reality-panel-root',
-        render: h => h(App)
+        render: h => h(App, {
+          props: {
+            address,
+            details: {
+              price: {
+                perSquareMeter: pageDataExtractor.getPrices(window.location.host)
+              }
+            }
+          }
+        })
       });
       const vueApp = root.$children[0]; // root is a container, and first child is Aapp
-      vueApp.$data.address = address;
-      vueApp.$data.details.price.perSquareMeter = pageDataExtractor.getPrices(window.location.host);
-
-      // populate vueApp here with Data
-      getPOIs()
-        .then(pois => { vueApp.$data.pois = pois; }) // must be in curly braces because of sideEffect
-        .catch(err => console.error('An error occurred during POI load from storage' + err.message));
 
       loadLocation(address)
         .then(({ results }) => {
