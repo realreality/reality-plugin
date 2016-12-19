@@ -34,11 +34,12 @@ export const loadTags = (type, location, radius, minCount, vueApp) => {
       if (response.results.length > minCount) {
         // TODO refactor side effect
         vueApp.tags +=
-          `<span class="tag" title="${Vue.t('tags.' + type + '.desc')}">${Vue.t('tags.' + type + '.title')}</span>`;
+          `<span class="tag" title="${vueApp.$t('tags.' + type + '.desc')}">${vueApp.$t('tags.' + type + '.title')}</span>`;
       }
     });
 };
 
-export const loadLocation = address =>
-  fetch(`${MAPS_URL}/geocode/json?address=${encodeURI(address)}&key=${GMAPS_API_KEY}`)
+export const loadLocation = address => {
+  return fetch(`${MAPS_URL}/geocode/json?address=${encodeURI(address)}&key=${GMAPS_API_KEY}`)
     .then(response => response.json());
+};

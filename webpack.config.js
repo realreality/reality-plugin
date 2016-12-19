@@ -56,5 +56,10 @@ module.exports = {
       { from: path.join(__dirname, 'node_modules/font-awesome/fonts'), to: 'fonts'},
     ]),
     new ExtractTextPlugin('./css/panel.css')
-  ]
+  ],
+  resolve: {
+    alias: {
+      'vue$': 'vue/dist/vue.common.js'
+    }
+  }
 };
