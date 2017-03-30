@@ -1,4 +1,4 @@
-import 'expose?$!expose?jQuery!jquery/dist/jquery.min.js';
+import 'expose-loader?$!expose-loader?jQuery!jquery/dist/jquery.min.js';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
@@ -9,7 +9,7 @@ import { streetNamePredicate, addStyles } from './utils';
 
 import '../css/cssnormalize.scss';
 import '../css/panel.scss';
-import panelTemplate from 'html!../templates/panel.html';
+import panelTemplate from 'html-loader!../templates/panel.html';
 
 import App from './components/App.vue';
 

@@ -15,35 +15,51 @@ module.exports = {
     contentscript: basePath('contentscript.js'),
     popup: basePath('popup.js')
   },
-  excludeEntriesToHotReload: ['contentscript'], // a non-standard webpack opt, see usage in `./scripts/webserver.js`
   output: {
     path: path.join(__dirname, 'build'),
     filename: '[name].bundle.js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: {
-          // vue-loader options go here
-        }
       },
       {
-        test: /\.js$/, exclude: /node_modules/, loader: 'babel'
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'eslint-loader'
+      },
+      {
+        test: /\.js$/, 
+        exclude: /node_modules/, 
+        loader: 'babel-loader'
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style-loader', ['css-loader', 'postcss-loader'])
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader', 
+          use: ['css-loader', 'postcss-loader']
+        })
       }
     ]
   },
-  postcss: function() {
-    return [autoprefixer, precss];
-  },
   plugins: [
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        postcss: [autoprefixer, precss],
+        excludeEntriesToHotReload: ['contentscript'], // a non-standard webpack opt, see usage in `./scripts/webserver.js`
+      }
+    }),
     // expose and write the allowed env vars on the compiled bundle
-    new webpack.DefinePlugin({ 'process.env': JSON.stringify(env) }),
+    new webpack.DefinePlugin({
+      'process.env': { 
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development'),
+        GMAPS_API_KEY: JSON.stringify(env.GMAPS_API_KEY),
+        IPR_REST_API: JSON.stringify(env.IPR_REST_API),
+      }
+    }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'popup.html'),
       filename: 'popup.html',
