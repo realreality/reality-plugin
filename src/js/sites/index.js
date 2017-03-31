@@ -1,3 +1,6 @@
+const RENT = 'rent';
+const SALE = 'sale';
+
 const textOrNull = textElement => {
   if (textElement === null) {
     return null;
@@ -6,57 +9,90 @@ const textOrNull = textElement => {
   }
 };
 
-export const siteHosts = {
+const sites = {
   SREALITY: {
-    hostString: 'sreality.cz'
+    id: 'sreality',
   },
   BEZREALITKY: {
-    hostString: 'bezrealitky.cz'
+    id: 'bezrealitky',
   },
   MAXIREALITY: {
-    hostString: 'maxirealitypraha.cz'
+    id: 'maxirealitypraha',
   },
   REALITY_IDNES: {
-    hostString: 'reality.idnes.cz'
+    id: 'idnes',
   }
 };
 
-/**
- *
- * @param {{ hostString: String }} hostId
- * @param {String} host
- * @return {Number|undefined}
- */
-export const isCurrentHost = (hostId, host) => host.includes(hostId.hostString);
-
 const priceAreaGuard = (price, area) => (area && !isNaN(area) && (price && !isNaN(price))) && price / area;
+
+const getHostPredicate = (locationHost) => (siteHost) => locationHost.includes(siteHost);
+
+const containsBoxWords = (selector, words) => {
+  const containsNodeWord = (node, word) => node.textContent.includes(word);
+
+  const node = document.querySelector(selector);
+  if (!node || !words.length) {
+    return false;
+  }
+
+  const mapWords = (word) => containsNodeWord(node, word);
+  // ['foo'] => [true]
+  // ['foo', 'bar', 'baz'] => [true, false, true] => false
+  return words.map(mapWords).filter(Boolean).length === words.length;
+};
+
+// this is business logic, so it may contain site specific settings/params
+// underneath it should only call some generic functions
+const extractAdType = (locationHost) => {
+  const verify = getHostPredicate(locationHost);
+
+  if (verify(sites.REALITY_IDNES.id) || verify(sites.SREALITY.id) || verify(sites.MAXIREALITY.id)) {
+    if (/pronajem/i.test(location.pathname)) {
+      return RENT;
+    }
+    return SALE;
+  }
+
+  if (verify('bezrealitky')) {
+    const selector = '.box-params.col-1';
+    return containsBoxWords(selector, ['typ', 'nabídky', 'Pronájem']) ? RENT : SALE;
+  }
+};
 
 // TODO add extractor's methods for sites dynamically
 export const extractors = {
-  getAddress(host) {
-    if (isCurrentHost(siteHosts.SREALITY, host)) {
+  getAddress() {
+    const verify = getHostPredicate(window.location.host);
+    if (verify(sites.SREALITY.id)) {
       return textOrNull(document.querySelector('.location-text'));
     }
 
-    if (isCurrentHost(siteHosts.BEZREALITKY, host)) {
+    if (verify(sites.BEZREALITKY.id)) {
       return textOrNull(document.querySelector('header h2'));
     }
 
-    if (isCurrentHost(siteHosts.MAXIREALITY, host)) {
+    if (verify(sites.MAXIREALITY.id)) {
       const addressRow = Array.from(document.querySelectorAll('tr'))
         .filter(node => node.textContent.includes('Adresa'))[0];
       return addressRow && addressRow.querySelector('td').innerHTML.replace(/<br>/g, ' ').trim();
     }
 
-    if (isCurrentHost(siteHosts.REALITY_IDNES, host)) {
+    if (verify(sites.REALITY_IDNES.id)) {
       return textOrNull(document.querySelector('.realAddress'));
     }
 
     RR.logError('cannot parse address on page: ', window.location);
     return null;
   },
-  getPrices(host) {
-    if (isCurrentHost(siteHosts.SREALITY, host)) {
+  extractSquarePrice() {
+    const adType = extractAdType(window.location.host);
+    const verify = getHostPredicate(window.location.host);
+    if (adType === RENT) {
+      return;
+    }
+
+    if (verify(sites.SREALITY.id)) {
       const propertyParams = Array.from(document.querySelectorAll('.params li'));
       const priceRow = propertyParams.filter(p => p.innerHTML.includes('Celková cena'))[0];
       const areaRow = propertyParams.filter(p => p.innerHTML.includes('Užitná'))[0];
@@ -66,7 +102,7 @@ export const extractors = {
       return priceAreaGuard(price, area);
     }
 
-    if (isCurrentHost(siteHosts.BEZREALITKY, host)) {
+    if (verify(sites.BEZREALITKY.id)) {
       const propertyParams = Array.from(document.querySelectorAll('.box-params .row'));
       const areaRow = propertyParams.filter(item => item.innerHTML.includes('plocha'))[0]; // returns DOM node
       const priceRow = propertyParams.filter(item => item.innerHTML.includes('cena'))[0]; // returns DOM node
@@ -80,7 +116,7 @@ export const extractors = {
       return priceAreaGuard(price, area);
     }
 
-    if (isCurrentHost(siteHosts.MAXIREALITY, host)) {
+    if (verify(sites.MAXIREALITY.id)) {
       const areaRow = Array.from(document.querySelectorAll('#makler_zaklad > table tr'))
         .filter(node => node.innerHTML.includes('Užitná plocha'))[0];
       const priceNode = document.querySelector('.two.price');
@@ -90,12 +126,12 @@ export const extractors = {
       return priceAreaGuard(price, area);
     }
 
-    if (isCurrentHost(siteHosts.REALITY_IDNES, host)) {
+    if (verify(sites.REALITY_IDNES.id)) {
       const areaText = $('.parameters .leftCol dt:contains("Užitná plocha")').next().text();
       const area = Number.parseInt(areaText); // eg. when text is "34 m2" Number.parseInt can strip text parts and parse it as just 34
 
-      const priceText =  document.querySelectorAll('.priceBox strong')[0].innerHTML;
-      const price = Number.parseInt(priceText.replace(/&nbsp;/gi,''));
+      const priceText = document.querySelectorAll('.priceBox strong')[0].innerHTML;
+      const price = Number.parseInt(priceText.replace(/&nbsp;/gi, ''));
 
       return priceAreaGuard(price, area);
     }

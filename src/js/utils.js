@@ -7,7 +7,14 @@ export const streetNamePredicate = (address) => {
   return address;
 };
 
-export const formatPrice = price => Math.round(price) + ' Kč';
+export const formatPrice = price => {
+  const formatter = new Intl.NumberFormat('cs', {
+    style: 'currency',
+    currency: 'CZK',
+    minimumFractionDigits: 0,
+  });
+  return formatter.format(Math.round(price));
+};
 
 /**
  * Call ga (google analytics) in context of current page - we cannot directly call page functions here
