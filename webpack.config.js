@@ -1,10 +1,11 @@
-const webpack = require('webpack');
+const autoprefixer = require('autoprefixer');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const autoprefixer = require('autoprefixer');
-const precss = require('precss');
 const path = require('path');
+const precss = require('precss');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const webpack = require('webpack');
 
 const env = require('./config/env');
 const basePath = fileName => path.join(__dirname, 'src', 'js', fileName);
@@ -46,6 +47,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new ProgressBarPlugin(),
     new webpack.LoaderOptionsPlugin({
       options: {
         postcss: [autoprefixer, precss],

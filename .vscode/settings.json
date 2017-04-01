@@ -1,12 +1,15 @@
 // Place your settings in this file to overwrite default and user settings.
 {
   "files.exclude": {
-      "**/.git": true,
-      "**/.svn": true,
-      "**/.hg": true,
-      "**/.DS_Store": true,
-      "coverage": true,
-      "build": true,
-      ".idea": true
-    }
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    ".idea": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "build": true
+  }
 }

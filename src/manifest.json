@@ -1,8 +1,8 @@
 {
   "name": "Real Reality",
-  "version": "0.0.11.3",
+  "version": "VERSION_FROM_PACKAGE_JSON",
   "manifest_version": 2,
-  "description": "__MSG_appDescription__",
+  "description": "DESCRIPTION_FROM_PACKAGE_JSON",
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"

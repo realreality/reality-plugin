@@ -1,17 +1,13 @@
 const fs = require('fs-extra');
+const manifest = require('../src/manifest.json');
+const packageJson = require('../package.json');
 const path = require('path');
 
-const manifest = require('../src/manifest.json');
-const env = require('./../config/env');
-
-// clean de dist folder
-fs.emptyDirSync(path.join(__dirname, '../build'));
-
-// generates the manifest file using the package.json informations
-manifest.description = process.env.npm_package_description;
-manifest.version = process.env.npm_package_version;
-
+// generates the manifest file using the package.json information
 fs.outputFile(
   path.join(__dirname, '../build/manifest.json'),
-  JSON.stringify(manifest)
+  JSON.stringify(Object.assign({}, manifest, {
+    description: packageJson.description,
+    version: packageJson.version
+  }))
 );
