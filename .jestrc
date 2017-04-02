@@ -1,0 +1,33 @@
+{
+  "globals": {
+    "__TS_CONFIG__": {
+      "module": "commonjs"
+    }
+  },
+  "collectCoverage": false,
+  "collectCoverageFrom": [
+    "**/src/js/*.js",
+    "**/src/**/*.vue",
+    "**/src/js/components/**.js",
+    "**/src/js/sites/**.js",
+    "**/src/js/services/**.js",
+    "!**/src/js/18n/*.js",
+    "!**/src/js/background.js"
+  ],
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts",
+    "vue"
+  ],
+  "roots": [
+    "<rootDir>/src"
+  ],
+  "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+  "transform": {
+    "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+    "^.+\\.(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js",
+    "^.+\\.vue$": "<rootDir>/node_modules/jest-vue-preprocessor"
+  },
+  "verbose": true
+}
