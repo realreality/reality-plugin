@@ -16,6 +16,7 @@ import App from './components/App.vue';
 RR.logInfo('contentscript loaded');
 
 chrome.runtime.sendMessage({ 'switchIconOn': true });
+const POLL_ADDRESS_TIMEOUT = 500;
 
 const initVueTranslations = () => {
   return new Promise((resolve, reject) => {
@@ -66,7 +67,7 @@ const loadPanel = function(address) {
             address,
             details: {
               price: {
-                perSquareMeter: pageDataExtractor.getPrices(window.location.host)
+                perSquareMeter: pageDataExtractor.extractSquarePrice()
               }
             }
           }
@@ -78,7 +79,7 @@ const loadPanel = function(address) {
 let addressOfProperty;
 function initApp() {
   RR.logInfo('Initializing app widget');
-  addressOfProperty = pageDataExtractor.getAddress(window.location.host);
+  addressOfProperty = pageDataExtractor.getAddress();
   RR.logDebug('Address parsed: ', addressOfProperty);
 
   if (RR.String.isNotBlank(addressOfProperty)) {
@@ -94,13 +95,13 @@ function initApp() {
 let pollAddressTimerId;
 function pollAddress() {
   //RR.logDebug('Polling address...'); // you can filter it out in console with regexp filter ^(?=.*?\b.*\b)((?!Poll).)*$ (match all except lines with 'Poll' match)
-  const currentAddressOfProperty = pageDataExtractor.getAddress(window.location.host);
+  const currentAddressOfProperty = pageDataExtractor.getAddress();
   //RR.logDebug('Polled address:', currentAddressOfProperty);
   if (currentAddressOfProperty !== addressOfProperty) {
     $(document).trigger(RR.ADDRESS_CHANGED_EVENT);
     clearTimeout(pollAddressTimerId);
   }
-  pollAddressTimerId = setTimeout(pollAddress, 500);
+  pollAddressTimerId = setTimeout(pollAddress, POLL_ADDRESS_TIMEOUT);
 }
 
 $(document).on(RR.ADDRESS_CHANGED_EVENT, (event) => {

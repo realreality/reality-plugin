@@ -25,11 +25,11 @@ describe('extractors', () => {
     });
 
     it('should return price per m2', () => {
-      expect(extractors.getPrices(window.location.host)).to.equal(22222.222222222223);
+      expect(extractors.extractSquarePrice()).to.equal(22222.222222222223);
     });
 
     it('should return address', () => {
-      expect(extractors.getAddress(window.location.host)).to.equal('Komenského, Vlašim, Středočeský kraj');
+      expect(extractors.getAddress()).to.equal('Komenského, Vlašim, Středočeský kraj');
     });
   });
 
@@ -43,11 +43,11 @@ describe('extractors', () => {
     });
 
     it('should return price per m2', () => {
-      expect(extractors.getPrices(window.location.host)).to.equal(57042.25352112676);
+      expect(extractors.extractSquarePrice()).to.equal(57042.25352112676);
     });
 
     it('should return address', () => {
-      expect(extractors.getAddress(window.location.host)).to.equal('Ortenovo náměstí, Praha 7 - Holešovice');
+      expect(extractors.getAddress()).to.equal('Ortenovo náměstí, Praha 7 - Holešovice');
     });
   });
 
@@ -61,11 +61,11 @@ describe('extractors', () => {
     });
 
     it('should return price per m2', () => {
-      expect(extractors.getPrices(window.location.host)).to.equal(64805.194805194806);
+      expect(extractors.extractSquarePrice()).to.equal(64805.194805194806);
     });
 
     it('should return address', () => {
-      expect(extractors.getAddress(window.location.host)).to.equal('Praha - Smíchov Vrázova');
+      expect(extractors.getAddress()).to.equal('Praha - Smíchov Vrázova');
     });
   });
 
@@ -83,11 +83,11 @@ describe('extractors', () => {
     });
 
     it('should return price per m2', () => {
-      expect(extractors.getPrices(window.location.host)).to.equal(31888.88888888889);
+      expect(extractors.extractSquarePrice()).to.equal(31888.88888888889);
     });
 
     it('should return address', () => {
-      expect(extractors.getAddress(window.location.host)).to.equal('Praha 5, Hlubočepy, Machatého');
+      expect(extractors.getAddress()).to.equal('Praha 5, Hlubočepy, Machatého');
     });
   });
 });
