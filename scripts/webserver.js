@@ -1,18 +1,18 @@
-const WebpackDevServer = require('webpack-dev-server');
-const webpack = require('webpack');
-const path = require('path');
-const WriteFilePlugin = require('write-file-webpack-plugin');
+const WebpackDevServer = require('webpack-dev-server')
+const webpack = require('webpack')
+const path = require('path')
+const WriteFilePlugin = require('write-file-webpack-plugin')
 
-const config = require('../webpack.config');
-const env = require('./../config/env');
+const config = require('../webpack.config')
+const env = require('./../config/env')
 
-require('./prepare');
+require('./prepare')
 
 const {
   entry,
   excludeEntriesToHotReload = [],
   plugins = [],
-} = config;
+} = config
 
 Object.keys(entry)
   .filter(entryName => !excludeEntriesToHotReload.includes(entryName)) // not possible to hot-reload contentscript
@@ -20,26 +20,26 @@ Object.keys(entry)
     entry[entryName] = [
       `webpack-dev-server/client?https://localhost:${env.PORT}`,
       'webpack/hot/dev-server',
-      entry[entryName]
-    ];
-  });
+      entry[entryName],
+    ]
+  })
 
 const compilerOptions = Object.assign({}, config, {
   entry,
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new WriteFilePlugin({ log: false}),
-    ...plugins
-  ]
-});
+    ...plugins,
+  ],
+})
 
-const compiler = webpack(compilerOptions);
+const compiler = webpack(compilerOptions)
 const server = new WebpackDevServer(compiler, {
   hot: true,
   https: true,
   contentBase: path.join(__dirname, '../build'),
   headers: { 'Access-Control-Allow-Origin': '*' },
-  stats: { colors: true }
-});
+  stats: { colors: true },
+})
 
-server.listen(env.PORT);
+server.listen(env.PORT)

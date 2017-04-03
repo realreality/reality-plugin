@@ -1,11 +1,11 @@
-process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'production'
 
-const webpack = require('webpack');
-const config = require('../webpack.config');
+const webpack = require('webpack')
+const config = require('../webpack.config')
 
-require('./prepare');
+require('./prepare')
 
 webpack(
   config,
-  function (err) { if (err) throw err; }
-);
+  function (err) { if (err) throw err }
+)

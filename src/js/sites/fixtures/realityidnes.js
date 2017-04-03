@@ -82,6 +82,6 @@ const realityIdnesString = `
   </div>
 </body>
 </html>
-`;
+`
 
-export default realityIdnesString;
+export default realityIdnesString

@@ -1,0 +1,26 @@
+{
+  "extends": [
+    "tslint-config-standard"
+  ],
+  "rules": {
+    "import-spacing": true,
+    "ordered-imports": [
+      true
+    ],
+    "space-before-function-paren": [
+      true,
+      "never"
+    ],
+    "max-line-length": [
+      true,
+      120
+    ],
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "always",
+        "singleline": "never"
+      }
+    ]
+  }
+}

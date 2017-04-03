@@ -33,6 +33,6 @@ const srealityString = `
   </div>
 </body>
 </html>
-`;
+`
 
-export default srealityString;
+export default srealityString

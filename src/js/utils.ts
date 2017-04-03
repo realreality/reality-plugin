@@ -1,59 +1,59 @@
-import RR from './rr';
+import RR from './rr'
 
-export const streetNamePredicate = (address) => {
-  if (typeof(address) !== 'undefined' && address !== null) {
-    return address.indexOf(',') > 0 ? address.split(',')[0] : address;
+export const streetNamePredicate = (address: string) => {
+  if (typeof (address) !== 'undefined' && address !== null) {
+    return address.indexOf(',') > 0 ? address.split(',')[0] : address
   }
-  return address;
-};
+  return address
+}
 
-export const formatPrice = price => Math.round(price) + ' Kč';
+export const formatPrice = (price: number) => Math.round(price) + ' Kč'
 
 /**
  * Call ga (google analytics) in context of current page - we cannot directly call page functions here
  * @param args
  */
-export const ga = (...args) => {
-  window.location.href= 'javascript:ga(' + args.map(arg => '\'' + arg.toString() + '\'').join(',')  + '); void 0';
-};
+export const ga = (...args: Array<any>) => {
+  window.location.href = 'javascript:ga(' + args.map(arg => '\'' + arg.toString() + '\'').join(',') + '); void 0'
+}
 
 export const addStyles = function() {
-  RR.logDebug('Adding styles and fonts..');
+  RR.logDebug('Adding styles and fonts..')
   const stylesRelativePath = [
     'css/panel.css', // this loads the actual compiled scss version
     'css/font-awesome.css',
-  ];
+  ]
 
-  const $head = $('head'); /* it could be in forEach loop, but this is more performant */
+  const $head = $('head') /* it could be in forEach loop, but this is more performant */
   stylesRelativePath
     .map(relativePath => chrome.extension.getURL(relativePath))
     .forEach(uri => {
-      const notAlreadyThere = $head.find(`*[href="${uri}"]`).length === 0;
+      const notAlreadyThere = $head.find(`*[href="${uri}"]`).length === 0
       if (notAlreadyThere) {
-        $head.append(`<link rel="stylesheet" href="${uri}" type="text/css" />`);
+        $head.append(`<link rel="stylesheet" href="${uri}" type="text/css" />`)
       }
-    });
-};
+    })
+}
 
-export const getNoiseLevelAsText = function(noiseLevels) {
+export const getNoiseLevelAsText = function(noiseLevels: { [key: string]: number }) {
   // http://www.converter.cz/tabulky/hluk.htm
-  const highValue = noiseLevels['db-high'];
+  const highValue = noiseLevels['db-high']
 
   switch (true) {
     case (highValue >= 70):
-      return 'noise.value.veryHigh';
+      return 'noise.value.veryHigh'
     case (highValue >= 60):
-      return 'noise.value.high';
+      return 'noise.value.high'
     case (highValue >= 50):
-      return 'noise.value.moderate';
+      return 'noise.value.moderate'
     case (highValue >= 30):
-      return 'noise.value.low';
+      return 'noise.value.low'
     case (highValue < 30):
-      return 'noise.value.veryLow';
+      return 'noise.value.veryLow'
   }
-};
+}
 
-export const initAutoCompleteFields = (url, key) => {
+export const initAutoCompleteFields = (url: string, key: string) => {
   $('head').append(`
     <script>
       function initAutocomplete() {
@@ -75,5 +75,5 @@ export const initAutoCompleteFields = (url, key) => {
         }
       }, 1000);
     </script>
-  `);
-};
+  `)
+}
