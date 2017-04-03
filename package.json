@@ -4,15 +4,16 @@
   "description": "Adds little side panel to some real estate sites which shows you quality of location eg. commutation times, air pollution.",
   "private": true,
   "scripts": {
+    "cleanup": "rm -rf build",
     "build": "node scripts/build.js",
     "commit": "git-cz",
     "lint": "eslint -c .eslintrc ./src/",
-    "start": "node scripts/webserver.js",
+    "start": "yarn cleanup && node scripts/webserver.js",
     "test": "jest",
-    "test:ci": "yarn lint && jest --coverage"
+    "test:ci": "yarn lint && yarn test -- --coverage"
   },
   "dependencies": {
-    "dotenv": "4.0.0",
+    "dotenv": "2.0.0",
     "font-awesome": "^4.7.0",
     "jquery": "3.2.1",
     "vue": "2.1.4",
@@ -26,11 +27,11 @@
     "chai": "^3.5.0",
     "commitizen": "2.9.6",
     "copy-webpack-plugin": "^4.0.1",
-    "css-loader": "0.27.3",
+    "css-loader": "0.28.0",
     "cz-conventional-changelog": "2.0.0",
-    "eslint": "3.18.0",
-    "eslint-loader": "1.7.0",
-    "expose-loader": "0.7.3",
+    "eslint": "3.19.0",
+    "eslint-loader": "1.7.1",
+    "expose-loader": "0.7.1",
     "extract-text-webpack-plugin": "2.1.0",
     "fs-extra": "2.1.2",
     "html-loader": "0.4.5",
@@ -39,7 +40,8 @@
     "jest-vue-preprocessor": "0.2.0",
     "postcss-loader": "1.3.3",
     "precss": "^1.4.0",
-    "pug": "^2.0.0-beta6",
+    "progress-bar-webpack-plugin": "1.9.3",
+    "pug": "2.0.0-beta11",
     "style-loader": "0.16.1",
     "vue-loader": "11.3.4",
     "vue-template-compiler": "2.1.4",
@@ -73,7 +75,7 @@
   "engines": {
     "node": ">=6.3"
   },
-   "config": {
+  "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
