@@ -18,6 +18,10 @@
       "error",
       "unix"
     ],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
     "no-unused-vars": ["warn", { "vars": "all", "args": "none" }],
     "no-console": ["off"],
     "no-var": "error",
@@ -28,7 +32,7 @@
     ],
     "semi": [
       "error",
-      "always"
+      "never"
     ]
   },
   "globals": {

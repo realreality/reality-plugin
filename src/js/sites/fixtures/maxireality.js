@@ -43,6 +43,6 @@ const maxirealityString =
 </div>
 </body>
 </html>
-`;
+`
 
-export default maxirealityString;
+export default maxirealityString

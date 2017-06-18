@@ -1,13 +1,13 @@
 const cs = {
   contactUs: 'Chcete nám něco říct?',
   publicTransit: {
-    header: 'MHD'
+    header: 'MHD',
   },
   car: {
-    header: 'Autem'
+    header: 'Autem',
   },
   liftago: {
-    header: 'Liftago'
+    header: 'Liftago',
   },
   noise: {
     header: 'Hladina hluku',
@@ -16,8 +16,8 @@ const cs = {
       high: 'Vysoká',
       moderate: 'Střední',
       low: 'Nízká',
-      veryLow: 'Velmi nízká'
-    }
+      veryLow: 'Velmi nízká',
+    },
   },
   pollution: {
     header: 'Ovzduší',
@@ -27,55 +27,55 @@ const cs = {
       val4: 'Zhoršená',
       val3: 'Akceptovatelná',
       val2: 'Dobrá',
-      val1: 'Velmi dobrá'
-    }
+      val1: 'Velmi dobrá',
+    },
   },
   propertyDetails: {
     header: 'Další informace',
-    pricePerSqM: 'Cena za m2'
+    pricePerSqM: 'Cena za m2',
   },
   tags: {
     night_club: {
       title: 'PARTY',
-      desc: 'Party místo! Nejméně dva kluby poblíž.'
+      desc: 'Party místo! Nejméně dva kluby poblíž.',
     },
     transit_station: {
       title: 'MHD',
-      desc: 'Obejdete se bez auta! V okolí jsou minimálně tři zastávky.'
+      desc: 'Obejdete se bez auta! V okolí jsou minimálně tři zastávky.',
     },
     park: {
       title: 'PŘÍRODA',
-      desc: 'V okolí je minimálně jeden park.'
+      desc: 'V okolí je minimálně jeden park.',
     },
     school: {
       title: 'DĚTI',
-      desc: 'O děti je postaráno – poblíž jsou minimálně dvě školy.'
+      desc: 'O děti je postaráno – poblíž jsou minimálně dvě školy.',
     },
     restaurant: {
       title: 'HOSPODY',
-      desc: 'Pivo! Jídlo! Hlady neumřete, v okolí jsou aspoň tři hospody.'
+      desc: 'Pivo! Jídlo! Hlady neumřete, v okolí jsou aspoň tři hospody.',
     },
     resident_parking: {
       title: 'MODRÉ ZÓNY',
-      desc: 'V okolí jsou modré parkovací zóny – pouze pro rezidenty.'
+      desc: 'V okolí jsou modré parkovací zóny – pouze pro rezidenty.',
     },
     paid_parking: {
       title: 'PARKOVACÍ ZÓNY',
-      desc: 'Placené parkování (např. oranžové zóny) v okolí objektu.'
-    }
+      desc: 'Placené parkování (např. oranžové zóny) v okolí objektu.',
+    },
   },
   availability: {
     add_address: {
-      button_desc: 'Přidat adresu'
+      button_desc: 'Přidat adresu',
     },
     remove_address: {
-      button_desc: 'Odstranit'
+      button_desc: 'Odstranit',
     },
     cancel_input_address_button: {
-      desc: 'Zavřít'
+      desc: 'Zavřít',
     },
-    address_input_label: 'Adresa zájmu'
-  }
-};
+    address_input_label: 'Adresa zájmu',
+  },
+}
 
-export default cs;
+export default cs
