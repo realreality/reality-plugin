@@ -2,7 +2,9 @@
 <div id="reality-panel" class="reality-panel yui3-normalized">
   <div class="reality-panel-bg">
     <div class="header">
-      <h2 class="button toggle-app-button" v-on:click="toggleWidget"><span class="icon" aria-hidden="true"></span> Real Reality</h2>
+      <h2 class="button toggle-app-button" v-on:click="toggleWidget">
+        <span class="icon" aria-hidden="true"></span>Real Reality
+      </h2>
     </div>
     <div class="content">
 
@@ -29,10 +31,11 @@
            :pois="pois"
            @poi-added="addPoi"
            @poi-removed="removePoi" />
-
+      
       <div class="row-title">
         <h3>{{$t('noise.header')}}</h3>
       </div>
+      
       <div class="row">
         <div class="col">
           <i class="fa fa-sun-o" aria-hidden="true"></i> {{ noiseLevel.day }}
@@ -42,10 +45,10 @@
         </div>
       </div>
 
-
       <div class="row-title">
         <h3>{{$t('pollution.header')}}</h3>
       </div>
+
       <div class="row">
         <div class="col">
           {{$t('pollution.subheader')}}
@@ -68,11 +71,10 @@
       </div>
     </div>
 
-
     <div class="footer">
       <div v-if="tags.length" class="tags">
-        <span v-for="tag in tags" class="tag" v-bind:title="[$t('tags.' + tag + '.desc')]">
-          {{$t('tags.' + tag + '.title')}}
+        <span v-for="tag in tags" class="tag" :title="$t(`tags.${tag}.desc`)" >
+          {{ $t(`tags.${tag}.title`) }}
         </span>
       </div>
 
@@ -81,7 +83,6 @@
           {{ $t('contactUs') }}
           <i class="fa fa-comments" aria-hidden="true"></i>
         </a>
-
       </div>
     </div>
 
@@ -174,14 +175,15 @@ export default {
             this.$data.airQuality = this.$t('pollution.value.val' + airPollutionApiResult.value);
           });
 
-        const tags = [
+        const tagPromises = [
           { type: 'night_club', location, radius: 500, minCount: 2 },
           { type: 'transit_station', location, radius: 400, minCount: 3 },
           { type: 'park', location, radius: 600, minCount: 0 },
           { type: 'school', location, radius: 1000, minCount: 2 },
           { type: 'restaurant', location, radius: 500, minCount: 3 }
-        ];
-        Promise.all(tags.map(loadTags))
+        ].map(loadTags);
+
+        Promise.all(tagPromises)
           .then(results => {
             this.tags = results
               .filter(({ response, minCount }) => response.results.length > minCount)
@@ -200,12 +202,9 @@ export default {
                 /* Modra  blue zone = parking only for residents */
               });
               if (closeBlueZones.length > 0) {
-                this.tags += '<span class="tag" title="' + this.$t('tags.resident_parking.desc') + '">' +
-                  this.$t('tags.resident_parking.title') + '</span>';
-
+                this.tags = [...this.tags, 'resident_parking' ]
                 if (zones.filter(pz => pz.dist < 600 && pz.type !== 'M').length > 0) {
-                  this.tags += '<span class="tag" title="' + this.$t('tags.paid_parking.desc') + '">' +
-                    this.$t('tags.paid_parking.title') + '</span>';
+                  this.tags = [...this.tags, 'paid_parking' ]
                 }
               }
             }

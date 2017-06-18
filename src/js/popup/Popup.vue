@@ -2,7 +2,7 @@
   <div id="app">
     <h1 v-html="$t('app.name')">[Real Reality]</h1>  <!-- [Real Reality] will be replaced, we use v-html because of &nbsp; -->
     <div class="reality-app-popup">
-      <div class="reality-app-popup-message">{{ $t('message.desc') }}</div>
+      <div class="reality-app-popup-message">{{ $t('app.desc') }}</div>
       <ul>
         <!-- TODO: mbernhard (03.12.2016) generovat ze sites/index.js -->
         <li>
