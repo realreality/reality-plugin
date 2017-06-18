@@ -13,6 +13,7 @@ import panelTemplate from 'html-loader!../templates/panel.html';
 
 import App from './components/App.vue';
 
+Vue.use(VueI18n); 
 RR.logInfo('contentscript loaded');
 
 chrome.runtime.sendMessage({ 'switchIconOn': true });
@@ -24,15 +25,18 @@ const initVueTranslations = () => {
       const [appLanguage] = languages;
       RR.logDebug('Detected accepted languages: ', languages);
       RR.logInfo('Selected app language: ', appLanguage);
-      Vue.use(VueI18n);
-      Vue.config.lang = appLanguage;
-      Vue.config.fallbackLang = 'en';
+        
+      const vueI18n = new VueI18n({
+        locale: appLanguage,
+        fallbackLocale: 'en',
+      });
 
       Object.keys(RRLocales).forEach(function (lang) {
         RR.logDebug('RRLocales key: ', lang, '. Localization bundle: ', RRLocales[lang]);
-        Vue.locale(lang, RRLocales[lang]);
+        vueI18n.setLocaleMessage(lang, RRLocales[lang]);
       });
-      resolve();
+
+      resolve(vueI18n);
     });
   });
 };
@@ -45,7 +49,7 @@ const loadPanel = function(address) {
   RR.logDebug('Initializing view (replacing values in panel.html template)');
 
   initVueTranslations()
-    .then(() => {
+    .then((i18n) => {
       Vue.config.devtools = true; // does not work in extension
       Vue.config.silent = false;
       Vue.filter('street-name', streetNamePredicate);
@@ -61,6 +65,7 @@ const loadPanel = function(address) {
       // vire: instance is stored nowhere
       new Vue({
         el: '#reality-panel-root',
+        i18n,
         render: h => h(App, {
           props: {
             address,
