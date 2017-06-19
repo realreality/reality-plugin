@@ -70,6 +70,6 @@ const bezRealitkyString = `
   </div>
 </body>
 </html>
-`;
+`
 
-export default bezRealitkyString;
+export default bezRealitkyString

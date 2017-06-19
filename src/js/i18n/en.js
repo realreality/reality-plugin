@@ -1,13 +1,13 @@
 const en = {
   contactUs: 'Any feedback? Tell us!',
   publicTransit: {
-    header: 'Public transit'
+    header: 'Public transit',
   },
   car: {
-    header: 'Car'
+    header: 'Car',
   },
   liftago: {
-    header: 'Liftago'
+    header: 'Liftago',
   },
   noise: {
     header: 'Noise',
@@ -16,8 +16,8 @@ const en = {
       high: 'High',
       moderate: 'Moderate',
       low: 'Low',
-      veryLow: 'Very low'
-    }
+      veryLow: 'Very low',
+    },
   },
   pollution: {
     header: 'Air',
@@ -27,55 +27,55 @@ const en = {
       val4: 'Worsened',
       val3: 'Acceptable',
       val2: 'Good',
-      val1: 'Very good'
-    }
+      val1: 'Very good',
+    },
   },
   propertyDetails: {
     header: 'Property details',
-    pricePerSqM: 'Price per m2'
+    pricePerSqM: 'Price per m2',
   },
   tags: {
     night_club: {
       title: 'PARTY',
-      desc: 'Let\'s party! At least two night clubs in the vicinity.'
+      desc: 'Let\'s party! At least two night clubs in the vicinity.',
     },
     transit_station: {
       title: 'PUBLIC TRANSIT',
-      desc: 'No need for car. Lots of public transit stops around.'
+      desc: 'No need for car. Lots of public transit stops around.',
     },
     park: {
       title: 'NATURE',
-      desc: 'There is a park around.'
+      desc: 'There is a park around.',
     },
     school: {
       title: 'KIDS',
-      desc: 'More than two schools in the area.'
+      desc: 'More than two schools in the area.',
     },
     restaurant: {
       title: 'PUBS',
-      desc: 'Beer! Food! At least three pubs/restaurants in the area.'
+      desc: 'Beer! Food! At least three pubs/restaurants in the area.',
     },
     resident_parking: {
       title: 'RESIDENT PARKING',
-      desc: 'Blue parking zones around the property. It means that only residents can park here.'
+      desc: 'Blue parking zones around the property. It means that only residents can park here.',
     },
     paid_parking: {
       title: 'PAID PARKING',
-      desc: 'Paid parking available (ie. orange zones or some combined ones) in close distance.'
-    }
+      desc: 'Paid parking available (ie. orange zones or some combined ones) in close distance.',
+    },
   },
   availability: {
     add_address: {
-      button_desc: 'Add address'
+      button_desc: 'Add address',
     },
     remove_address: {
-      button_desc: 'Remove'
+      button_desc: 'Remove',
     },
     cancel_input_address_button: {
-      desc: 'Close'
+      desc: 'Close',
     },
-    address_input_label: 'Address'
-  }
-};
+    address_input_label: 'Address',
+  },
+}
 
-export default en;
+export default en
