@@ -25,24 +25,32 @@ Original idea was that Real Reality will be webpage where you can see mashup of 
 1. `git commit -m "my new great addition!"`
 1. `git push`
 
-Final extension structure
-```bash
-build
-├── _locales
-├── background.bundle.js
-├── contentscript.bundle.js
-├── css
-├── fonts
-├── images
-└── manifest.json
-```
 
 ### Environment variables
 
   This project supports [dotenv](https://www.npmjs.com/package/dotenv) variables, by creating a `.env` file, you can put your secrets there. All `env` variables are then available in `./config/env.js` where you can export them and use in webpack `DefinePlugin` in `webpack.conf.js`
  
+  List of currently used environment variables within project
+
+  * `GA_TRACKER_DEV` - Google Analytics TRACKER ID user in non-production builds
+  * `GA_TRACKER_PROD` - GA TRACKER ID for production
   * `GMAPS_API_KEY` - user your own please
   * `IPR_REST_API` - endpoint for real-reality
+
+
+### Building
+
+to compile a **production** version of the extension into \<project-root\>/**build** folder run 
+
+```
+yarn build
+```
+
+or if you wanna specify custom GA
+```
+GA_TRACKER_PROD=GA-XXXXX-X yarn build
+```
+
 
 Quick and dirty [source code of IPR Data Rest API Server](https://github.com/bedla/praguehacks-realreality).
 
@@ -57,7 +65,3 @@ IPR API is backed by [IPR Data Rest API Server](https://github.com/realreality/r
 [Open Society Fund Praha / Fond Otakara Motejla](http://www.otevrenadata.cz/) for their [open data](https://en.wikipedia.org/wiki/Open_data) activities (like organizing Prague Hacks hackathon and other similar events, propagation the open data idea in goverment institutions..etc.). 
 
  Samuel Simões - this extension is built on top of the scaffold [chrome-extension-webpack-boilerplate](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate)
-
-
-
-

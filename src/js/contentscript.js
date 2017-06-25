@@ -9,11 +9,10 @@ import { streetNamePredicate, addStyles } from './utils'
 
 import '../css/cssnormalize.scss'
 import '../css/panel.scss'
-import panelTemplate from 'html-loader!../templates/panel.html'
 
 import App from './components/App.vue'
 
-Vue.use(VueI18n) 
+Vue.use(VueI18n)
 RR.logInfo('contentscript loaded')
 
 chrome.runtime.sendMessage({ 'switchIconOn': true })
@@ -25,7 +24,7 @@ const initVueTranslations = () => {
       const [appLanguage] = languages
       RR.logDebug('Detected accepted languages: ', languages)
       RR.logInfo('Selected app language: ', appLanguage)
-        
+
       const vueI18n = new VueI18n({
         locale: appLanguage,
         fallbackLocale: 'en',
@@ -43,11 +42,15 @@ const initVueTranslations = () => {
 
 const loadPanel = function(address) {
   RR.logDebug('Injecting panel (template) to page')
-  // html from panelTemplate holds the entry-point `#reality-panel-root`
-  $('body').append(panelTemplate)
-
   RR.logDebug('Initializing view (replacing values in panel.html template)')
-
+  $('body').append('<div id="reality-panel-root"></div>')
+  chrome.runtime.sendMessage({
+    eventType: 'EXTENSION_INIT',
+    documentTitle: document.title,
+    locationHost: window.location.host,
+    locationHref: window.location.href,
+    locationPathName: window.location.pathname,
+  })
   initVueTranslations()
     .then((i18n) => {
       Vue.config.devtools = true // does not work in extension

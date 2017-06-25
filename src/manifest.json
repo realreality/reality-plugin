@@ -33,6 +33,7 @@
         "*://reality.idnes.cz/*"
       ],
       "js": [
+        "vendor.bundle.js",
         "contentscript.bundle.js"
       ],
       "run_at": "document_end",
@@ -48,7 +49,10 @@
     "default_popup": "popup.html"
   },
   "background": {
-    "scripts": ["background.bundle.js"]
+    "scripts": [
+      "vendor.bundle.js",
+      "background.bundle.js"
+    ]
   },
-  "content_security_policy": "script-src 'self' https://maps.googleapis.com; 'unsafe-eval' http://localhost:%PORT%; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://maps.googleapis.com https://www.google-analytics.com; object-src 'self'"
 }
