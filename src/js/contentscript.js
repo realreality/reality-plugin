@@ -12,6 +12,17 @@ import '../css/panel.scss'
 
 import App from './components/App.vue'
 
+Vue.use({
+  install(_Vue) {
+    _Vue.prototype.$track = function (options) {
+      chrome.runtime.sendMessage({
+        eventType: 'GA_SEND_EVENT',
+        componentName: `Component:${options.componentName}`,
+        componentAction: options.componentAction,
+      })
+    }
+  },
+})
 Vue.use(VueI18n)
 RR.logInfo('contentscript loaded')
 

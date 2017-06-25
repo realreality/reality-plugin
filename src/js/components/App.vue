@@ -31,11 +31,11 @@
            :pois="pois"
            @poi-added="addPoi"
            @poi-removed="removePoi" />
-      
+
       <div class="row-title">
         <h3>{{$t('noise.header')}}</h3>
       </div>
-      
+
       <div class="row">
         <div class="col">
           <i class="fa fa-sun-o" aria-hidden="true"></i> {{ noiseLevel.day }}
@@ -111,16 +111,16 @@ export default {
     },
     toggleWidget(event) {
       $('.reality-panel').toggleClass('reality-panel-closed');
-      ga('rr.send', 'event', 'App-Panel', 'toggle-clicked');
+      this.$track({ componentName: 'Applicaiton', componentAction: 'toggle' });
     },
     addPoi(newPoi, type) {
       RR.logDebug('Adding POI', newPoi);
-      ga('rr.send', 'event', 'Availibility-Component', 'addPoi', type /*[eventLabel]*/);
+      this.$track({ componentName: 'Applicaiton', componentAction: `poi:add:${type}` });
       this.pois.push({ address: { input: newPoi }, duration: '' });
     },
     removePoi(poi, index) {
       RR.logDebug('Removing poi', poi, 'with index', index, ' from pois:', this.pois);
-      ga('rr.send', 'event', 'Availibility-Component', 'removePoi');
+      this.$track({ componentName: 'Application', componentAction: 'poi:remove' });
       this.pois.splice(index, 1);
     }
   },

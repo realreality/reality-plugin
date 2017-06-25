@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "cleanup": "rm -rf build",
-    "build": "node scripts/build-manifest.js && webpack --env=prod -p",
+    "build": "npm run cleanup && node scripts/build-manifest.js && webpack --env=prod -p",
     "cz": "git-cz",
     "commitmsg": "validate-commit-msg",
     "lint": "eslint -c .eslintrc ./src/",

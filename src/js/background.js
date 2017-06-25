@@ -31,4 +31,13 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       title: request.documentTitle,
     })
   }
+
+  if(request.eventType === 'GA_SEND_EVENT') {
+    // see https://developers.google.com/analytics/devguides/collection/analyticsjs/events
+    window.ga('send', {
+      hitType: 'event',
+      eventCategory: request.componentName,
+      eventAction: request.componentAction,
+    })
+  }
 })
