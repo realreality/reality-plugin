@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const path = require('path')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 
-const config = require('../webpack.config')
+const config = require('../webpack.config')('dev')
 const env = require('./../config/env')
 
 // setup manifest

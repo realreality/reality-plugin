@@ -79,7 +79,7 @@ export default {
     },
     cancelInputBox: function(event) {
       RR.logDebug('Cancelling input box');
-      ga('rr.send', 'event', 'Availibility-Component', 'cancel-input-box-clicked'); /* TODO: mbernhard - should be propagated as an event and ga called in event handler to decouple GA code and component */
+      this.$track({ componentName: 'Availibility', componentAction: 'cancel-input-box-clicked' });
       this.hideInputBox();
       this.newPoiAddress = '';
     },
